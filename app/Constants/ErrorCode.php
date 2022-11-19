@@ -18,6 +18,11 @@ use Hyperf\Constants\Annotation\Constants;
 class ErrorCode extends AbstractConstants
 {
     /**
+     * @Message("Success.")
+     */
+    public const SUCCESS = 200;
+
+    /**
      * @Message("Bad Request！")
      */
     public const BAD_REQUEST = 400;
