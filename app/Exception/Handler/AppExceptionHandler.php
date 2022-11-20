@@ -58,12 +58,13 @@ class AppExceptionHandler extends ExceptionHandler
         if (in_array(ApplicationContext::getContainer()->get(ConfigInterface::class)->get('app_env', 'dev'), ['dev', 'test'])) {
             $responseData['trace'] = explode("\n", $this->formatter->format($throwable));
             $responseBody = new SwooleStream(json_encode($responseData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
+            $this->stdoutLogger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
+            $this->stdoutLogger->error($throwable->getTraceAsString());
         }
 
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->logger->error($throwable->getTraceAsString());
-        $this->stdoutLogger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
-        $this->stdoutLogger->error($throwable->getTraceAsString());
 
         if (! empty(Response::getReasonPhraseByCode($code))) {
             $response = $response->withStatus($code);
