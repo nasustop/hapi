@@ -80,3 +80,19 @@ if (! function_exists('storage_path')) {
         return $storage_path;
     }
 }
+
+if (! function_exists('loadDirFiles')) {
+    function loadDirFiles($path = BASE_PATH . '/routes')
+    {
+        $files = scandir($path);
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            $file_path = $path . '/' . $file;
+            if (is_file($file_path)) {
+                require_once $file_path;
+            }
+        }
+    }
+}

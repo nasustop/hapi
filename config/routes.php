@@ -11,8 +11,12 @@ declare(strict_types=1);
  */
 use Hyperf\HttpServer\Router\Router;
 
-Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
+// Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
+//
+// Router::get('/favicon.ico', function () {
+//    return '';
+// });
 
-Router::get('/favicon.ico', function () {
-    return '';
+Router::addGroup('/api/backend', function () {
+    loadDirFiles(BASE_PATH . '/routes/backend');
 });
