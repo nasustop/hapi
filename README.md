@@ -29,3 +29,7 @@ php bin/hyperf.php migrate --seed
 ```shell
 php bin/hyperf.php hapi:gen:code system_user
 ```
+### 原生生成model文件
+```shell
+php bin/hyperf.php gen:model system_user --path=src\\SystemBundle\\Model --uses=App\\Model\\Model
+```
