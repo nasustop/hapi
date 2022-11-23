@@ -14,7 +14,6 @@ namespace SystemBundle\Model;
 use App\Model\Model as BaseModel;
 
 /**
- * @property int $id
  * @property string $parent_type
  * @property int $parent_id
  * @property string $children_type
@@ -25,17 +24,17 @@ class SystemPowerModel extends BaseModel
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'system_user';
+    protected ?string $table = 'system_power';
 
     /**
      * The primary key for the model.
      */
-    protected string $primaryKey = 'id';
+    protected string $primaryKey = 'children_id';
 
     /**
      * The table all columns.
      */
-    protected array $cols = ['id', 'parent_type', 'parent_id', 'children_type', 'children_id'];
+    protected array $cols = ['parent_type', 'parent_id', 'children_type', 'children_id'];
 
     /**
      * The attributes that are mass assignable.
@@ -45,5 +44,5 @@ class SystemPowerModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['user_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'id' => 'integer', 'parent_id' => 'integer', 'children_id' => 'integer'];
+    protected array $casts = ['parent_id' => 'integer', 'children_id' => 'integer'];
 }

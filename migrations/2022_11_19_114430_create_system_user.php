@@ -28,12 +28,13 @@ class CreateSystemUser extends Migration
             $table->string('password')->comment('密码');
             $table->string('mobile', 30)->comment('手机号');
             $table->string('user_status', 30)->default('success')->comment('用户状态 success:正常 disabled:禁用');
-            $table->timestamps();
-            $table->time('deleted_at')->nullable()->comment('删除时间');
+            $table->timestamp('created_at')->nullable()->comment('添加时间');
+            $table->timestamp('updated_at')->nullable()->comment('修改时间');
+            $table->timestamp('deleted_at')->nullable()->comment('删除时间');
 
-            $table->unique(['login_name', 'deleted_at'], 'idx_login_name');
-            $table->unique(['mobile', 'deleted_at'], 'idx_mobile');
-            $table->index('user_status', 'idx_user_status');
+            $table->unique(['login_name', 'deleted_at'], 'unique_login_name');
+            $table->unique(['mobile', 'deleted_at'], 'unique_mobile');
+            $table->index('user_status', 'index_user_status');
         });
     }
 

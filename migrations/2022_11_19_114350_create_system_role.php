@@ -24,9 +24,10 @@ class CreateSystemRole extends Migration
             $table->bigIncrements('role_id')->comment('角色ID');
             $table->string('role_name', 100)->comment('角色名称');
             $table->string('role_alias', 50)->comment('角色别名，全局唯一');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('添加时间');
+            $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->unique('role_alias', 'idx_role_alias');
+            $table->unique('role_alias', 'unique_role_alias');
         });
     }
 

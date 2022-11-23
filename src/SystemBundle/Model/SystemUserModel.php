@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace SystemBundle\Model;
 
 use App\Model\Model as BaseModel;
+use Hyperf\Database\Model\SoftDeletes;
 
 /**
  * @property int $user_id
@@ -27,6 +28,7 @@ use App\Model\Model as BaseModel;
  */
 class SystemUserModel extends BaseModel
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      */
@@ -40,7 +42,7 @@ class SystemUserModel extends BaseModel
     /**
      * The table all columns.
      */
-    protected array $cols = ['user_id', 'user_name', 'avatar_url', 'login_name', 'password', 'mobile', 'user_status', 'created_at', 'updated_at'];
+    protected array $cols = ['user_id', 'user_name', 'avatar_url', 'login_name', 'password', 'mobile', 'user_status', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that are mass assignable.

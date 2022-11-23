@@ -21,13 +21,12 @@ class CreateSystemPower extends Migration
     public function up(): void
     {
         Schema::create('system_power', function (Blueprint $table) {
-            $table->bigIncrements('id')->comment('权限ID');
             $table->enum('parent_type', ['user', 'role'])->comment('父节点类型');
             $table->bigInteger('parent_id', false, true)->comment('父节点ID');
             $table->enum('children_type', ['role', 'menu'])->comment('子节点类型');
             $table->bigInteger('children_id', false, true)->comment('父节点ID');
 
-            $table->unique(['parent_type', 'parent_id', 'children_type', 'children_id'], 'idx_power');
+            $table->unique(['parent_type', 'parent_id', 'children_type', 'children_id'], 'unique_power');
         });
     }
 

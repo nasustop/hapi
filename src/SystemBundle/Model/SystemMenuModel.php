@@ -30,7 +30,7 @@ class SystemMenuModel extends BaseModel
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'system_user';
+    protected ?string $table = 'system_menu';
 
     /**
      * The primary key for the model.
@@ -50,5 +50,5 @@ class SystemMenuModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['user_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'menu_id' => 'integer', 'parent_id' => 'integer', 'sort' => 'integer', 'is_show' => 'integer'];
+    protected array $casts = ['menu_id' => 'integer', 'parent_id' => 'integer', 'sort' => 'integer', 'is_show' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

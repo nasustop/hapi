@@ -29,11 +29,12 @@ class CreateSystemMenu extends Migration
             $table->smallInteger('is_show')->default(1)->comment('是否显示');
             $table->enum('menu_type', ['menu', 'apis'])->default('menu')->comment('类型：menu菜单 apis接口权限');
             $table->json('apis')->nullable(true)->comment('权限集合');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('添加时间');
+            $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->unique('menu_alias', 'idx_menu_alias');
-            $table->index('is_show', 'idx_is_show');
-            $table->index('menu_type', 'idx_menu_type');
+            $table->unique('menu_alias', 'unique_menu_alias');
+            $table->index('is_show', 'index_is_show');
+            $table->index('menu_type', 'index_menu_type');
         });
     }
 

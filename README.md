@@ -33,3 +33,11 @@ php bin/hyperf.php hapi:gen:code system_user
 ```shell
 php bin/hyperf.php gen:model system_user --path=src\\SystemBundle\\Model --uses=App\\Model\\Model
 ```
+
+# 测试
+```shell
+composer test -- [class] --filter=[function]
+
+# 示例
+composer test -- test/SystemBundle/Backend/SystemMenuControllerTest.php --filter=testMenu
+```

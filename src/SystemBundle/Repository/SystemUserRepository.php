@@ -23,7 +23,7 @@ class SystemUserRepository extends Repository
     /**
      * The table all columns.
      */
-    protected array $cols = ['user_id', 'user_name', 'avatar_url', 'login_name', 'password', 'mobile', 'user_status', 'created_at', 'updated_at'];
+    protected array $cols = ['user_id', 'user_name', 'avatar_url', 'login_name', 'password', 'mobile', 'user_status', 'created_at', 'updated_at', 'deleted_at'];
 
     public function __call($method, $parameters)
     {
@@ -36,5 +36,17 @@ class SystemUserRepository extends Repository
     public function getModel(): SystemUserModel
     {
         return $this->model;
+    }
+
+    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = []): array
+    {
+        $userInfo = parent::getInfo($filter, $columns, $orderBy);
+        if (empty($userInfo)) {
+            return $userInfo;
+        }
+        $support_admin_user = env('SUPPORT_ADMIN_USER', '');
+        $support_admin_user = explode(',', $support_admin_user);
+        $userInfo['is_support_user'] = ! empty($userInfo['user_id']) && in_array($userInfo['user_id'], $support_admin_user);
+        return $userInfo;
     }
 }

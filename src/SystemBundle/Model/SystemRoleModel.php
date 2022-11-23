@@ -25,7 +25,7 @@ class SystemRoleModel extends BaseModel
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'system_user';
+    protected ?string $table = 'system_role';
 
     /**
      * The primary key for the model.
@@ -45,5 +45,5 @@ class SystemRoleModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['user_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'role_id' => 'integer'];
+    protected array $casts = ['role_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
