@@ -13,6 +13,7 @@ namespace SystemBundle\Repository;
 
 use App\Repository\Repository;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use SystemBundle\Model\SystemUserModel;
 
 class SystemUserRepository extends Repository
@@ -38,15 +39,40 @@ class SystemUserRepository extends Repository
         return $this->model;
     }
 
-    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = []): array
+    public function generatePassword($pwd): string
     {
-        $userInfo = parent::getInfo($filter, $columns, $orderBy);
-        if (empty($userInfo)) {
-            return $userInfo;
+        return password_hash($pwd, PASSWORD_DEFAULT);
+    }
+
+    public function validatePassword($pwd, $hash): bool
+    {
+        return password_verify($pwd, $hash);
+    }
+
+    public function validateUserStatus($user_status)
+    {
+        if ($user_status == 'disabled') {
+            throw new BadRequestHttpException('账号已被禁用，请联系管理员');
         }
-        $support_admin_user = env('SUPPORT_ADMIN_USER', '');
-        $support_admin_user = explode(',', $support_admin_user);
-        $userInfo['is_support_user'] = ! empty($userInfo['user_id']) && in_array($userInfo['user_id'], $support_admin_user);
-        return $userInfo;
+    }
+
+    public function setColumnData(array $data): array
+    {
+        if (empty($this->getCols())) {
+            return $data;
+        }
+
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (! in_array($key, $this->getCols())) {
+                continue;
+            }
+            if ($key === 'password') {
+                $value = $this->generatePassword($value);
+            }
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }

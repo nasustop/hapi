@@ -1,5 +1,36 @@
 <?php
+
+declare(strict_types=1);
+/**
+ * This file is part of Hapi.
+ *
+ * @link     https://www.nasus.top
+ * @document https://wiki.nasus.top
+ * @contact  xupengfei@xupengfei.net
+ * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ */
 use Hyperf\HttpServer\Router\Router;
+
+Router::post('/login', 'SystemBundle\Controller\Backend\LoginController@actionLogin', [
+    'alias' => 'app.system.login',
+    'name' => '登录',
+]);
+
+Router::get('/info', 'SystemBundle\Controller\Backend\LoginController@actionInfo', [
+    'alias' => 'app.system.info',
+    'name' => '详情',
+    'middleware' => [
+        \SystemBundle\Middleware\BackendTokenMiddleware::class,
+    ],
+]);
+
+Router::post('/logout', 'SystemBundle\Controller\Backend\LoginController@actionLogout', [
+    'alias' => 'app.system.logout',
+    'name' => '退出',
+    'middleware' => [
+        \SystemBundle\Middleware\BackendTokenMiddleware::class,
+    ],
+]);
 
 Router::addGroup('/system/auth', function () {
     Router::get('/menu/enum/menu_type', 'SystemBundle\Controller\Backend\SystemMenuController@actionEnumMenuType', [
@@ -56,4 +87,8 @@ Router::addGroup('/system/auth', function () {
         'alias' => 'app.system.user.delete',
         'name' => '删除用户',
     ]);
-});
+}, [
+    'middleware' => [
+        \SystemBundle\Middleware\BackendTokenMiddleware::class,
+    ],
+]);
