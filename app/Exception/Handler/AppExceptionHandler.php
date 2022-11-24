@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Exception\Handler;
 
 use App\Constants\ErrorCode;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -20,7 +19,6 @@ use Hyperf\HttpMessage\Base\Response;
 use Hyperf\HttpMessage\Exception\HttpException;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -37,7 +35,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger = $this->loggerFactory->get('default');
     }
 
-    public function handle(Throwable $throwable, ResponseInterface $response)
+    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         $response = $response->withAddedHeader('content-type', 'application/json; charset=utf-8');
         $code = $throwable->getCode();
@@ -55,7 +53,7 @@ class AppExceptionHandler extends ExceptionHandler
         ];
 
         $responseBody = new SwooleStream(json_encode($responseData));
-        if (in_array(ApplicationContext::getContainer()->get(ConfigInterface::class)->get('app_env', 'dev'), ['dev', 'test'])) {
+        if (in_array(config('app_env', 'dev'), ['dev', 'test'])) {
             $responseData['trace'] = explode("\n", $this->formatter->format($throwable));
             $responseBody = new SwooleStream(json_encode($responseData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
