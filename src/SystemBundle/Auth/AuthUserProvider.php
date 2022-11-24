@@ -95,5 +95,4 @@ class AuthUserProvider extends UserProvider
         }
         return true;
     }
-
 }

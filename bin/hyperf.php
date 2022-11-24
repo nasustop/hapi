@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * This file is part of HapiBase.
+ * This file is part of Hapi.
  *
  * @link     https://www.nasus.top
  * @document https://wiki.nasus.top

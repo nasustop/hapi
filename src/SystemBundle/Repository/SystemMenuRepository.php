@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of HapiBase.
+ * This file is part of Hapi.
  *
  * @link     https://www.nasus.top
  * @document https://wiki.nasus.top
@@ -100,6 +100,7 @@ class SystemMenuRepository extends Repository
 
     /**
      * 根据某个父节点获取它的所有子节点集合.
+     * @param mixed $parent
      */
     protected function findTreeByParent($parent, array $all_data = [], array $menu_ids = [], array &$list = []): array
     {

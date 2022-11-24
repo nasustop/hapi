@@ -25,7 +25,6 @@ class SystemLoginTest extends HttpTestCase
         $this->assertTrue(isset($response['code']) && $response['code'] === 0);
         echo "\n登录token\n";
         var_dump($response['data']);
-
     }
 
     public function testLogout()
