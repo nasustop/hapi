@@ -12,7 +12,7 @@ declare(strict_types=1);
 return [
     'backend' => [
         'provider' => \SystemBundle\Auth\AuthUserProvider::class,
-        'cache' => 'default',
+        'cache' => 'memcached',
         'support_admin_user' => env('BACKEND_SUPPORT_ADMIN_USER', ''),
         'jwt' => [
             'alg' => env('JWT_ALG', 'HS256'),
