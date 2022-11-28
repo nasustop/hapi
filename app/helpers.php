@@ -33,6 +33,20 @@ if (! function_exists('redis')) {
     }
 }
 
+if (! function_exists('memcached')) {
+    /**
+     * 获取memcached连接.
+     */
+    function memcached(string $pool = 'default'): Nasustop\HapiBase\Memcached\MemcachedProxy
+    {
+        try {
+            return container()->get(\Nasustop\HapiBase\Memcached\MemcachedFactory::class)->get($pool);
+        } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
+            return make(\Nasustop\HapiBase\Memcached\MemcachedFactory::class)->get($pool);
+        }
+    }
+}
+
 if (! function_exists('cache')) {
     /**
      * 获取cache.
