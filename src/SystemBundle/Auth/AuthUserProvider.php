@@ -45,10 +45,10 @@ class AuthUserProvider extends UserProvider
     {
         $validatorFactory = $this->container->get(ValidatorFactoryInterface::class);
         $validator = $validatorFactory->make($inputData, [
-            'user_name' => 'required',
+            'username' => 'required',
             'password' => 'required',
         ], [
-            'user_name.*' => '请填写登录账号',
+            'username.*' => '请填写登录账号',
             'password.*' => '请填写密码',
         ]);
         if ($validator->fails()) {
@@ -57,9 +57,9 @@ class AuthUserProvider extends UserProvider
         $service = $this->container->get(SystemUserService::class);
         $userInfo = $service->getRepository()->getInfo([
             [
-                ['login_name' => $inputData['user_name']],
+                ['login_name' => $inputData['username']],
                 'or',
-                ['mobile' => $inputData['user_name']],
+                ['mobile' => $inputData['username']],
             ],
         ]);
         if (empty($userInfo)) {
