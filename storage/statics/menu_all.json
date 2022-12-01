@@ -1,0 +1,74 @@
+[
+    {
+        "menu_id": 1,
+        "parent_id": 0,
+        "menu_name": "系统设置",
+        "menu_alias": "app.system",
+        "sort": 999,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": null,
+        "created_at": "2022-09-05 14:48:39",
+        "updated_at": "2022-09-05 14:48:39"
+    },
+    {
+        "menu_id": 2,
+        "parent_id": 1,
+        "menu_name": "菜单设置",
+        "menu_alias": "app.system.menu",
+        "sort": 1,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": "[\"app.system.menu.enum.menu_type\", \"app.system.menu.list\", \"app.system.menu.create\", \"app.system.menu.update\", \"app.system.menu.delete\"]",
+        "created_at": "2022-09-05 14:48:59",
+        "updated_at": "2022-09-05 14:48:59"
+    },
+    {
+        "menu_id": 3,
+        "parent_id": 1,
+        "menu_name": "角色设置",
+        "menu_alias": "app.system.role",
+        "sort": 2,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": "[\"app.system.menu.enum.role_type\", \"app.system.role.list\", \"app.system.role.create\", \"app.system.role.update\", \"app.system.role.delete\"]",
+        "created_at": "2022-09-05 14:49:12",
+        "updated_at": "2022-09-05 14:49:12"
+    },
+    {
+        "menu_id": 4,
+        "parent_id": 1,
+        "menu_name": "用户设置",
+        "menu_alias": "app.system.user",
+        "sort": 3,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": "[\"app.system.user.enum.user_type\", \"app.system.user.list\", \"app.system.user.create\", \"app.system.user.update\", \"app.system.user.delete\"]",
+        "created_at": "2022-09-05 14:49:30",
+        "updated_at": "2022-09-05 14:49:30"
+    },
+    {
+        "menu_id": 5,
+        "parent_id": 1,
+        "menu_name": "素材管理",
+        "menu_alias": "app.system.uploads",
+        "sort": 4,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": null,
+        "created_at": "2022-11-30 18:33:05",
+        "updated_at": "2022-11-30 18:33:05"
+    },
+    {
+        "menu_id": 6,
+        "parent_id": 1,
+        "menu_name": "操作日志",
+        "menu_alias": "app.system.backend.log",
+        "sort": 5,
+        "is_show": 1,
+        "menu_type": "menu",
+        "apis": null,
+        "created_at": "2022-11-30 18:33:32",
+        "updated_at": "2022-11-30 18:33:32"
+    }
+]
