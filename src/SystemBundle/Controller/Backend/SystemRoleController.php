@@ -90,8 +90,8 @@ class SystemRoleController extends AbstractController
     public function actionList(): ResponseInterface
     {
         $filter = $this->request->all();
-        $page = $this->request->input('page', 1);
-        $page_size = $this->request->input('page_size', 20);
+        $page = (int) $this->request->input('page', 1);
+        $page_size = (int) $this->request->input('page_size', 20);
         $result = $this->service->pageRoleLists($filter, '*', $page, $page_size);
 
         return $this->response->success($result);

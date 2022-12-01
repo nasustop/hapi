@@ -59,6 +59,31 @@ class SystemMenuRepository extends Repository
         return self::ENUM_MENU_TYPE_DEFAULT;
     }
 
+    public function setColumnData(array $data): array
+    {
+        if (empty($this->getCols())) {
+            return $data;
+        }
+
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (! in_array($key, $this->getCols())) {
+                continue;
+            }
+            if ($key === 'apis') {
+                if (empty($value)) {
+                    $result[$key] = null;
+                } else {
+                    $result[$key] = json_encode(explode("\n", $value));
+                }
+                continue;
+            }
+            $result[$key] = $value;
+        }
+
+        return $result;
+    }
+
     /**
      * @return array ['tree' => "array", 'list' => "array", 'total' => "int"]
      */
@@ -100,11 +125,13 @@ class SystemMenuRepository extends Repository
 
     /**
      * 根据某个父节点获取它的所有子节点集合.
-     * @param mixed $parent
      */
-    protected function findTreeByParent($parent, array $all_data = [], array $menu_ids = [], array &$list = []): array
+    protected function findTreeByParent(array $parent, array $all_data = [], array $menu_ids = [], array &$list = []): array
     {
         if (empty($parent)) {
+            return [];
+        }
+        if (empty($menu_ids)) {
             return [];
         }
         if (empty($all_data)) {
@@ -126,9 +153,6 @@ class SystemMenuRepository extends Repository
             $parent['children'][] = $children;
         }
         $parent['has_children'] = isset($parent['children']);
-        if (empty($menu_ids)) {
-            return [];
-        }
         $listItem = $parent;
         $listItem['apis'] = explode("\n", $listItem['apis']);
         if ($parent['has_children']) {
