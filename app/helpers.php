@@ -28,7 +28,7 @@ if (! function_exists('redis')) {
         try {
             return container()->get(Hyperf\Redis\RedisFactory::class)->get($pool);
         } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
-            return make(\Hyperf\Redis\RedisFactory::class, [container()->get(\Hyperf\Contract\ConfigInterface::class)])->get($pool);
+            return make(\Hyperf\Redis\RedisFactory::class)->get($pool);
         }
     }
 }
@@ -56,10 +56,7 @@ if (! function_exists('cache')) {
         try {
             return container()->get(Hyperf\Cache\CacheManager::class)->getDriver($driver);
         } catch (Psr\Container\NotFoundExceptionInterface|Psr\Container\ContainerExceptionInterface $e) {
-            return make(\Hyperf\Cache\CacheManager::class, [
-                container()->get(\Hyperf\Contract\ConfigInterface::class),
-                container()->get(\Hyperf\Contract\StdoutLoggerInterface::class),
-            ])->getDriver($driver);
+            return make(\Hyperf\Cache\CacheManager::class)->getDriver($driver);
         }
     }
 }
@@ -73,11 +70,33 @@ if (! function_exists('logger')) {
         try {
             return container()->get(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
         } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
-            return make(\Hyperf\Logger\LoggerFactory::class, [
-                container(),
-                container()->get(\Hyperf\Contract\ConfigInterface::class),
-            ])->get($name, $group);
+            return make(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
         }
+    }
+}
+
+if (! function_exists('pushQueue')) {
+    /**
+     * 触发队列任务.
+     */
+    function pushQueue(Nasustop\HapiBase\Queue\Job\JobInterface $job)
+    {
+        (new \Nasustop\HapiBase\Queue\Producer($job))->onQueue($job->getQueue())->dispatcher();
+    }
+}
+
+if (! function_exists('event')) {
+    /**
+     * 触发event事件.
+     */
+    function event(object $event)
+    {
+        try {
+            $eventDispatcher = container()->get(\Hyperf\Event\EventDispatcher::class);
+        } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
+            $eventDispatcher = make(\Hyperf\Event\EventDispatcher::class);
+        }
+        $eventDispatcher->dispatch($event);
     }
 }
 
