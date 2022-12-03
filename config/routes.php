@@ -19,4 +19,8 @@ use Hyperf\HttpServer\Router\Router;
 
 Router::addGroup('/api/backend', function () {
     loadDirFiles(BASE_PATH . '/routes/backend');
-});
+}, [
+    'middleware' => [
+        \SystemBundle\Middleware\SystemOperationLogMiddleware::class,
+    ],
+]);

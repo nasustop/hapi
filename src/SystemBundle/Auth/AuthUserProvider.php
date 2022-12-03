@@ -109,6 +109,19 @@ class AuthUserProvider extends UserProvider
         return true;
     }
 
+    public function validateToken(array $payload): array
+    {
+        if (empty($payload['id'])) {
+            return [];
+        }
+        $user = cache($this->getCacheDriver())->get((string) $payload['id']);
+        if (empty($user)) {
+            return [];
+        }
+        $user['id'] = $payload['id'];
+        return $user;
+    }
+
     protected function getCacheDriver()
     {
         return config(sprintf('auth.%s.cache', $this->guard), 'default');

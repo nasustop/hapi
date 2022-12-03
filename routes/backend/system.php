@@ -100,6 +100,11 @@ Router::addGroup('/system', function () {
         'alias' => 'app.system.image.delete',
         'name' => '删除图片',
     ]);
+
+    Router::get('/operation_log/list', 'SystemBundle\Controller\Backend\SystemOperationLogController@actionList', [
+        'alias' => 'app.system.operation_log.list',
+        'name' => '日志列表',
+    ]);
 }, [
     'middleware' => [
         \SystemBundle\Middleware\BackendTokenMiddleware::class,
