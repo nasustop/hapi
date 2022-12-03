@@ -89,9 +89,7 @@ class SystemMenuRepository extends Repository
      */
     public function findTreeByMenuIds(array $menu_ids = []): array
     {
-        $filter = [
-            'is_show' => 1,
-        ];
+        $filter = [];
         $all_data = $this->getLists($filter, '*', 0, 0, ['parent_id' => 'asc', 'sort' => 'asc']);
         $tree = []; // 顶级菜单
         $list = []; // 所有菜单列表
@@ -135,9 +133,7 @@ class SystemMenuRepository extends Repository
             return [];
         }
         if (empty($all_data)) {
-            $filter = [
-                'is_show' => 1,
-            ];
+            $filter = [];
             $all_data = $this->getLists($filter, '*', 0, 0, ['parent_id' => 'asc', 'sort' => 'asc']);
         }
         foreach ($all_data as $value) {
