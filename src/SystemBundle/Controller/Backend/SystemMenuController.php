@@ -25,7 +25,7 @@ class SystemMenuController extends AbstractController
     public function actionEnumMenuType(): ResponseInterface
     {
         $data = $this->service->getRepository()->enumMenuType();
-        return $this->response->success([
+        return $this->response->success(data: [
             'default' => $this->service->getRepository()->enumMenuTypeDefault(),
             'list' => $data,
         ]);
@@ -51,15 +51,15 @@ class SystemMenuController extends AbstractController
             'is_show.required' => 'is_show 参数必填',
             'menu_type.required' => 'menu_type 参数必填',
         ];
-        $validator = $this->validatorFactory->make($params, $rules, $messages);
+        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException($validator->errors()->first());
         }
 
-        $result = $this->service->saveData($params);
+        $result = $this->service->saveData(data: $params);
 
-        return $this->response->success($result);
+        return $this->response->success(data: $result);
     }
 
     public function actionUpdate(): ResponseInterface
@@ -75,29 +75,29 @@ class SystemMenuController extends AbstractController
             'filter.array' => 'filter 参数错误，必须是数组格式',
             'params.array' => 'params 参数错误，必须是数组格式',
         ];
-        $validator = $this->validatorFactory->make($params, $rules, $messages);
+        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException($validator->errors()->first());
         }
 
-        $result = $this->service->updateOneBy($params['filter'], $params['params']);
+        $result = $this->service->updateOneBy(filter: $params['filter'], data: $params['params']);
 
-        return $this->response->success($result);
+        return $this->response->success(data: $result);
     }
 
     public function actionDelete(): ResponseInterface
     {
         $filter = $this->request->all();
-        $result = $this->service->deleteOneBy($filter);
+        $result = $this->service->deleteOneBy(filter: $filter);
 
-        return $this->response->success($result);
+        return $this->response->success(data: $result);
     }
 
     public function actionList(): ResponseInterface
     {
         $result = $this->service->getRepository()->findTreeByMenuIds();
 
-        return $this->response->success($result);
+        return $this->response->success(data: $result);
     }
 }

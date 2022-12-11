@@ -37,7 +37,7 @@ class LoginController extends AbstractController
     {
         $inputData = $this->request->all();
         $auth = $this->container->get(AuthManagerFactory::class);
-        $token = $auth->guard('backend')->attempt($inputData);
+        $token = $auth->guard(guard: 'backend')->attempt(inputData: $inputData);
         return $this->response->success([
             'token' => $token,
         ]);
@@ -57,7 +57,7 @@ class LoginController extends AbstractController
         if (! $authInfo['is_support_user'] && empty($menu_ids)) {
             throw new UnauthorizedHttpException('当前账号没有配置后台管理权限,请联系管理员');
         }
-        $menuData = $this->menuService->getRepository()->findTreeByMenuIds($menu_ids);
+        $menuData = $this->menuService->getRepository()->findTreeByMenuIds(menu_ids: $menu_ids);
         $result['menu_alias'] = array_values(array_filter(array_unique(array_column($menuData['list'] ?? [], 'menu_alias'))));
         return $this->response->success($result);
     }

@@ -71,24 +71,24 @@ class AuthUserProvider extends UserProvider
         }
         unset($userInfo['password']);
         // 验证状态
-        $service->getRepository()->validateUserStatus($userInfo['user_status']);
+        $service->getRepository()->validateUserStatus(user_status: $userInfo['user_status']);
 
         // support admin user
         $support_admin_user = config(sprintf('auth.%s.support_admin_user', $this->guard), '');
         $support_admin_user = explode(',', $support_admin_user);
         $userInfo['is_support_user'] = ! empty($userInfo['user_id']) && in_array($userInfo['user_id'], $support_admin_user);
 
-        $cacheUserIdKey = $this->getCacheUserIdKey($userInfo['user_id']);
-        $cacheSnowflakeId = cache($this->getCacheDriver())->get($cacheUserIdKey);
+        $cacheUserIdKey = $this->getCacheUserIdKey(user_id: $userInfo['user_id']);
+        $cacheSnowflakeId = cache($this->getCacheDriver())->get(key: $cacheUserIdKey);
         if (empty($cacheSnowflakeId)) {
             // generate snowflake id
-            $generator = $this->container->get(IdGeneratorInterface::class);
+            $generator = $this->container->get(id: IdGeneratorInterface::class);
             $cacheSnowflakeId = $generator->generate();
         }
 
         $exp = (int) config(sprintf('auth.%s.jwt.exp', $this->guard), 7200);
-        cache($this->getCacheDriver())->set((string) $cacheSnowflakeId, $userInfo, config(sprintf('auth.%s.jwt.exp', $this->guard), $exp));
-        cache($this->getCacheDriver())->set($cacheUserIdKey, $cacheSnowflakeId, $exp);
+        cache($this->getCacheDriver())->set(key: (string) $cacheSnowflakeId, value: $userInfo, ttl: config(sprintf('auth.%s.jwt.exp', $this->guard), $exp));
+        cache($this->getCacheDriver())->set(key: $cacheUserIdKey, value: $cacheSnowflakeId, ttl: $exp);
 
         return ['id' => $cacheSnowflakeId];
     }
@@ -99,12 +99,12 @@ class AuthUserProvider extends UserProvider
     public function logout(array $payload): bool
     {
         if (! empty($payload['id'])) {
-            $userInfo = cache($this->getCacheDriver())->get((string) $payload['id']);
+            $userInfo = cache($this->getCacheDriver())->get(key: (string) $payload['id']);
             if (! empty($userInfo['user_id'])) {
-                $cacheUserIdKey = $this->getCacheUserIdKey($userInfo['user_id']);
-                cache($this->getCacheDriver())->delete($cacheUserIdKey);
+                $cacheUserIdKey = $this->getCacheUserIdKey(user_id: $userInfo['user_id']);
+                cache($this->getCacheDriver())->delete(key: $cacheUserIdKey);
             }
-            cache($this->getCacheDriver())->delete((string) $payload['id']);
+            cache($this->getCacheDriver())->delete(key: (string) $payload['id']);
         }
         return true;
     }
@@ -114,7 +114,7 @@ class AuthUserProvider extends UserProvider
         if (empty($payload['id'])) {
             return [];
         }
-        $user = cache($this->getCacheDriver())->get((string) $payload['id']);
+        $user = cache($this->getCacheDriver())->get(key: (string) $payload['id']);
         if (empty($user)) {
             return [];
         }
@@ -127,7 +127,7 @@ class AuthUserProvider extends UserProvider
         return config(sprintf('auth.%s.cache', $this->guard), 'default');
     }
 
-    protected function getCacheUserIdKey($user_id): string
+    protected function getCacheUserIdKey(int $user_id): string
     {
         return sprintf('auth:user_id:%s', $user_id);
     }
