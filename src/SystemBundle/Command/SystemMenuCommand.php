@@ -35,6 +35,8 @@ class SystemMenuCommand extends HyperfCommand
         $this->setDescription('管理后台菜单的导入导出');
         $this->addOption('action', '', InputOption::VALUE_REQUIRED, '操作');
         $this->addOption('menu_version', '', InputOption::VALUE_OPTIONAL, 'menu_version', 'all');
+        $this->addUsage('--action export');
+        $this->addUsage('--action upload');
     }
 
     /**

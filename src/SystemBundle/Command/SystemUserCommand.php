@@ -40,10 +40,9 @@ class SystemUserCommand extends HyperfCommand
         parent::configure();
         $this->setDescription('系统管理员相关操作');
         $this->addOption('action', '', InputOption::VALUE_REQUIRED, '操作');
-        $this->addOption('user_id', '', InputOption::VALUE_OPTIONAL, 'user_id');
-        $this->addOption('login_name', '', InputOption::VALUE_OPTIONAL, 'login_name');
-        $this->addOption('mobile', '', InputOption::VALUE_OPTIONAL, 'mobile');
-        $this->addOption('password', '', InputOption::VALUE_OPTIONAL, 'password');
+        $this->addUsage('--action info');
+        $this->addUsage('--action create');
+        $this->addUsage('--action passwd');
     }
 
     /**
@@ -74,7 +73,7 @@ class SystemUserCommand extends HyperfCommand
      */
     public function getInfo(): bool
     {
-        $user_id = $this->input->getOption('user_id');
+        $user_id = $this->ask('请输入 user_id ');
         if (empty($user_id)) {
             $this->error('user_id 不能为空');
             return false;
@@ -88,17 +87,17 @@ class SystemUserCommand extends HyperfCommand
 
     public function createUser()
     {
-        $login_name = $this->input->getOption('login_name');
+        $login_name = $this->ask('请输入 login_name ');
         if (empty($login_name)) {
             $this->error('login_name 不能为空');
             return false;
         }
-        $mobile = $this->input->getOption('mobile');
+        $mobile = $this->ask('请输入 mobile ');
         if (empty($mobile)) {
             $this->error('mobile 不能为空');
             return false;
         }
-        $password = $this->input->getOption('password');
+        $password = $this->ask('请输入 passwd ');
         if (empty($password)) {
             $this->error('password 不能为空');
             return false;
@@ -129,12 +128,12 @@ class SystemUserCommand extends HyperfCommand
      */
     public function passwd(): bool
     {
-        $user_id = $this->input->getOption('user_id');
+        $user_id = $this->ask('请输入 user_id ');
         if (empty($user_id)) {
             $this->error('user_id 不能为空');
             return false;
         }
-        $password = $this->input->getOption('password');
+        $password = $this->ask('请输入 password ');
         if (empty($password)) {
             $this->error('password 不能为空');
             return false;
