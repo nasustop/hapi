@@ -18,37 +18,27 @@ use Hyperf\Constants\Annotation\Constants;
 class ErrorCode extends AbstractConstants
 {
     /**
-     * @Message("Success.")
+     * @Message("Server exception or undefined error")
      */
-    public const SUCCESS = 200;
+    public const SERVER_ERROR = -1;
 
     /**
-     * @Message("Bad Request！")
+     * @Message("Success!")
      */
-    public const BAD_REQUEST = 400;
+    public const SUCCESS = 0;
 
     /**
-     * @Message("Unauthorized! ")
+     * @Message("token expired!")
      */
-    public const UNAUTHORIZED = 401;
+    public const TOKEN_EXPIRED = 40101;
 
     /**
-     * @Message("Forbidden! ")
+     * @Message("token error!")
      */
-    public const FORBIDDEN = 403;
+    public const TOKEN_ERROR = 40102;
 
     /**
-     * @Message("Not Found! ")
+     * @Message("The current operation is prohibited!")
      */
-    public const NOT_FOUND = 404;
-
-    /**
-     * @Message("Method Not Allowed! ")
-     */
-    public const METHOD_NOT_ALLOWED = 405;
-
-    /**
-     * @Message("Server Error！")
-     */
-    public const SERVER_ERROR = 500;
+    public const TOKEN_FORBIDDEN = 40103;
 }
