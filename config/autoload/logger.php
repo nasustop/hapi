@@ -13,6 +13,7 @@ return [
     'default' => [
         'handler' => [
             'class' => Monolog\Handler\StreamHandler::class,
+            # 'class' => Monolog\Handler\RotatingFileHandler::class,
             'constructor' => [
                 'stream' => BASE_PATH . '/runtime/logs/hapi.log',
                 'level' => Monolog\Logger::DEBUG,
