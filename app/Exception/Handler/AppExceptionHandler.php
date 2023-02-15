@@ -15,7 +15,6 @@ use App\Constants\ErrorCode;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
-use Hyperf\HttpMessage\Base\Response;
 use Hyperf\HttpMessage\Exception\HttpException;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
@@ -39,8 +38,10 @@ class AppExceptionHandler extends ExceptionHandler
     {
         $response = $response->withAddedHeader('content-type', 'application/json; charset=utf-8');
         $code = $throwable->getCode();
-        if (empty($code) && $throwable instanceof HttpException) {
-            $code = $throwable->getStatusCode();
+        if (empty($code)) {
+            if ($throwable instanceof HttpException) {
+                $code = $throwable->getStatusCode();
+            }
         }
         if (empty($code)) {
             $code = ErrorCode::SERVER_ERROR;
@@ -64,9 +65,6 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->logger->error($throwable->getTraceAsString());
 
-        if (! empty(Response::getReasonPhraseByCode($code))) {
-            $response = $response->withStatus($code);
-        }
         return $response->withBody($responseBody);
     }
 

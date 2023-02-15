@@ -13,6 +13,7 @@ namespace App\Exception;
 
 use App\Constants\ErrorCode;
 use Hyperf\HttpMessage\Exception\HttpException;
+use Swoole\Http\Status;
 use Throwable;
 
 class BusinessException extends HttpException
@@ -23,6 +24,6 @@ class BusinessException extends HttpException
             $message = ErrorCode::getMessage($code);
         }
 
-        parent::__construct(ErrorCode::SUCCESS, $message, $code, $previous);
+        parent::__construct(Status::OK, $message, $code, $previous);
     }
 }

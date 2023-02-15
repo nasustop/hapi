@@ -11,8 +11,6 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Service;
 
-use App\Constants\ErrorCode;
-use App\Exception\BusinessException;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Hyperf\HttpMessage\Exception\ServerErrorHttpException;
@@ -62,7 +60,7 @@ class SystemUploadImageService
             throw new ServerErrorHttpException(sprintf('[%s]存储容器配置不存在', $storage));
         }
         if ($file->getSize() <= 0) {
-            throw new BusinessException(ErrorCode::BAD_REQUEST, '图片上传失败');
+            throw new BadRequestHttpException('图片上传失败');
         }
 
         $img_size = $file->getSize();

@@ -11,12 +11,11 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Middleware;
 
+use App\Exception\Token\TokenErrorException;
+use App\Exception\Token\TokenExpiredException;
 use Firebase\JWT\ExpiredException;
-use Hyperf\HttpMessage\Exception\UnauthorizedHttpException;
 use Nasustop\HapiBase\Auth\AuthManagerFactory;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -29,23 +28,18 @@ class BackendTokenMiddleware implements MiddlewareInterface
     {
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Throwable
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             $authManage = $this->container->get(AuthManagerFactory::class);
-            $user = $authManage->guard('backend')->user();
-            $request = $request->withAttribute('auth', $user);
+            $user = $authManage->guard(guard: 'backend')->user();
         } catch (Throwable $exception) {
             if ($exception instanceof ExpiredException) {
-                throw new UnauthorizedHttpException($exception->getMessage());
+                throw new TokenExpiredException(message: $exception->getMessage(), previous: $exception);
             }
-            throw $exception;
+            throw new TokenErrorException(message: $exception->getMessage(), previous: $exception);
         }
+        $request = $request->withAttribute('auth', $user);
 
         return $handler->handle($request);
     }
