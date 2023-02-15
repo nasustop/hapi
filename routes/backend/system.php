@@ -16,6 +16,11 @@ Router::post('/login', 'SystemBundle\Controller\Backend\LoginController@actionLo
     'name' => '登录',
 ]);
 
+Router::post('/refresh', 'SystemBundle\Controller\Backend\LoginController@actionRefresh', [
+    'alias' => 'app.system.refresh',
+    'name' => '刷新登录凭据',
+]);
+
 Router::get('/info', 'SystemBundle\Controller\Backend\LoginController@actionInfo', [
     'alias' => 'app.system.info',
     'name' => '详情',
@@ -104,6 +109,27 @@ Router::addGroup('/system', function () {
     Router::get('/operation_log/list', 'SystemBundle\Controller\Backend\SystemOperationLogController@actionList', [
         'alias' => 'app.system.operation_log.list',
         'name' => '日志列表',
+    ]);
+
+    Router::get('/wechat/setting/enum/driver', 'SystemBundle\Controller\Backend\SystemWechatController@actionEnumDriver', [
+        'alias' => 'app.system.wechat.enum.driver',
+        'name' => '微信账号类型',
+    ]);
+    Router::get('/wechat/setting/list', 'SystemBundle\Controller\Backend\SystemWechatController@actionList', [
+        'alias' => 'app.system.wechat.list',
+        'name' => '微信配置列表',
+    ]);
+    Router::post('/wechat/setting/create', 'SystemBundle\Controller\Backend\SystemWechatController@actionCreate', [
+        'alias' => 'app.system.wechat.create',
+        'name' => '添加微信配置',
+    ]);
+    Router::post('/wechat/setting/update', 'SystemBundle\Controller\Backend\SystemWechatController@actionUpdate', [
+        'alias' => 'app.system.wechat.update',
+        'name' => '微信配置用户',
+    ]);
+    Router::post('/wechat/setting/delete', 'SystemBundle\Controller\Backend\SystemWechatController@actionDelete', [
+        'alias' => 'app.system.wechat.delete',
+        'name' => '微信配置用户',
     ]);
 }, [
     'middleware' => [

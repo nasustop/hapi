@@ -72,4 +72,17 @@ class LoginController extends AbstractController
         $status = $auth->guard('backend')->logout();
         return $this->response->success($status);
     }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function actionRefresh(): ResponseInterface
+    {
+        $auth = $this->container->get(AuthManagerFactory::class);
+        $token = $auth->guard(guard: 'backend')->refresh();
+        return $this->response->success([
+            'token' => $token,
+        ]);
+    }
 }
