@@ -1,6 +1,13 @@
 #!/usr/bin/env php
 <?php
-
+/**
+ * This file is part of Hapi.
+ *
+ * @link     https://www.nasus.top
+ * @document https://wiki.nasus.top
+ * @contact  xupengfei@xupengfei.net
+ * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ */
 ini_set('display_errors', 'on');
 ini_set('display_startup_errors', 'on');
 ini_set('memory_limit', '1G');
