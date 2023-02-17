@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hapi.
+ * This file is part of Hyperf.
  *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 return [
     'scan' => [
         'paths' => [
             BASE_PATH . '/app',
-            BASE_PATH . '/src',
         ],
         'ignore_annotations' => [
             'mixin',

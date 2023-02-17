@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hapi.
+ * This file is part of Hyperf.
  *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 namespace App\Constants;
 
@@ -18,27 +18,7 @@ use Hyperf\Constants\Annotation\Constants;
 class ErrorCode extends AbstractConstants
 {
     /**
-     * @Message("Server exception or undefined error")
+     * @Message("Server Error！")
      */
-    public const SERVER_ERROR = -1;
-
-    /**
-     * @Message("Success!")
-     */
-    public const SUCCESS = 0;
-
-    /**
-     * @Message("token expired!")
-     */
-    public const TOKEN_EXPIRED = 40101;
-
-    /**
-     * @Message("token error!")
-     */
-    public const TOKEN_ERROR = 40102;
-
-    /**
-     * @Message("The current operation is prohibited!")
-     */
-    public const TOKEN_FORBIDDEN = 40103;
+    public const SERVER_ERROR = 500;
 }

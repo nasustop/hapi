@@ -2,28 +2,27 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hapi.
+ * This file is part of Hyperf.
  *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 namespace App\Exception;
 
 use App\Constants\ErrorCode;
-use Hyperf\HttpMessage\Exception\HttpException;
-use Swoole\Http\Status;
+use Hyperf\Server\Exception\ServerException;
 use Throwable;
 
-class BusinessException extends HttpException
+class BusinessException extends ServerException
 {
     public function __construct(int $code = 0, string $message = null, Throwable $previous = null)
     {
-        if (empty($message)) {
+        if (is_null($message)) {
             $message = ErrorCode::getMessage($code);
         }
 
-        parent::__construct(Status::OK, $message, $code, $previous);
+        parent::__construct($message, $code, $previous);
     }
 }

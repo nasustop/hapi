@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hapi.
+ * This file is part of Hyperf.
  *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 use Hyperf\Server\Event;
 use Hyperf\Server\Server;
@@ -30,7 +30,7 @@ return [
     'settings' => [
         Constant::OPTION_ENABLE_COROUTINE => true,
         Constant::OPTION_WORKER_NUM => swoole_cpu_num(),
-        Constant::OPTION_PID_FILE => BASE_PATH . '/runtime/hapi.pid',
+        Constant::OPTION_PID_FILE => BASE_PATH . '/runtime/hyperf.pid',
         Constant::OPTION_OPEN_TCP_NODELAY => true,
         Constant::OPTION_MAX_COROUTINE => 100000,
         Constant::OPTION_OPEN_HTTP2_PROTOCOL => true,

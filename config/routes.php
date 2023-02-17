@@ -2,25 +2,17 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hapi.
+ * This file is part of Hyperf.
  *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 use Hyperf\HttpServer\Router\Router;
 
-// Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
-//
-// Router::get('/favicon.ico', function () {
-//    return '';
-// });
+Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
 
-Router::addGroup('/api/backend', function () {
-    loadDirFiles(BASE_PATH . '/routes/backend');
-}, [
-    'middleware' => [
-        \SystemBundle\Middleware\SystemOperationLogMiddleware::class,
-    ],
-]);
+Router::get('/favicon.ico', function () {
+    return '';
+});
