@@ -23,4 +23,18 @@ class IndexController extends AbstractController
             'message' => "Hello {$user}.",
         ];
     }
+
+    public function testMemcached()
+    {
+        $input = $this->request->all();
+        memcached()->set($input['key'] ?? 'key', $input['value'] ?? 'value');
+        var_dump(memcached()->get($input['key'] ?? 'key'));
+        $keys = memcached()->getAllKeys();
+        var_dump($keys);
+        foreach ($keys as $key) {
+            $msg = sprintf("key %s, value %s.\n", $key, memcached()->get($key));
+            var_dump($msg);
+        }
+        return $this->response->json(['code' => 0]);
+    }
 }
