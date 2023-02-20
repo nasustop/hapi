@@ -14,6 +14,7 @@ namespace App\Controller;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Psr\Container\ContainerInterface;
 
 abstract class AbstractController
@@ -26,4 +27,7 @@ abstract class AbstractController
 
     #[Inject]
     protected ResponseInterface $response;
+
+    #[Inject]
+    protected ValidatorFactoryInterface $validatorFactory;
 }

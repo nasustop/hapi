@@ -21,4 +21,24 @@ class ErrorCode extends AbstractConstants
      * @Message("Server Error！")
      */
     public const SERVER_ERROR = 500;
+
+    /**
+     * @Message("Success!")
+     */
+    public const SUCCESS = 0;
+
+    /**
+     * @Message("token expired!")
+     */
+    public const TOKEN_EXPIRED = 40101;
+
+    /**
+     * @Message("token error!")
+     */
+    public const TOKEN_ERROR = 40102;
+
+    /**
+     * @Message("The current operation is prohibited!")
+     */
+    public const TOKEN_FORBIDDEN = 40103;
 }

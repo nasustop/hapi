@@ -9,8 +9,8 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
-return [
-    'http' => [
-        \App\Middleware\CorsMiddleware::class,
-    ],
-];
+namespace App\Repository;
+
+class Repository extends \Nasustop\HapiBase\Repository\Repository
+{
+}
