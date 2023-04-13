@@ -1,5 +1,5 @@
 {
-    "name": "hyperf/hyperf-skeleton",
+    "name": "nasustop/hapi",
     "type": "project",
     "keywords": [
         "php",
@@ -9,7 +9,7 @@
         "microservice",
         "middleware"
     ],
-    "description": "A coroutine framework that focuses on hyperspeed and flexible, specifically use for build microservices and middlewares.",
+    "description": "Hyperf Api Development Template",
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.0",
@@ -17,8 +17,11 @@
         "hyperf/command": "~3.0.0",
         "hyperf/config": "~3.0.0",
         "hyperf/constants": "~3.0.0",
+        "hyperf/crontab": "^3.0",
         "hyperf/database": "~3.0.0",
         "hyperf/db-connection": "~3.0.0",
+        "hyperf/filesystem": "~3.0.0",
+        "hyperf/flysystem-oss": "^1.2",
         "hyperf/framework": "~3.0.0",
         "hyperf/guzzle": "~3.0.0",
         "hyperf/http-server": "~3.0.0",
@@ -26,8 +29,18 @@
         "hyperf/memory": "~3.0.0",
         "hyperf/process": "~3.0.0",
         "hyperf/redis": "~3.0.0",
+        "hyperf/snowflake": "^3.0",
         "hyperf/validation": "~3.0.0",
-        "nasustop/hapi-memcached": "dev-master"
+        "league/flysystem-aws-s3-v3": "^2.0",
+        "league/flysystem-memory": "^2.0",
+        "nasustop/hapi-auth": "dev-master",
+        "nasustop/hapi-base": "dev-master",
+        "nasustop/hapi-memcached": "dev-master",
+        "nasustop/hapi-queue": "dev-master",
+        "nasustop/hapi-sidecar": "dev-master",
+        "overtrue/flysystem-cos": "^4.0",
+        "overtrue/flysystem-qiniu": "^2.0",
+        "sentry/sdk": "^3.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -43,7 +56,9 @@
         "ext-json": "Required to use JSON.",
         "ext-pdo": "Required to use MySQL Client.",
         "ext-pdo_mysql": "Required to use MySQL Client.",
-        "ext-redis": "Required to use Redis Client."
+        "ext-redis": "Required to use Redis Client.",
+        "ext-libxml": "*",
+        "ext-simplexml": "*"
     },
     "autoload": {
         "psr-4": {
@@ -63,7 +78,10 @@
     "prefer-stable": true,
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": [],
     "scripts": {
@@ -71,14 +89,21 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-autoload-dump": [
-            "rm -rf runtime/container"
+            "rm -rf runtime/container",
+            "rm -rf runtime/sidecar"
         ],
         "test": "co-phpunit --prepend test/bootstrap.php -c phpunit.xml --colors=always",
         "cs-fix": "php-cs-fixer fix $1",
-        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./app ./config",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./app ./config ./routes ./src",
         "start": [
             "Composer\\Config::disableProcessTimeout",
             "php ./bin/hyperf.php start"
         ]
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        }
     }
 }

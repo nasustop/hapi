@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace SystemBundle\Repository;
 
 use App\Repository\Repository;
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Model\SystemPowerModel;
 
 class SystemPowerRepository extends Repository
@@ -33,7 +32,6 @@ class SystemPowerRepository extends Repository
 
     public const ENUM_CHILDREN_TYPE_DEFAULT = self::ENUM_CHILDREN_TYPE_ROLE;
 
-    #[Inject]
     protected SystemPowerModel $model;
 
     public function __call($method, $parameters)
@@ -51,14 +49,14 @@ class SystemPowerRepository extends Repository
         return self::ENUM_PARENT_TYPE_DEFAULT;
     }
 
-    public function enumParentType(): array
+    public function enumChildrenType(): array
     {
-        return self::ENUM_PARENT_TYPE;
+        return self::ENUM_CHILDREN_TYPE;
     }
 
-    public function enumParentTypeDefault(): string
+    public function enumChildrenTypeDefault(): string
     {
-        return self::ENUM_PARENT_TYPE_DEFAULT;
+        return self::ENUM_CHILDREN_TYPE_DEFAULT;
     }
 
     /**
@@ -66,6 +64,9 @@ class SystemPowerRepository extends Repository
      */
     public function getModel(): SystemPowerModel
     {
+        if (empty($this->model)) {
+            $this->model = container()->get(SystemPowerModel::class);
+        }
         return $this->model;
     }
 }

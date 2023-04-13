@@ -12,19 +12,20 @@ declare(strict_types=1);
 namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemRoleService;
 
 class SystemRoleController extends AbstractController
 {
-    #[Inject]
     protected SystemRoleService $service;
 
+    /**
+     * @throws \Exception
+     */
     public function actionCreate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'role_name' => 'required',
@@ -34,28 +35,23 @@ class SystemRoleController extends AbstractController
             'role_name.required' => 'role_name 参数必填',
             'role_alias.required' => 'role_alias 参数必填',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->saveData(data: $params);
+        $result = $this->getService()->createRole(data: $params);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
-    public function actionInfo(): ResponseInterface
-    {
-        $filter = $this->request->all();
-        $result = $this->service->getInfo(filter: $filter);
-
-        return $this->response->success(data: $result);
-    }
-
+    /**
+     * @throws \Exception
+     */
     public function actionUpdate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'filter' => 'required|array',
@@ -73,32 +69,46 @@ class SystemRoleController extends AbstractController
             'params.role_name.required' => 'params.role_name 参数必填',
             'params.role_alias.required' => 'params.role_alias 参数必填',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateRole(filter: $params['filter'], data: $params['params']);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function actionDelete(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->deleteOneBy(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->deleteRole(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionList(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $page = (int) $this->request->input(key: 'page', default: 1);
-        $page_size = (int) $this->request->input(key: 'page_size', default: 20);
-        $result = $this->service->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
+        $filter = $this->getRequest()->all();
+        $page = (int) $this->getRequest()->input(key: 'page', default: 1);
+        $page_size = (int) $this->getRequest()->input(key: 'page_size', default: 20);
+        $result = $this->getService()->pageRoleLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
+    }
+
+    /**
+     * get Service.
+     */
+    protected function getService(): SystemRoleService
+    {
+        if (empty($this->service)) {
+            $this->service = $this->getContainer()->get(SystemRoleService::class);
+        }
+        return $this->service;
     }
 }

@@ -11,10 +11,16 @@ declare(strict_types=1);
  */
 use Hyperf\HttpServer\Router\Router;
 
-Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
+Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index', ['alias' => 'index']);
 
 Router::get('/favicon.ico', function () {
     return '';
 });
 
-Router::get('/test/memcached', 'App\Controller\IndexController@testMemcached');
+Router::addGroup('/api/backend', function () {
+    loadDirFiles(BASE_PATH . '/routes/backend');
+}, [
+    'middleware' => [
+        \SystemBundle\Middleware\SystemOperationLogMiddleware::class,
+    ],
+]);

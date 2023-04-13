@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Service;
 
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Repository\SystemWechatRepository;
 
 /**
@@ -29,7 +28,6 @@ use SystemBundle\Repository\SystemWechatRepository;
  */
 class SystemWechatService
 {
-    #[Inject]
     protected SystemWechatRepository $repository;
 
     public function __call($method, $parameters)
@@ -42,6 +40,9 @@ class SystemWechatService
      */
     public function getRepository(): SystemWechatRepository
     {
+        if (empty($this->repository)) {
+            $this->repository = container()->get(SystemWechatRepository::class);
+        }
         return $this->repository;
     }
 }

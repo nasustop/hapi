@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Service;
 
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Repository\SystemMenuRepository;
 
 /**
@@ -29,7 +28,6 @@ use SystemBundle\Repository\SystemMenuRepository;
  */
 class SystemMenuService
 {
-    #[Inject]
     protected SystemMenuRepository $repository;
 
     public function __call($method, $parameters)
@@ -42,6 +40,9 @@ class SystemMenuService
      */
     public function getRepository(): SystemMenuRepository
     {
+        if (empty($this->repository)) {
+            $this->repository = container()->get(SystemMenuRepository::class);
+        }
         return $this->repository;
     }
 }

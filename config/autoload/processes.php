@@ -10,4 +10,7 @@ declare(strict_types=1);
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
 return [
+    Hyperf\Crontab\Process\CrontabDispatcherProcess::class,
+    \Nasustop\HapiSidecar\Example\demo\php\DemoProcess::class,
+    \Nasustop\HapiSidecar\Example\mongo\php\MongoProcess::class,
 ];

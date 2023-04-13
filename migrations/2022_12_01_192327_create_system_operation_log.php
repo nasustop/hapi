@@ -22,7 +22,7 @@ class CreateSystemOperationLog extends Migration
     {
         Schema::create('system_operation_log', function (Blueprint $table) {
             $table->bigIncrements('log_id');
-            $table->bigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('user_id')->default(0);
             $table->ipAddress('from_ip');
             $table->string('request_uri');
             $table->string('request_method');

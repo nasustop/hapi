@@ -11,23 +11,62 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Nasustop\HapiBase\HttpServer\RequestInterface;
+use Nasustop\HapiBase\HttpServer\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
 abstract class AbstractController
 {
-    #[Inject]
-    protected ContainerInterface $container;
+    private ContainerInterface $container;
 
-    #[Inject]
-    protected RequestInterface $request;
+    private RequestInterface $request;
 
-    #[Inject]
-    protected ResponseInterface $response;
+    private ResponseInterface $response;
 
-    #[Inject]
-    protected ValidatorFactoryInterface $validatorFactory;
+    private ValidatorFactoryInterface $validatorFactory;
+
+    /**
+     * get Container.
+     */
+    public function getContainer(): ContainerInterface
+    {
+        if (empty($this->container)) {
+            $this->container = container();
+        }
+        return $this->container;
+    }
+
+    /**
+     * get Request.
+     */
+    public function getRequest(): RequestInterface
+    {
+        if (empty($this->request)) {
+            $this->request = $this->getContainer()->get(RequestInterface::class);
+        }
+        return $this->request;
+    }
+
+    /**
+     * get Response.
+     */
+    public function getResponse(): ResponseInterface
+    {
+        if (empty($this->response)) {
+            $this->response = $this->getContainer()->get(ResponseInterface::class);
+        }
+        return $this->response;
+    }
+
+    /**
+     * get ValidatorFactory.
+     */
+    public function getValidatorFactory(): ValidatorFactoryInterface
+    {
+        if (empty($this->validatorFactory)) {
+            $this->validatorFactory = $this->getContainer()->get(ValidatorFactoryInterface::class);
+        }
+        return $this->validatorFactory;
+    }
 }

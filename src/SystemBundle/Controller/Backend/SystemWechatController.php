@@ -12,28 +12,26 @@ declare(strict_types=1);
 namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemWechatService;
 
 class SystemWechatController extends AbstractController
 {
-    #[Inject]
     protected SystemWechatService $service;
 
     public function actionEnumDriver(): ResponseInterface
     {
-        $data = $this->service->getRepository()->enumDriver();
-        return $this->response->success(data: [
-            'default' => $this->service->getRepository()->enumDriverDefault(),
+        $data = $this->getService()->getRepository()->enumDriver();
+        return $this->getResponse()->success(data: [
+            'default' => $this->getService()->getRepository()->enumDriverDefault(),
             'list' => $data,
         ]);
     }
 
     public function actionCreate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'driver' => 'required',
@@ -49,28 +47,28 @@ class SystemWechatController extends AbstractController
             'token.required' => 'token 参数必填',
             'aes_key.required' => 'aes_key 参数必填',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->saveData(data: $params);
+        $result = $this->getService()->saveData(data: $params);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionInfo(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->getInfo(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->getInfo(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionUpdate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'filter' => 'required|array',
@@ -94,32 +92,43 @@ class SystemWechatController extends AbstractController
             'params.token.required' => 'params.token 参数必填',
             'params.aes_key.required' => 'params.aes_key 参数必填',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionDelete(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->deleteOneBy(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->deleteOneBy(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionList(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $page = (int) $this->request->input(key: 'page', default: 1);
-        $page_size = (int) $this->request->input(key: 'page_size', default: 20);
-        $result = $this->service->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
+        $filter = $this->getRequest()->all();
+        $page = (int) $this->getRequest()->input(key: 'page', default: 1);
+        $page_size = (int) $this->getRequest()->input(key: 'page_size', default: 20);
+        $result = $this->getService()->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
+    }
+
+    /**
+     * get Service.
+     */
+    protected function getService(): SystemWechatService
+    {
+        if (empty($this->service)) {
+            $this->service = $this->getContainer()->get(SystemWechatService::class);
+        }
+        return $this->service;
     }
 }

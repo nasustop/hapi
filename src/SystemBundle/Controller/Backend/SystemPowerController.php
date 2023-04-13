@@ -12,56 +12,65 @@ declare(strict_types=1);
 namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
-use Hyperf\Di\Annotation\Inject;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemPowerService;
 
 class SystemPowerController extends AbstractController
 {
-    #[Inject]
     protected SystemPowerService $service;
 
     public function actionCreate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
-        $result = $this->service->saveData(data: $params);
+        $result = $this->getService()->saveData(data: $params);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionInfo(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->getInfo(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->getInfo(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionUpdate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
-        $result = $this->service->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionDelete(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->deleteOneBy(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->deleteOneBy(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionList(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $page = (int) $this->request->input(key: 'page', default: 1);
-        $page_size = (int) $this->request->input(key: 'page_size', default: 20);
-        $result = $this->service->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
+        $filter = $this->getRequest()->all();
+        $page = (int) $this->getRequest()->input(key: 'page', default: 1);
+        $page_size = (int) $this->getRequest()->input(key: 'page_size', default: 20);
+        $result = $this->getService()->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
+    }
+
+    /**
+     * get Service.
+     */
+    protected function getService(): SystemPowerService
+    {
+        if (empty($this->service)) {
+            $this->service = $this->getContainer()->get(SystemPowerService::class);
+        }
+        return $this->service;
     }
 }

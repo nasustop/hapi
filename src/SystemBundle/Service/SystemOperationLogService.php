@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Service;
 
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Repository\SystemOperationLogRepository;
 
 /**
@@ -29,7 +28,6 @@ use SystemBundle\Repository\SystemOperationLogRepository;
  */
 class SystemOperationLogService
 {
-    #[Inject]
     protected SystemOperationLogRepository $repository;
 
     public function __call($method, $parameters)
@@ -42,6 +40,9 @@ class SystemOperationLogService
      */
     public function getRepository(): SystemOperationLogRepository
     {
+        if (empty($this->repository)) {
+            $this->repository = container()->get(SystemOperationLogRepository::class);
+        }
         return $this->repository;
     }
 }

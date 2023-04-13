@@ -12,12 +12,10 @@ declare(strict_types=1);
 namespace SystemBundle\Repository;
 
 use App\Repository\Repository;
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Model\SystemRoleModel;
 
 class SystemRoleRepository extends Repository
 {
-    #[Inject]
     protected SystemRoleModel $model;
 
     public function __call($method, $parameters)
@@ -30,6 +28,9 @@ class SystemRoleRepository extends Repository
      */
     public function getModel(): SystemRoleModel
     {
+        if (empty($this->model)) {
+            $this->model = container()->get(SystemRoleModel::class);
+        }
         return $this->model;
     }
 }

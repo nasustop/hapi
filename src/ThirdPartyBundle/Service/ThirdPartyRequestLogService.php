@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace ThirdPartyBundle\Service;
 
-use Hyperf\Di\Annotation\Inject;
 use ThirdPartyBundle\Repository\ThirdPartyRequestLogRepository;
 
 /**
@@ -29,7 +28,6 @@ use ThirdPartyBundle\Repository\ThirdPartyRequestLogRepository;
  */
 class ThirdPartyRequestLogService
 {
-    #[Inject]
     protected ThirdPartyRequestLogRepository $repository;
 
     public function __call($method, $parameters)
@@ -42,6 +40,9 @@ class ThirdPartyRequestLogService
      */
     public function getRepository(): ThirdPartyRequestLogRepository
     {
+        if (empty($this->repository)) {
+            $this->repository = container()->get(ThirdPartyRequestLogRepository::class);
+        }
         return $this->repository;
     }
 }

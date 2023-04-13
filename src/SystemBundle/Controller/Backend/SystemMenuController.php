@@ -12,28 +12,26 @@ declare(strict_types=1);
 namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemMenuService;
 
 class SystemMenuController extends AbstractController
 {
-    #[Inject]
     protected SystemMenuService $service;
 
     public function actionEnumMenuType(): ResponseInterface
     {
-        $data = $this->service->getRepository()->enumMenuType();
-        return $this->response->success(data: [
-            'default' => $this->service->getRepository()->enumMenuTypeDefault(),
+        $data = $this->getService()->getRepository()->enumMenuType();
+        return $this->getResponse()->success(data: [
+            'default' => $this->getService()->getRepository()->enumMenuTypeDefault(),
             'list' => $data,
         ]);
     }
 
     public function actionCreate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'parent_id' => 'required',
@@ -51,79 +49,67 @@ class SystemMenuController extends AbstractController
             'is_show.required' => 'is_show 参数必填',
             'menu_type.required' => 'menu_type 参数必填',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->saveData(data: $params);
+        $result = $this->getService()->saveData(data: $params);
 
-        return $this->response->success(data: $result);
-    }
-
-    public function actionInfo(): ResponseInterface
-    {
-        $filter = $this->request->all();
-        $result = $this->service->getInfo(filter: $filter);
-
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionUpdate(): ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $this->getRequest()->all();
 
         $rules = [
             'filter' => 'required|array',
             'filter.menu_id' => 'required',
             'params' => 'required|array',
-            'params.parent_id' => 'required',
-            'params.menu_name' => 'required',
-            'params.menu_alias' => 'required',
-            'params.sort' => 'required',
-            'params.is_show' => 'required',
-            'params.menu_type' => 'required',
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
             'filter.array' => 'filter 参数错误，必须是数组格式',
             'filter.menu_id.required' => 'filter.menu_id 参数必填',
-            'params.required' => 'filter 参数必填',
-            'params.array' => 'filter 参数错误，必须是数组格式',
-            'params.parent_id.required' => 'params.parent_id 参数必填',
-            'params.menu_name.required' => 'params.menu_name 参数必填',
-            'params.menu_alias.required' => 'params.menu_alias 参数必填',
-            'params.sort.required' => 'params.sort 参数必填',
-            'params.is_show.required' => 'params.is_show 参数必填',
-            'params.menu_type.required' => 'params.menu_type 参数必填',
+            'params.required' => 'params 参数必填',
+            'params.array' => 'params 参数错误，必须是数组格式',
         ];
-        $validator = $this->validatorFactory->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
         if ($validator->fails()) {
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->service->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionDelete(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $result = $this->service->deleteOneBy(filter: $filter);
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->deleteOneBy(filter: $filter);
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
     }
 
     public function actionList(): ResponseInterface
     {
-        $filter = $this->request->all();
-        $page = (int) $this->request->input(key: 'page', default: 1);
-        $page_size = (int) $this->request->input(key: 'page_size', default: 20);
-        $result = $this->service->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
+        $result = $this->getService()->getRepository()->findTreeByMenuIds();
 
-        return $this->response->success(data: $result);
+        return $this->getResponse()->success(data: $result);
+    }
+
+    /**
+     * get Service.
+     */
+    protected function getService(): SystemMenuService
+    {
+        if (empty($this->service)) {
+            $this->service = $this->getContainer()->get(SystemMenuService::class);
+        }
+        return $this->service;
     }
 }

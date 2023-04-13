@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Service;
 
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Repository\SystemPowerRepository;
 
 /**
@@ -29,7 +28,6 @@ use SystemBundle\Repository\SystemPowerRepository;
  */
 class SystemPowerService
 {
-    #[Inject]
     protected SystemPowerRepository $repository;
 
     public function __call($method, $parameters)
@@ -42,6 +40,9 @@ class SystemPowerService
      */
     public function getRepository(): SystemPowerRepository
     {
+        if (empty($this->repository)) {
+            $this->repository = container()->get(SystemPowerRepository::class);
+        }
         return $this->repository;
     }
 }

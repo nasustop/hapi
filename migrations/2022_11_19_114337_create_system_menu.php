@@ -25,7 +25,7 @@ class CreateSystemMenu extends Migration
             $table->bigInteger('parent_id', false, true)->default(0)->comment('父节点ID');
             $table->string('menu_name', 100)->comment('菜单名称');
             $table->string('menu_alias', 50)->comment('菜单别名，全局唯一');
-            $table->integer('sort', false, true)->default(0)->comment('排序');
+            $table->unsignedInteger('sort', false)->default(0)->comment('排序');
             $table->smallInteger('is_show')->default(1)->comment('是否显示');
             $table->enum('menu_type', ['menu', 'apis'])->default('menu')->comment('类型：menu菜单 apis接口权限');
             $table->json('apis')->nullable(true)->comment('权限集合');

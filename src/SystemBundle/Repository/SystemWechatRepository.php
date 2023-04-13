@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace SystemBundle\Repository;
 
 use App\Repository\Repository;
-use Hyperf\Di\Annotation\Inject;
 use SystemBundle\Model\SystemWechatModel;
 
 class SystemWechatRepository extends Repository
@@ -21,11 +20,10 @@ class SystemWechatRepository extends Repository
 
     public const ENUM_DRIVER_MINI_APP = 'mini_app';
 
-    public const ENUM_DRIVER = [self::ENUM_DRIVER_OFFICIAL_ACCOUNT => 'official_account', self::ENUM_DRIVER_MINI_APP => 'mini_app'];
+    public const ENUM_DRIVER = [self::ENUM_DRIVER_OFFICIAL_ACCOUNT => '公众号', self::ENUM_DRIVER_MINI_APP => '小程序'];
 
     public const ENUM_DRIVER_DEFAULT = self::ENUM_DRIVER_OFFICIAL_ACCOUNT;
 
-    #[Inject]
     protected SystemWechatModel $model;
 
     public function __call($method, $parameters)
@@ -48,6 +46,9 @@ class SystemWechatRepository extends Repository
      */
     public function getModel(): SystemWechatModel
     {
+        if (empty($this->model)) {
+            $this->model = container()->get(SystemWechatModel::class);
+        }
         return $this->model;
     }
 }
