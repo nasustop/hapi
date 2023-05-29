@@ -11,11 +11,13 @@ declare(strict_types=1);
  */
 return [
     'default' => [
-        'host' => env('MEMCACHED_HOST', 'localhost'),
-        'port' => (int) env('MEMCACHED_PORT', 11211),
+        'servers' => env('MEMCACHED_SERVERS', env('MEMCACHED_HOST', '127.0.0.1:11211:100')),
+        'username' => env('MEMCACHED_USERNAME', 'hapi'),
+        'password' => env('MEMCACHED_PASSWORD', '123456'),
+        'options' => [],
         'pool' => [
             'min_connections' => 1,
-            'max_connections' => 10,
+            'max_connections' => 1,
             'connect_timeout' => 10.0,
             'wait_timeout' => 3.0,
             'heartbeat' => -1,

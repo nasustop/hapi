@@ -11,13 +11,13 @@ declare(strict_types=1);
  */
 return [
     'default' => [
-        'driver' => \Nasustop\HapiBase\Cache\RedisDriver::class,
+        'driver' => \Nasustop\HapiCache\RedisDriver::class,
         'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
         'prefix' => 'c:',
         'pool' => 'default',
     ],
     'memcached' => [
-        'driver' => \Nasustop\HapiBase\Cache\MemcachedDriver::class,
+        'driver' => \Nasustop\HapiCache\MemcachedDriver::class,
         'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
         'prefix' => 'c:',
         'pool' => 'default',
