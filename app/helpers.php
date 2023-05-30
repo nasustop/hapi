@@ -17,7 +17,7 @@ if (! function_exists('container')) {
      */
     function container(): Psr\Container\ContainerInterface
     {
-        return \Hyperf\Utils\ApplicationContext::getContainer();
+        return \Hyperf\Context\ApplicationContext::getContainer();
     }
 }
 
@@ -108,7 +108,8 @@ if (! function_exists('apiResponseMsgCode')) {
 if (! function_exists('generaSnowID')) {
     function generateSnowID(): int
     {
-        $generator = \Hyperf\Utils\ApplicationContext::getContainer()->get(id: IdGeneratorInterface::class);
+        $generator = \Hyperf\Context\ApplicationContext::getContainer()
+            ->get(id: IdGeneratorInterface::class);
         return $generator->generate();
     }
 }
@@ -117,5 +118,13 @@ if (! function_exists('generateUUID')) {
     function generateUUID(): string
     {
         return '';
+    }
+}
+
+if (! function_exists('logger')) {
+    function logger(string $name = 'default', string $group = ''): Psr\Log\LoggerInterface
+    {
+        return \Hyperf\Context\ApplicationContext::getContainer()
+            ->get(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
     }
 }
