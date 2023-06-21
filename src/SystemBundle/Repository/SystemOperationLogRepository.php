@@ -18,6 +18,8 @@ class SystemOperationLogRepository extends Repository
 {
     protected SystemOperationLogModel $model;
 
+    protected SystemUserRepository $systemUserRepository;
+
     public function __call($method, $parameters)
     {
         return $this->getModel()->{$method}(...$parameters);
