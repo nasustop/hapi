@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace SystemBundle\Auth;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\IdGeneratorInterface;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Hyperf\HttpMessage\Exception\UnauthorizedHttpException;
+use Hyperf\Snowflake\IdGeneratorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Nasustop\HapiAuth\UserProvider;
 use Psr\SimpleCache\InvalidArgumentException;
