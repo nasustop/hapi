@@ -30,7 +30,7 @@ class SystemUserRepository extends Repository
     public function getModel(): SystemUserModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemUserModel::class);
+            $this->model = make(SystemUserModel::class);
         }
         return $this->model;
     }

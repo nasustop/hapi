@@ -11,17 +11,23 @@ declare(strict_types=1);
  */
 namespace SystemBundle\Auth;
 
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\IdGeneratorInterface;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Hyperf\HttpMessage\Exception\UnauthorizedHttpException;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Nasustop\HapiAuth\UserProvider;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use SystemBundle\Service\SystemUserService;
 
 class AuthUserProvider extends UserProvider
 {
+    protected ValidatorFactoryInterface $validatorFactory;
+
+    protected SystemUserService $service;
+
+    protected ConfigInterface $config;
+
     public function getInfo(array $payload): array
     {
         if (empty($payload['id'])) {
@@ -35,15 +41,9 @@ class AuthUserProvider extends UserProvider
         return $user;
     }
 
-    /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     */
     public function login(array $inputData): array
     {
-        $validatorFactory = $this->container->get(ValidatorFactoryInterface::class);
-        $validator = $validatorFactory->make($inputData, [
+        $validator = $this->getValidatorFactory()->make($inputData, [
             'username' => 'required',
             'password' => 'required',
         ], [
@@ -53,8 +53,7 @@ class AuthUserProvider extends UserProvider
         if ($validator->fails()) {
             throw new BadRequestHttpException($validator->errors()->first());
         }
-        $service = $this->container->get(SystemUserService::class);
-        $userInfo = $service->getRepository()->getInfo([
+        $userInfo = $this->getService()->getRepository()->getInfo([
             [
                 ['login_name' => $inputData['username']],
                 'or',
@@ -65,12 +64,12 @@ class AuthUserProvider extends UserProvider
             throw new BadRequestHttpException('账号不存在');
         }
         // 验证密码
-        if (! $service->getRepository()->validatePassword($inputData['password'], $userInfo['password'])) {
+        if (! $this->getService()->getRepository()->validatePassword($inputData['password'], $userInfo['password'])) {
             throw new BadRequestHttpException('密码错误');
         }
         unset($userInfo['password']);
         // 验证状态
-        $service->getRepository()->validateUserStatus(user_status: $userInfo['user_status']);
+        $this->getService()->getRepository()->validateUserStatus(user_status: $userInfo['user_status']);
 
         // support admin user
         $support_admin_user = config(sprintf('auth.%s.support_admin_user', $this->guard), '');
@@ -80,8 +79,9 @@ class AuthUserProvider extends UserProvider
         $cacheUserIdKey = $this->getCacheUserIdKey(user_id: $userInfo['user_id']);
         $cacheSnowflakeId = cache($this->getCacheDriver())->get(key: $cacheUserIdKey);
         if (empty($cacheSnowflakeId)) {
-            // generate snowflake id
-            $cacheSnowflakeId = generateSnowID();
+            /** @var IdGeneratorInterface $idGenerator */
+            $idGenerator = make(IdGeneratorInterface::class);
+            $cacheSnowflakeId = $idGenerator->generate();
         }
 
         $exp = (int) config(sprintf('auth.%s.jwt.exp', $this->guard), 7200);
@@ -120,13 +120,37 @@ class AuthUserProvider extends UserProvider
         return $user;
     }
 
+    protected function getService(): SystemUserService
+    {
+        if (empty($this->service)) {
+            $this->service = make(SystemUserService::class);
+        }
+        return $this->service;
+    }
+
+    protected function getValidatorFactory(): ValidatorFactoryInterface
+    {
+        if (empty($this->validatorFactory)) {
+            $this->validatorFactory = make(ValidatorFactoryInterface::class);
+        }
+        return $this->validatorFactory;
+    }
+
     protected function getCacheDriver()
     {
-        return config(sprintf('auth.%s.cache', $this->guard), 'default');
+        return $this->getConfig()->get(sprintf('auth.%s.cache', $this->guard), 'default');
     }
 
     protected function getCacheUserIdKey(int $user_id): string
     {
         return sprintf('auth:user_id:%s', $user_id);
+    }
+
+    protected function getConfig(): ConfigInterface
+    {
+        if (empty($this->config)) {
+            $this->config = make(ConfigInterface::class);
+        }
+        return $this->config;
     }
 }

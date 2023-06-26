@@ -107,7 +107,7 @@ class SystemRoleController extends AbstractController
     protected function getService(): SystemRoleService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemRoleService::class);
+            $this->service = make(SystemRoleService::class);
         }
         return $this->service;
     }

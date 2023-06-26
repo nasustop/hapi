@@ -26,7 +26,7 @@ class SystemExportFileController extends AbstractController
     public function actionExport(): ResponseInterface
     {
         $params = $this->getRequest()->all();
-        $auth = $this->getRequest()->getAttribute(name: 'auth');
+        $auth = $this->getRequest()->getAttribute('auth');
         $params['user_id'] = $auth['user_id'];
 
         $rules = [
@@ -75,7 +75,7 @@ class SystemExportFileController extends AbstractController
     protected function getService(): SystemExportFileService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemExportFileService::class);
+            $this->service = make(SystemExportFileService::class);
         }
         return $this->service;
     }

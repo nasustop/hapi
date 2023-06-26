@@ -72,7 +72,7 @@ class SystemOperationLogController extends AbstractController
     protected function getService(): SystemOperationLogService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemOperationLogService::class);
+            $this->service = make(SystemOperationLogService::class);
         }
         return $this->service;
     }
@@ -83,7 +83,7 @@ class SystemOperationLogController extends AbstractController
     protected function getSystemUserService(): SystemUserService
     {
         if (empty($this->systemUserService)) {
-            $this->systemUserService = $this->getContainer()->get(SystemUserService::class);
+            $this->systemUserService = make(SystemUserService::class);
         }
         return $this->systemUserService;
     }

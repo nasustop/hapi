@@ -58,7 +58,7 @@ class SystemUploadFileService
     public function getRepository(): SystemUploadFileRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemUploadFileRepository::class);
+            $this->repository = make(SystemUploadFileRepository::class);
         }
         return $this->repository;
     }
@@ -69,7 +69,7 @@ class SystemUploadFileService
     public function getMessageRepository(): SystemUploadFileMessageRepository
     {
         if (empty($this->messageRepository)) {
-            $this->messageRepository = container()->get(SystemUploadFileMessageRepository::class);
+            $this->messageRepository = make(SystemUploadFileMessageRepository::class);
         }
         return $this->messageRepository;
     }
@@ -89,7 +89,7 @@ class SystemUploadFileService
     public function getFilesystem(): Filesystem
     {
         if (empty($this->filesystem)) {
-            $this->filesystem = container()->get(Filesystem::class);
+            $this->filesystem = make(Filesystem::class);
         }
         return $this->filesystem;
     }

@@ -65,7 +65,7 @@ class SystemPowerRepository extends Repository
     public function getModel(): SystemPowerModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemPowerModel::class);
+            $this->model = make(SystemPowerModel::class);
         }
         return $this->model;
     }

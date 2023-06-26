@@ -69,7 +69,7 @@ class SystemPowerController extends AbstractController
     protected function getService(): SystemPowerService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemPowerService::class);
+            $this->service = make(SystemPowerService::class);
         }
         return $this->service;
     }

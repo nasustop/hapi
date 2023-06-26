@@ -155,7 +155,7 @@ class SystemUploadFileController extends AbstractController
     protected function getService(): SystemUploadFileService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemUploadFileService::class);
+            $this->service = make(SystemUploadFileService::class);
         }
         return $this->service;
     }

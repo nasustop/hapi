@@ -9,17 +9,11 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
-use Hyperf\Snowflake\IdGeneratorInterface;
 
-if (! function_exists('container')) {
-    /**
-     * 获取容器对象.
-     */
-    function container(): Psr\Container\ContainerInterface
-    {
-        return \Hyperf\Context\ApplicationContext::getContainer();
-    }
-}
+use Hyperf\Contract\IdGeneratorInterface;
+use Hyperf\Event\EventDispatcher;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Redis\RedisFactory;
 
 if (! function_exists('redis')) {
     /**
@@ -27,11 +21,9 @@ if (! function_exists('redis')) {
      */
     function redis(string $pool = 'default'): Hyperf\Redis\RedisProxy
     {
-        try {
-            return container()->get(Hyperf\Redis\RedisFactory::class)->get($pool);
-        } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
-            return make(\Hyperf\Redis\RedisFactory::class)->get($pool);
-        }
+        /** @var RedisFactory $redisFactory */
+        $redisFactory = make(RedisFactory::class);
+        return $redisFactory->get($pool);
     }
 }
 
@@ -41,11 +33,8 @@ if (! function_exists('event')) {
      */
     function event(object $event)
     {
-        try {
-            $eventDispatcher = container()->get(\Hyperf\Event\EventDispatcher::class);
-        } catch (\Psr\Container\NotFoundExceptionInterface|\Psr\Container\ContainerExceptionInterface $e) {
-            $eventDispatcher = make(\Hyperf\Event\EventDispatcher::class);
-        }
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = make(EventDispatcher::class);
         $eventDispatcher->dispatch($event);
     }
 }
@@ -105,26 +94,11 @@ if (! function_exists('apiResponseMsgCode')) {
     }
 }
 
-if (! function_exists('generaSnowID')) {
-    function generateSnowID(): int
-    {
-        $generator = \Hyperf\Context\ApplicationContext::getContainer()
-            ->get(id: IdGeneratorInterface::class);
-        return $generator->generate();
-    }
-}
-
-if (! function_exists('generateUUID')) {
-    function generateUUID(): string
-    {
-        return '';
-    }
-}
-
 if (! function_exists('logger')) {
     function logger(string $name = 'default', string $group = ''): Psr\Log\LoggerInterface
     {
-        return \Hyperf\Context\ApplicationContext::getContainer()
-            ->get(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
+        /** @var LoggerFactory $loggerFactory */
+        $loggerFactory = make(LoggerFactory::class);
+        return $loggerFactory->get($name, $group);
     }
 }

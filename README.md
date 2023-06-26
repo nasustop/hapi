@@ -41,3 +41,6 @@ composer test -- [class] --filter=[function]
 # 示例
 composer test -- test/SystemBundle/Backend/SystemMenuControllerTest.php --filter=testMenu
 ```
+
+### PHP版本
+推荐使用`php8.0`和`8.1`；`8.2`暂不支持，原因是`hyperf/http-message`引用了`laminas/laminas-mime`组件，改组件暂不支持`php8.2`

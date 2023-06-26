@@ -20,6 +20,19 @@ abstract class BasicExportFileService implements ExportFileInterface
 {
     use ExportTypeServiceTrait;
 
+    protected Filesystem $filesystem;
+
+    /**
+     * get Filesystem.
+     */
+    public function getFilesystem(): Filesystem
+    {
+        if (empty($this->filesystem)) {
+            $this->filesystem = make(Filesystem::class);
+        }
+        return $this->filesystem;
+    }
+
     public function getExportFilePath(): string
     {
         return '/export/' . $this->getExportType(get_class($this)) . '/' . date('Y-m-d') . '/';
@@ -53,11 +66,10 @@ abstract class BasicExportFileService implements ExportFileInterface
         }
         fclose($fh);
 
-        $filesystem = container()->get(Filesystem::class);
-        if ($filesystem->fileExists($path)) {
+        if ($this->getFilesystem()->fileExists($path)) {
             throw new RuntimeErrorException('文件已存在，请更换文件名');
         }
-        $filesystem->write($path, file_get_contents($fn));
+        $this->getFilesystem()->write($path, file_get_contents($fn));
         $driver = config('file.default');
         $base_uri = config(sprintf('file.storage.%s.domain', $driver));
         return $base_uri . $path;

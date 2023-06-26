@@ -97,7 +97,7 @@ class ThirdPartyRequestLogController extends AbstractController
     protected function getService(): ThirdPartyRequestLogService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(ThirdPartyRequestLogService::class);
+            $this->service = make(ThirdPartyRequestLogService::class);
         }
         return $this->service;
     }

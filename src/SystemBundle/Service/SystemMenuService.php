@@ -41,7 +41,7 @@ class SystemMenuService
     public function getRepository(): SystemMenuRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemMenuRepository::class);
+            $this->repository = make(SystemMenuRepository::class);
         }
         return $this->repository;
     }

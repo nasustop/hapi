@@ -41,7 +41,7 @@ class ThirdPartyRequestLogService
     public function getRepository(): ThirdPartyRequestLogRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(ThirdPartyRequestLogRepository::class);
+            $this->repository = make(ThirdPartyRequestLogRepository::class);
         }
         return $this->repository;
     }

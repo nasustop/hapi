@@ -63,7 +63,7 @@ class SystemUploadImageController extends AbstractController
     protected function getService(): SystemUploadImageService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemUploadImageService::class);
+            $this->service = make(SystemUploadImageService::class);
         }
         return $this->service;
     }

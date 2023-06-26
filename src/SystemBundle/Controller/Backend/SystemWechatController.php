@@ -127,7 +127,7 @@ class SystemWechatController extends AbstractController
     protected function getService(): SystemWechatService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemWechatService::class);
+            $this->service = make(SystemWechatService::class);
         }
         return $this->service;
     }

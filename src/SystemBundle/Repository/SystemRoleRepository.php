@@ -29,7 +29,7 @@ class SystemRoleRepository extends Repository
     public function getModel(): SystemRoleModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemRoleModel::class);
+            $this->model = make(SystemRoleModel::class);
         }
         return $this->model;
     }

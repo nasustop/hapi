@@ -92,7 +92,7 @@ class ThirdPartyRequestLogRepository extends Repository
     public function getModel(): ThirdPartyRequestLogModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(ThirdPartyRequestLogModel::class);
+            $this->model = make(ThirdPartyRequestLogModel::class);
         }
         return $this->model;
     }

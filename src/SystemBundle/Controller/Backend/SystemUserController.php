@@ -20,9 +20,6 @@ class SystemUserController extends AbstractController
 {
     protected SystemUserService $service;
 
-    /**
-     * @throws \Exception
-     */
     public function actionCreate(): ResponseInterface
     {
         $params = $this->getRequest()->all();
@@ -50,9 +47,6 @@ class SystemUserController extends AbstractController
         return $this->getResponse()->success(data: $result);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function actionUpdate(): ResponseInterface
     {
         $params = $this->getRequest()->all();
@@ -86,9 +80,6 @@ class SystemUserController extends AbstractController
         return $this->getResponse()->success(data: $result);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function actionDelete(): ResponseInterface
     {
         $filter = $this->getRequest()->all();
@@ -113,7 +104,7 @@ class SystemUserController extends AbstractController
     protected function getService(): SystemUserService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemUserService::class);
+            $this->service = make(SystemUserService::class);
         }
         return $this->service;
     }

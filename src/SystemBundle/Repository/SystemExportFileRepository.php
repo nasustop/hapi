@@ -51,7 +51,7 @@ class SystemExportFileRepository extends Repository
     public function getModel(): SystemExportFileModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemExportFileModel::class);
+            $this->model = make(SystemExportFileModel::class);
         }
         return $this->model;
     }

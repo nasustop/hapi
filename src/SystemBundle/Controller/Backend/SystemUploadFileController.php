@@ -20,7 +20,7 @@ class SystemUploadFileController extends AbstractController
 {
     protected SystemUploadFileService $service;
 
-    public function actionDownloadUploadTemplate()
+    public function actionDownloadUploadTemplate(): ResponseInterface
     {
         $file_type = $this->getRequest()->input(key: 'file_type');
         $file_name = $this->getRequest()->input(key: 'file_name', default: '导入模板');
@@ -46,12 +46,12 @@ class SystemUploadFileController extends AbstractController
         return $this->getResponse()->success(data: $result);
     }
 
-    public function actionUploadFile()
+    public function actionUploadFile(): ResponseInterface
     {
         $file_type = $this->getRequest()->input(key: 'file_type');
         $file_rel_id = (int) $this->getRequest()->input(key: 'file_rel_id');
         $file = $this->getRequest()->file(key: 'upload');
-        $auth = $this->getRequest()->getAttribute(name: 'auth');
+        $auth = $this->getRequest()->getAttribute('auth');
 
         $rules = [
             'file_type' => 'required',
@@ -106,7 +106,7 @@ class SystemUploadFileController extends AbstractController
     protected function getService(): SystemUploadFileService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemUploadFileService::class);
+            $this->service = make(SystemUploadFileService::class);
         }
         return $this->service;
     }

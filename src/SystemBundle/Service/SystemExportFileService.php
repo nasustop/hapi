@@ -42,7 +42,7 @@ class SystemExportFileService
     public function getRepository(): SystemExportFileRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemExportFileRepository::class);
+            $this->repository = make(SystemExportFileRepository::class);
         }
         return $this->repository;
     }

@@ -26,14 +26,11 @@ class LoginController extends AbstractController
 
     protected SystemMenuService $menuService;
 
-    /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
     public function actionLogin(): ResponseInterface
     {
         $inputData = $this->getRequest()->all();
-        $auth = $this->getContainer()->get(id: AuthManagerFactory::class);
+        /** @var AuthManagerFactory $auth */
+        $auth = make(AuthManagerFactory::class);
         $token = $auth->guard(guard: 'backend')->attempt(inputData: $inputData);
         return $this->getResponse()->success(data: [
             'token' => $token,
@@ -59,24 +56,18 @@ class LoginController extends AbstractController
         return $this->getResponse()->success(data: $result);
     }
 
-    /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
     public function actionLogout(): ResponseInterface
     {
-        $auth = $this->getContainer()->get(id: AuthManagerFactory::class);
+        /** @var AuthManagerFactory $auth */
+        $auth = make(AuthManagerFactory::class);
         $status = $auth->guard(guard: 'backend')->logout();
         return $this->getResponse()->success(data: $status);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function actionRefresh(): ResponseInterface
     {
-        $auth = $this->getContainer()->get(id: AuthManagerFactory::class);
+        /** @var AuthManagerFactory $auth */
+        $auth = make(AuthManagerFactory::class);
         $token = $auth->guard(guard: 'backend')->refresh();
         return $this->getResponse()->success(data: [
             'token' => $token,
@@ -89,7 +80,7 @@ class LoginController extends AbstractController
     protected function getService(): SystemUserService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemUserService::class);
+            $this->service = make(SystemUserService::class);
         }
         return $this->service;
     }
@@ -100,7 +91,7 @@ class LoginController extends AbstractController
     protected function getMenuService(): SystemMenuService
     {
         if (empty($this->menuService)) {
-            $this->menuService = $this->getContainer()->get(SystemMenuService::class);
+            $this->menuService = make(SystemMenuService::class);
         }
         return $this->menuService;
     }

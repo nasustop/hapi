@@ -49,7 +49,7 @@ class SystemUploadFileRepository extends Repository
     public function getModel(): SystemUploadFileModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemUploadFileModel::class);
+            $this->model = make(SystemUploadFileModel::class);
         }
         return $this->model;
     }

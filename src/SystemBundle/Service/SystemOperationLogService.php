@@ -41,7 +41,7 @@ class SystemOperationLogService
     public function getRepository(): SystemOperationLogRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemOperationLogRepository::class);
+            $this->repository = make(SystemOperationLogRepository::class);
         }
         return $this->repository;
     }

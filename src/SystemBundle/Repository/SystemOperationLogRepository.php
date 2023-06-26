@@ -31,7 +31,7 @@ class SystemOperationLogRepository extends Repository
     public function getModel(): SystemOperationLogModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemOperationLogModel::class);
+            $this->model = make(SystemOperationLogModel::class);
         }
         return $this->model;
     }

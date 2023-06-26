@@ -108,7 +108,7 @@ class SystemMenuController extends AbstractController
     protected function getService(): SystemMenuService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemMenuService::class);
+            $this->service = make(SystemMenuService::class);
         }
         return $this->service;
     }

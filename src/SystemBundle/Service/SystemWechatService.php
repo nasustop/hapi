@@ -41,7 +41,7 @@ class SystemWechatService
     public function getRepository(): SystemWechatRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemWechatRepository::class);
+            $this->repository = make(SystemWechatRepository::class);
         }
         return $this->repository;
     }

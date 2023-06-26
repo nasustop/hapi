@@ -21,6 +21,19 @@ abstract class BasicUploadFileService implements UploadFileInterface
 {
     protected bool $is_batch_handle = false;
 
+    protected Filesystem $filesystem;
+
+    /**
+     * get Filesystem.
+     */
+    public function getFilesystem(): Filesystem
+    {
+        if (empty($this->filesystem)) {
+            $this->filesystem = make(Filesystem::class);
+        }
+        return $this->filesystem;
+    }
+
     public function is_batch_handle(): bool
     {
         return $this->is_batch_handle;
@@ -43,8 +56,7 @@ abstract class BasicUploadFileService implements UploadFileInterface
         $data = explode('.', $fileName);
         $name = array_shift($data);
         $path = $fileType . '/' . date('Y-m-d_H:i:s') . '/' . md5($name) . '.' . implode('.', $data);
-        $filesystem = container()->get(Filesystem::class);
-        $filesystem->write($path, $file->getStream()->getContents());
+        $this->getFilesystem()->write($path, $file->getStream()->getContents());
         $driver = config('file.default');
         $base_uri = config(sprintf('file.storage.%s.domain', $driver));
         return $base_uri . $path;

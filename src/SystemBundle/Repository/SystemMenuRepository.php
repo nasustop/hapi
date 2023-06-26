@@ -47,7 +47,7 @@ class SystemMenuRepository extends Repository
     public function getModel(): SystemMenuModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemMenuModel::class);
+            $this->model = make(SystemMenuModel::class);
         }
         return $this->model;
     }

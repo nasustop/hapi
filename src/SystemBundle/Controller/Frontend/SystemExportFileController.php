@@ -135,7 +135,7 @@ class SystemExportFileController extends AbstractController
     protected function getService(): SystemExportFileService
     {
         if (empty($this->service)) {
-            $this->service = $this->getContainer()->get(SystemExportFileService::class);
+            $this->service = make(SystemExportFileService::class);
         }
         return $this->service;
     }

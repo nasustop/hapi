@@ -47,7 +47,7 @@ class DemoExportFileService extends BasicExportFileService
     public function getService(): SystemWechatService
     {
         if (empty($this->service)) {
-            $this->service = container()->get(SystemWechatService::class);
+            $this->service = make(SystemWechatService::class);
         }
         return $this->service;
     }

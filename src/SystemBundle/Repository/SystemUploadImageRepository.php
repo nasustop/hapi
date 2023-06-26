@@ -60,7 +60,7 @@ class SystemUploadImageRepository extends Repository
     public function getModel(): SystemUploadImageModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemUploadImageModel::class);
+            $this->model = make(SystemUploadImageModel::class);
         }
         return $this->model;
     }

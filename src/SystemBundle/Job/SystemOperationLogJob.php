@@ -16,6 +16,8 @@ use SystemBundle\Service\SystemOperationLogService;
 
 class SystemOperationLogJob extends Job
 {
+    protected SystemOperationLogService $service;
+
     protected string $queue = 'default';
 
     public function __construct(protected array $logger)
@@ -24,8 +26,15 @@ class SystemOperationLogJob extends Job
 
     public function handle(): string
     {
-        $service = $this->getContainer()->get(SystemOperationLogService::class);
-        $service->saveData($this->logger);
+        $this->getService()->saveData($this->logger);
         return self::ACK;
+    }
+
+    protected function getService(): SystemOperationLogService
+    {
+        if (empty($this->service)) {
+            $this->service = make(SystemOperationLogService::class);
+        }
+        return $this->service;
     }
 }

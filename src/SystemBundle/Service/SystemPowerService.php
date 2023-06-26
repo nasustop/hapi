@@ -41,7 +41,7 @@ class SystemPowerService
     public function getRepository(): SystemPowerRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemPowerRepository::class);
+            $this->repository = make(SystemPowerRepository::class);
         }
         return $this->repository;
     }

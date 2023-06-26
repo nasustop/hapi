@@ -49,7 +49,7 @@ class SystemUploadImageService
     public function getRepository(): SystemUploadImageRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemUploadImageRepository::class);
+            $this->repository = make(SystemUploadImageRepository::class);
         }
         return $this->repository;
     }
@@ -60,7 +60,7 @@ class SystemUploadImageService
     public function getFilesystem(): FilesystemFactory
     {
         if (empty($this->filesystem)) {
-            $this->filesystem = container()->get(FilesystemFactory::class);
+            $this->filesystem = make(FilesystemFactory::class);
         }
         return $this->filesystem;
     }
@@ -104,7 +104,7 @@ class SystemUploadImageService
         if (empty($info)) {
             throw new BadRequestHttpException('删除的图片不存在');
         }
-        $this->getFilesystem()->delete($info['img_url']);
+        $this->getFilesystem()->get($info['img_storage'])->delete($info['img_url']);
         return $this->getRepository()->deleteOneBy($filter);
     }
 }

@@ -47,7 +47,7 @@ class SystemWechatRepository extends Repository
     public function getModel(): SystemWechatModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemWechatModel::class);
+            $this->model = make(SystemWechatModel::class);
         }
         return $this->model;
     }

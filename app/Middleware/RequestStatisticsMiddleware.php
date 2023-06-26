@@ -19,6 +19,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RequestStatisticsMiddleware implements MiddlewareInterface
 {
+    protected RequestInterface $request;
+
     /**
      * @throws \Exception
      */
@@ -37,10 +39,9 @@ class RequestStatisticsMiddleware implements MiddlewareInterface
             throw $exception;
         } finally {
             $transferTime = round(microtime(true) - $timeBegin, 3);
-            $request = container()->get(id: RequestInterface::class);
-            $api_alias = $request->getRequestApiAlias();
-            $request_ip = $request->getRequestIp();
-            $uid = $request->getHeaderLine('uid');
+            $api_alias = $this->getRequest()->getRequestApiAlias();
+            $request_ip = $this->getRequest()->getRequestIp();
+            $uid = $this->getRequest()->getHeaderLine('uid');
             $uid = $uid ?: (string) generateSnowID();
             if (! empty($api_alias)) {
                 $this->apiLog(api_alias: $api_alias, ip: $request_ip, uid: $uid, http_status: $http_status, msg_code: $msg_code, transferTime: $transferTime);
@@ -64,5 +65,13 @@ class RequestStatisticsMiddleware implements MiddlewareInterface
         go(function () use ($apiData) {
             mongo()->Database('test')->Collection('api_log_' . date('Y-m-d'))->InsertOne($apiData);
         });
+    }
+
+    protected function getRequest(): RequestInterface
+    {
+        if (empty($this->request)) {
+            $this->request = make(RequestInterface::class);
+        }
+        return $this->request;
     }
 }

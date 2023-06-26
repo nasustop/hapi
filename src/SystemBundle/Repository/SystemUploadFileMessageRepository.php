@@ -49,7 +49,7 @@ class SystemUploadFileMessageRepository extends Repository
     public function getModel(): SystemUploadFileMessageModel
     {
         if (empty($this->model)) {
-            $this->model = container()->get(SystemUploadFileMessageModel::class);
+            $this->model = make(SystemUploadFileMessageModel::class);
         }
         return $this->model;
     }

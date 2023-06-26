@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Nasustop\HapiBase\HttpServer\RequestInterface;
 use Nasustop\HapiBase\HttpServer\ResponseInterface;
@@ -32,7 +33,7 @@ abstract class AbstractController
     public function getContainer(): ContainerInterface
     {
         if (empty($this->container)) {
-            $this->container = container();
+            $this->container = ApplicationContext::getContainer();
         }
         return $this->container;
     }
@@ -43,7 +44,7 @@ abstract class AbstractController
     public function getRequest(): RequestInterface
     {
         if (empty($this->request)) {
-            $this->request = $this->getContainer()->get(RequestInterface::class);
+            $this->request = make(RequestInterface::class);
         }
         return $this->request;
     }
@@ -54,7 +55,7 @@ abstract class AbstractController
     public function getResponse(): ResponseInterface
     {
         if (empty($this->response)) {
-            $this->response = $this->getContainer()->get(ResponseInterface::class);
+            $this->response = make(ResponseInterface::class);
         }
         return $this->response;
     }
@@ -65,7 +66,7 @@ abstract class AbstractController
     public function getValidatorFactory(): ValidatorFactoryInterface
     {
         if (empty($this->validatorFactory)) {
-            $this->validatorFactory = $this->getContainer()->get(ValidatorFactoryInterface::class);
+            $this->validatorFactory = make(ValidatorFactoryInterface::class);
         }
         return $this->validatorFactory;
     }

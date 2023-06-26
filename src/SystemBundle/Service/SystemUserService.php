@@ -46,7 +46,7 @@ class SystemUserService
     public function getRepository(): SystemUserRepository
     {
         if (empty($this->repository)) {
-            $this->repository = container()->get(SystemUserRepository::class);
+            $this->repository = make(SystemUserRepository::class);
         }
         return $this->repository;
     }
@@ -57,7 +57,7 @@ class SystemUserService
     public function getPowerRepository(): SystemPowerRepository
     {
         if (empty($this->powerRepository)) {
-            $this->powerRepository = container()->get(SystemPowerRepository::class);
+            $this->powerRepository = make(SystemPowerRepository::class);
         }
         return $this->powerRepository;
     }
