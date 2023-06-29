@@ -23,7 +23,7 @@ class SystemUploadCsvHandleBatchJob extends Job
     public function handle(): string
     {
         // TODO: Implement handle() method.
-        $service = $this->getContainer()->get(SystemUploadFileService::class);
+        $service = make(SystemUploadFileService::class);
         $service->handleUploadFileBatchData($this->upload_id, $this->lineNumData, $this->useQueue);
         return self::ACK;
     }
