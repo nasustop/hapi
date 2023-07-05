@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Exception\Handler;
 
+use App\Constants\ErrorCode;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -53,7 +54,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->logger->error($throwable->getTraceAsString());
 
-        return $response->withStatus(apiResponseHttpStatus($throwable))->withBody($responseBody);
+        return $response->withStatus(ErrorCode::SERVER_ERROR)->withBody($responseBody);
     }
 
     public function isValid(\Throwable $throwable): bool

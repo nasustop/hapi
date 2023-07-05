@@ -9,8 +9,6 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
-
-use Hyperf\Contract\IdGeneratorInterface;
 use Hyperf\Event\EventDispatcher;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Redis\RedisFactory;
@@ -86,8 +84,7 @@ if (! function_exists('apiResponseMsgCode')) {
                 $code = $throwable->getStatusCode();
             }
         }
-        $code = (int) $code;
-        if (empty($code)) {
+        if (empty($code) || ! is_int($code)) {
             $code = \App\Constants\ErrorCode::SERVER_ERROR;
         }
         return $code;
