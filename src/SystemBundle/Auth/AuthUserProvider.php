@@ -47,20 +47,24 @@ class AuthUserProvider extends UserProvider
             'username' => 'required',
             'password' => 'required',
         ], [
-            'username.*' => '请填写登录账号',
+            'username.*' => '请填写账号',
             'password.*' => '请填写密码',
         ]);
         if ($validator->fails()) {
             throw new BadRequestHttpException($validator->errors()->first());
         }
+        $relData = $this->getService()->getSystemUserRelAccountRepository()->getInfo([
+            'rel_key' => $inputData['username'],
+        ]);
+        if (empty($relData)) {
+            throw new BadRequestHttpException('账号不存在');
+        }
         $userInfo = $this->getService()->getRepository()->getInfo([
-            [
-                ['login_name' => $inputData['username']],
-                'or',
-                ['mobile' => $inputData['username']],
-            ],
+            'user_id' => $relData['user_id'],
         ]);
         if (empty($userInfo)) {
+            $this->getService()->getSystemUserRelAccountRepository()
+                ->deleteBy(['user_id' => $relData['user_id']]);
             throw new BadRequestHttpException('账号不存在');
         }
         // 验证密码

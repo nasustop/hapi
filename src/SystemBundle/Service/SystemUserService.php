@@ -14,10 +14,10 @@ namespace SystemBundle\Service;
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use SystemBundle\Repository\SystemPowerRepository;
+use SystemBundle\Repository\SystemUserRelAccountRepository;
 use SystemBundle\Repository\SystemUserRepository;
 
 /**
- * @method getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
  * @method getLists(array $filter = [], array|string $columns = '*', int $page = 0, int $pageSize = 0, array $orderBy = [])
  * @method count(array $filter)
  * @method pageLists(array $filter = [], array|string $columns = '*', int $page = 1, int $pageSize = 100, array $orderBy = [])
@@ -32,6 +32,8 @@ use SystemBundle\Repository\SystemUserRepository;
 class SystemUserService
 {
     protected SystemUserRepository $repository;
+
+    protected SystemUserRelAccountRepository $systemUserRelAccountRepository;
 
     protected SystemPowerRepository $powerRepository;
 
@@ -52,6 +54,17 @@ class SystemUserService
     }
 
     /**
+     * get SystemUserRelAccountRepository.
+     */
+    public function getSystemUserRelAccountRepository(): SystemUserRelAccountRepository
+    {
+        if (empty($this->systemUserRelAccountRepository)) {
+            $this->systemUserRelAccountRepository = make(SystemUserRelAccountRepository::class);
+        }
+        return $this->systemUserRelAccountRepository;
+    }
+
+    /**
      * get PowerRepository.
      */
     public function getPowerRepository(): SystemPowerRepository
@@ -62,26 +75,51 @@ class SystemUserService
         return $this->powerRepository;
     }
 
+    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
+    {
+        $info = $this->getRepository()->getInfo($filter, $columns, $orderBy);
+        if (! empty($info)) {
+            $relAccount = $this->getSystemUserRelAccountRepository()
+                ->getLists(['user_id' => $info['user_id']]);
+            $info['rel'] = array_column($relAccount, null, 'rel_type');
+        }
+        return $info;
+    }
+
     /**
      * @throws \Exception
      */
     public function createUser(array $data): array
     {
-        $mobileUser = $this->getRepository()->getInfo(filter: [
-            'mobile' => $data['mobile'],
-        ]);
-        if (! empty($mobileUser)) {
-            throw new BadRequestHttpException(message: '手机号已被使用');
-        }
-        $loginNameUser = $this->getRepository()->getInfo(filter: [
-            'login_name' => $data['login_name'],
-        ]);
-        if (! empty($loginNameUser)) {
-            throw new BadRequestHttpException(message: '登录账号已被使用');
-        }
         Db::beginTransaction();
         try {
             $user_id = $this->getRepository()->insertGetId(data: $data);
+
+            $batchInertRelAccount = [];
+            if (! empty($data['account'])) {
+                $batchInertRelAccount[] = [
+                    'user_id' => $user_id,
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
+                    'rel_key' => $data['account'],
+                ];
+            }
+            if (! empty($data['mobile'])) {
+                $batchInertRelAccount[] = [
+                    'user_id' => $user_id,
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE,
+                    'rel_key' => $data['account'],
+                ];
+            }
+            if (! empty($data['email'])) {
+                $batchInertRelAccount[] = [
+                    'user_id' => $user_id,
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL,
+                    'rel_key' => $data['account'],
+                ];
+            }
+            if (! empty($batchInertRelAccount)) {
+                $this->getSystemUserRelAccountRepository()->batchInsert($batchInertRelAccount);
+            }
 
             $insertData = $this->_filterInsertList(id: $user_id, menu_ids: $data['menu_ids'] ?? [], role_ids: $data['role_ids'] ?? []);
             if (! empty($insertData)) {
@@ -112,6 +150,68 @@ class SystemUserService
             }
             $this->getRepository()->updateBy(filter: ['user_id' => $info['user_id']], data: $data);
 
+            $relDeleteIds = [];
+            $relInsertData = [];
+            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT])) {
+                if (empty($data['account'])) {
+                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]['id'];
+                } elseif ($data['account'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]) {
+                    $this->systemUserRelAccountRepository->updateOneBy([
+                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]['id'],
+                    ], [
+                        'rel_value' => $data['account'],
+                    ]);
+                }
+            } elseif (! empty($data['account'])) {
+                $relInsertData[] = [
+                    'user_id' => $info['user_id'],
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
+                    'rel_value' => $data['account'],
+                ];
+            }
+            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL])) {
+                if (empty($data['email'])) {
+                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]['id'];
+                } elseif ($data['email'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]) {
+                    $this->systemUserRelAccountRepository->updateOneBy([
+                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]['id'],
+                    ], [
+                        'rel_value' => $data['email'],
+                    ]);
+                }
+            } elseif (! empty($data['email'])) {
+                $relInsertData[] = [
+                    'user_id' => $info['user_id'],
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL,
+                    'rel_value' => $data['email'],
+                ];
+            }
+            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE])) {
+                if (empty($data['mobile'])) {
+                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]['id'];
+                } elseif ($data['mobile'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]) {
+                    $this->systemUserRelAccountRepository->updateOneBy([
+                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]['id'],
+                    ], [
+                        'rel_value' => $data['mobile'],
+                    ]);
+                }
+            } elseif (! empty($data['mobile'])) {
+                $relInsertData[] = [
+                    'user_id' => $info['user_id'],
+                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE,
+                    'rel_value' => $data['mobile'],
+                ];
+            }
+
+            if (! empty($relDeleteIds)) {
+                $this->getSystemUserRelAccountRepository()->deleteBy(['id' => $relDeleteIds]);
+            }
+
+            if (! empty($relInsertData)) {
+                $this->getSystemUserRelAccountRepository()->batchInsert($relInsertData);
+            }
+
             $this->getPowerRepository()->deleteBy(filter: [
                 'parent_id' => $info['user_id'],
                 'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
@@ -141,7 +241,10 @@ class SystemUserService
         }
         Db::beginTransaction();
         try {
-            $this->getRepository()->deleteBy(filter: ['role_id' => $info['user_id']]);
+            $this->getRepository()->deleteBy(filter: ['user_id' => $info['user_id']]);
+
+            $this->getSystemUserRelAccountRepository()
+                ->deleteBy(filter: ['user_id' => $info['user_id']]);
 
             $this->getPowerRepository()->deleteBy(filter: [
                 'parent_id' => $info['user_id'],

@@ -14,31 +14,30 @@ namespace SystemBundle\Model;
 use App\Model\Model as BaseModel;
 
 /**
+ * @property int $id
  * @property int $user_id
- * @property string $password
- * @property string $user_name
- * @property string $avatar_url
- * @property string $user_status
+ * @property string $rel_type
+ * @property string $rel_key
+ * @property string $rel_value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
  */
-class SystemUserModel extends BaseModel
+class SystemUserRelAccountModel extends BaseModel
 {
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'system_user';
+    protected ?string $table = 'system_user_rel_account';
 
     /**
      * The primary key for the model.
      */
-    protected string $primaryKey = 'user_id';
+    protected string $primaryKey = 'id';
 
     /**
      * The table all columns.
      */
-    protected array $cols = ['user_id', 'password', 'user_name', 'avatar_url', 'user_status', 'created_at', 'updated_at', 'deleted_at'];
+    protected array $cols = ['id', 'user_id', 'rel_type', 'rel_key', 'rel_value', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -48,5 +47,5 @@ class SystemUserModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['user_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'deleted_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'user_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

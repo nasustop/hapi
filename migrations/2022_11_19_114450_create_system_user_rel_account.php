@@ -13,24 +13,25 @@ use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Schema\Schema;
 
-class CreateSystemUser extends Migration
+class CreateSystemUserRelAccount extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('system_user', function (Blueprint $table) {
-            $table->bigIncrements('user_id')->comment('用户ID');
-            $table->string('password')->comment('密码');
-            $table->string('user_name', 100)->comment('用户昵称');
-            $table->string('avatar_url')->nullable()->comment('用户头像');
-            $table->enum('user_status', ['success', 'disabled'])->default('success')->comment('用户状态 success:正常 disabled:禁用');
+        Schema::create('system_user_rel_account', function (Blueprint $table) {
+            $table->bigIncrements('id')->comment('ID');
+            $table->unsignedBigInteger('user_id')->comment('用户ID');
+            $table->enum('rel_type', ['account', 'email', 'mobile', 'mini_app', 'official_account'])->comment('关联类型');
+            $table->string('rel_key', 100)->comment('关联索引');
+            $table->json('rel_value')->nullable()->comment('冗余数据');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
-            $table->timestamp('deleted_at')->nullable()->comment('删除时间');
 
-            $table->index('user_status', 'index_user_status');
+            $table->unique('rel_key', 'unique_rel_key');
+            $table->index('user_id', 'index_user');
+            $table->index('rel_type', 'index_rel_type');
         });
     }
 

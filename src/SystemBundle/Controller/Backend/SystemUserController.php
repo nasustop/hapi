@@ -26,15 +26,21 @@ class SystemUserController extends AbstractController
 
         $rules = [
             'user_name' => 'required',
-            'login_name' => 'required',
+            'avatar_url' => 'url',
             'password' => 'required',
-            'mobile' => 'required',
+            'account' => 'required|unique:system_user_rel_account,rel_key',
+            'email' => 'email|unique:system_user_rel_account,rel_key',
+            'mobile' => 'unique:system_user_rel_account,rel_key',
         ];
         $messages = [
-            'user_name.required' => 'user_name 参数必填',
-            'login_name.required' => 'login_name 参数必填',
-            'password.required' => 'password 参数必填',
-            'mobile.required' => 'mobile 参数必填',
+            'user_name.required' => '用户名称必填',
+            'avatar_url.url' => '头像格式错误',
+            'password.required' => '密码必填',
+            'account.required' => '登陆账号必填',
+            'account.unique' => '账号已存在，请更换账号',
+            'email.email' => '请输入正确的邮箱格式',
+            'email.unique' => '邮箱已存在，请更换邮箱',
+            'mobile.unique' => '手机号已存在，请更换手机号',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -56,18 +62,23 @@ class SystemUserController extends AbstractController
             'filter.user_id' => 'required',
             'params' => 'required|array',
             'params.user_name' => 'required',
-            'params.login_name' => 'required',
-            'params.mobile' => 'required',
+            'params.avatar_url' => 'url',
+            'params.account' => 'required|unique:system_user_rel_account,rel_key',
+            'params.email' => 'email|unique:system_user_rel_account,rel_key',
+            'params.mobile' => 'unique:system_user_rel_account,rel_key',
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
             'filter.array' => 'filter 参数错误，必须是数组格式',
             'filter.user_id.required' => 'filter.user_id 参数必填',
             'params.required' => 'filter 参数必填',
-            'params.array' => 'filter 参数错误，必须是数组格式',
-            'params.user_name.required' => 'params.user_name 参数必填',
-            'params.login_name.required' => 'params.login_name 参数必填',
-            'params.mobile.required' => 'params.mobile 参数必填',
+            'params.user_name.required' => '用户名称必填',
+            'params.avatar_url.url' => '头像格式错误',
+            'params.account.required' => '登陆账号必填',
+            'params.account.unique' => '账号已存在，请更换账号',
+            'params.email.email' => '请输入正确的邮箱格式',
+            'params.email.unique' => '邮箱已存在，请更换邮箱',
+            'params.mobile.unique' => '手机号已存在，请更换手机号',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
