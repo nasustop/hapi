@@ -337,7 +337,7 @@ class SystemUserService
                 if ($relAccount['user_id'] != $value['user_id']) {
                     continue;
                 }
-                $value['rel'][] = $relAccount;
+                $value['rel'][$relAccount['rel_type']] = $relAccount;
             }
             $role_ids = [];
             $menu_ids = [];
