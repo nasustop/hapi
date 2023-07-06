@@ -320,14 +320,25 @@ class SystemUserService
     protected function _addPowerToUserList(array $userList)
     {
         $user_ids = array_values(array_filter(array_unique(array_column($userList, 'user_id'))));
+        $relAccountList = [];
         $powerList = [];
         if (! empty($user_ids)) {
+            $relAccountList = $this->getSystemUserRelAccountRepository()->getLists(filter: [
+                'user_id' => $user_ids,
+            ]);
             $powerList = $this->getPowerRepository()->getLists(filter: [
                 'parent_id' => $user_ids,
                 'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
             ]);
         }
         foreach ($userList as &$value) {
+            $value['rel'] = [];
+            foreach ($relAccountList as $relAccount) {
+                if ($relAccount['user_id'] != $value['user_id']) {
+                    continue;
+                }
+                $value['rel'][] = $relAccount;
+            }
             $role_ids = [];
             $menu_ids = [];
             foreach ($powerList as $power) {
