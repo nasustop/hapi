@@ -159,14 +159,14 @@ class SystemUserService
                     $this->systemUserRelAccountRepository->updateOneBy([
                         'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]['id'],
                     ], [
-                        'rel_value' => $data['account'],
+                        'rel_key' => $data['account'],
                     ]);
                 }
             } elseif (! empty($data['account'])) {
                 $relInsertData[] = [
                     'user_id' => $info['user_id'],
                     'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
-                    'rel_value' => $data['account'],
+                    'rel_key' => $data['account'],
                 ];
             }
             if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL])) {
@@ -176,14 +176,14 @@ class SystemUserService
                     $this->systemUserRelAccountRepository->updateOneBy([
                         'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]['id'],
                     ], [
-                        'rel_value' => $data['email'],
+                        'rel_key' => $data['email'],
                     ]);
                 }
             } elseif (! empty($data['email'])) {
                 $relInsertData[] = [
                     'user_id' => $info['user_id'],
                     'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL,
-                    'rel_value' => $data['email'],
+                    'rel_key' => $data['email'],
                 ];
             }
             if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE])) {
@@ -193,14 +193,14 @@ class SystemUserService
                     $this->systemUserRelAccountRepository->updateOneBy([
                         'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]['id'],
                     ], [
-                        'rel_value' => $data['mobile'],
+                        'rel_key' => $data['mobile'],
                     ]);
                 }
             } elseif (! empty($data['mobile'])) {
                 $relInsertData[] = [
                     'user_id' => $info['user_id'],
                     'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE,
-                    'rel_value' => $data['mobile'],
+                    'rel_key' => $data['mobile'],
                 ];
             }
 

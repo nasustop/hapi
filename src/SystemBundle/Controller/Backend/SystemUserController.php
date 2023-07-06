@@ -13,6 +13,7 @@ namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
+use Hyperf\Validation\Rule;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemUserService;
 
@@ -63,15 +64,15 @@ class SystemUserController extends AbstractController
             'params' => 'required|array',
             'params.user_name' => 'required',
             'params.avatar_url' => 'url',
-            'params.account' => 'required|unique:system_user_rel_account,rel_key',
-            'params.email' => 'email|unique:system_user_rel_account,rel_key',
-            'params.mobile' => 'unique:system_user_rel_account,rel_key',
+            'params.account' => ['required', Rule::unique('system_user_rel_account', 'rel_key')->ignore($params['filter']['user_id'], 'user_id')],
+            'params.email' => ['email', Rule::unique('system_user_rel_account', 'rel_key')->ignore($params['filter']['user_id'], 'user_id')],
+            'params.mobile' => Rule::unique('system_user_rel_account', 'rel_key')->ignore($params['filter']['user_id'], 'user_id'),
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
             'filter.array' => 'filter 参数错误，必须是数组格式',
             'filter.user_id.required' => 'filter.user_id 参数必填',
-            'params.required' => 'filter 参数必填',
+            'params.required' => 'params 参数必填',
             'params.user_name.required' => '用户名称必填',
             'params.avatar_url.url' => '头像格式错误',
             'params.account.required' => '登陆账号必填',
