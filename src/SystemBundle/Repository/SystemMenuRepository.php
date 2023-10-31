@@ -58,31 +58,6 @@ class SystemMenuRepository extends Repository
         return $this->model;
     }
 
-    public function setColumnData(array $data): array
-    {
-        if (empty($this->getCols())) {
-            return $data;
-        }
-
-        $result = [];
-        foreach ($data as $key => $value) {
-            if (! in_array($key, $this->getCols())) {
-                continue;
-            }
-            if ($key === 'apis') {
-                if (empty($value)) {
-                    $result[$key] = null;
-                } else {
-                    $result[$key] = json_encode(explode("\n", $value));
-                }
-                continue;
-            }
-            $result[$key] = $value;
-        }
-
-        return $result;
-    }
-
     /**
      * @return array ['tree' => "array", 'list' => "array", 'total' => "int"]
      */
@@ -93,11 +68,6 @@ class SystemMenuRepository extends Repository
         $tree = []; // 顶级菜单
         $list = []; // 所有菜单列表
         foreach ($all_data as $key => $value) {
-            $value['apis'] = $value['apis'] ? @json_decode($value['apis'], true) : [];
-            if (! $value['apis']) {
-                $value['apis'] = [];
-            }
-            $value['apis'] = implode("\n", $value['apis']);
             if (! $value['parent_id']) {
                 $value['level'] = 0;
                 $tree[] = $value;
@@ -149,7 +119,6 @@ class SystemMenuRepository extends Repository
         }
         $parent['has_children'] = isset($parent['children']);
         $listItem = $parent;
-        $listItem['apis'] = explode("\n", $listItem['apis']);
         if ($parent['has_children']) {
             unset($listItem['children']);
             $list[] = $listItem;
@@ -160,5 +129,22 @@ class SystemMenuRepository extends Repository
         }
         $list[] = $listItem;
         return $parent;
+    }
+
+    public function formatColumnData(array $data): array
+    {
+        $result = parent::formatColumnData($data);
+        if (! empty($result['apis'])) {
+            $result['apis'] = implode("\n", json_decode($result['apis'], true));
+        }
+        return $result;
+    }
+
+    public function setColumnData(array $data): array
+    {
+        if (! empty($data['apis'])) {
+            $data['apis'] = json_encode(explode("\n",  $data['apis']));
+        }
+        return parent::setColumnData($data);
     }
 }
