@@ -17,8 +17,8 @@ use App\Model\Model as BaseModel;
  * @property int $id
  * @property int $user_id
  * @property string $rel_type
- * @property string $rel_key
  * @property string $rel_value
+ * @property string $rel_data
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -37,7 +37,7 @@ class SystemUserRelAccountModel extends BaseModel
     /**
      * The table all columns.
      */
-    protected array $cols = ['id', 'user_id', 'rel_type', 'rel_key', 'rel_value', 'created_at', 'updated_at'];
+    protected array $cols = ['id', 'user_id', 'rel_type', 'rel_value', 'rel_data', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.

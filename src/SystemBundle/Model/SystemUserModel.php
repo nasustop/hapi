@@ -16,6 +16,7 @@ use App\Model\Model as BaseModel;
 /**
  * @property int $user_id
  * @property string $password
+ * @property string $password_hash
  * @property string $user_name
  * @property string $avatar_url
  * @property string $user_status
@@ -38,7 +39,7 @@ class SystemUserModel extends BaseModel
     /**
      * The table all columns.
      */
-    protected array $cols = ['user_id', 'password', 'user_name', 'avatar_url', 'user_status', 'created_at', 'updated_at', 'deleted_at'];
+    protected array $cols = ['user_id', 'password', 'password_hash', 'user_name', 'avatar_url', 'user_status', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that are mass assignable.

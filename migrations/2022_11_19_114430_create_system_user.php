@@ -23,6 +23,7 @@ class CreateSystemUser extends Migration
         Schema::create('system_user', function (Blueprint $table) {
             $table->bigIncrements('user_id')->comment('用户ID');
             $table->string('password')->comment('密码');
+            $table->string('password_hash')->comment('密码密钥');
             $table->string('user_name', 100)->comment('用户昵称');
             $table->string('avatar_url')->nullable()->comment('用户头像');
             $table->enum('user_status', ['success', 'disabled'])->default('success')->comment('用户状态 success:正常 disabled:禁用');

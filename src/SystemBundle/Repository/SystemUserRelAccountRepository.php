@@ -60,10 +60,28 @@ class SystemUserRelAccountRepository extends Repository
 
     public function checkAccount(string $account): bool
     {
-        $info = $this->getInfo(['rel_key' => $account]);
+        $info = $this->getInfo(['rel_value' => $account]);
         if (! empty($info)) {
             return false;
         }
         return true;
+    }
+
+    public function setColumnData(array $data): array
+    {
+        if (! empty($data['rel_data'])) {
+            $data['rel_data'] = json_encode($data['rel_data']);
+        }
+
+        return parent::setColumnData($data);
+    }
+
+    public function formatColumnData(array $data): array
+    {
+        $data = parent::formatColumnData($data);
+        if (! empty($data['rel_data'])) {
+            $data['rel_data'] = @json_decode($data['rel_data'], true);
+        }
+        return $data;
     }
 }

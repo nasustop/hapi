@@ -35,14 +35,15 @@ class SystemUserRepository extends Repository
         return $this->model;
     }
 
-    public function generatePassword($pwd): string
+    public function generatePassword($pwd, $hash): string
     {
+        $pwd = md5($pwd . $hash);
         return password_hash($pwd, PASSWORD_DEFAULT);
     }
 
-    public function validatePassword($pwd, $hash): bool
+    public function validatePassword($pwd, $old_pwd, $old_hash): bool
     {
-        return password_verify($pwd, $hash);
+        return password_verify(md5($pwd . $old_hash), $old_pwd);
     }
 
     public function validateUserStatus($user_status)
@@ -54,21 +55,11 @@ class SystemUserRepository extends Repository
 
     public function setColumnData(array $data): array
     {
-        if (empty($this->getCols())) {
-            return $data;
+        if (! empty($data['password'])) {
+            $data['password_hash'] = get_rand_string(32);
+            $data['password'] = $this->generatePassword($data['password'], $data['password_hash']);
         }
 
-        $result = [];
-        foreach ($data as $key => $value) {
-            if (! in_array($key, $this->getCols())) {
-                continue;
-            }
-            if ($key === 'password') {
-                $value = $this->generatePassword($value);
-            }
-            $result[$key] = $value;
-        }
-
-        return $result;
+        return parent::setColumnData($data);
     }
 }

@@ -68,7 +68,7 @@ class AuthUserProvider extends UserProvider
             throw new BadRequestHttpException('账号不存在');
         }
         // 验证密码
-        if (! $this->getService()->getRepository()->validatePassword($inputData['password'], $userInfo['password'])) {
+        if (! $this->getService()->getRepository()->validatePassword($inputData['password'], $userInfo['password'], $userInfo['password_hash'])) {
             throw new BadRequestHttpException('密码错误');
         }
         unset($userInfo['password']);

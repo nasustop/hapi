@@ -99,3 +99,18 @@ if (! function_exists('logger')) {
         return $loggerFactory->get($name, $group);
     }
 }
+
+if (! function_exists('get_rand_string')) {
+    function get_rand_string($length): string
+    {
+        // 字符组合
+        $str = '#abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $len = strlen($str) - 1;
+        $randStr = '';
+        for ($i = 0; $i < $length; ++$i) {
+            $num = mt_rand(0, $len);
+            $randStr .= $str[$num];
+        }
+        return $randStr;
+    }
+}

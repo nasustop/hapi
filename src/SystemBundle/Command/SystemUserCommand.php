@@ -24,7 +24,7 @@ class SystemUserCommand extends HyperfCommand
 {
     protected array $headers = [
         'user_id',
-        'login_name',
+        'account',
         'user_name',
         'mobile',
         'user_status',
@@ -87,9 +87,9 @@ class SystemUserCommand extends HyperfCommand
 
     public function createUser()
     {
-        $login_name = $this->ask('请输入 login_name ');
-        if (empty($login_name)) {
-            $this->error('login_name 不能为空');
+        $account = $this->ask('请输入 account ');
+        if (empty($account)) {
+            $this->error('account 不能为空');
             return false;
         }
         $mobile = $this->ask('请输入 mobile ');
@@ -104,8 +104,8 @@ class SystemUserCommand extends HyperfCommand
         }
         $service = $this->container->get(SystemUserService::class);
         $info = $service->createUser([
-            'login_name' => $login_name,
-            'user_name' => $login_name,
+            'account' => $account,
+            'user_name' => $account,
             'mobile' => $mobile,
             'password' => $password,
         ]);
@@ -113,12 +113,18 @@ class SystemUserCommand extends HyperfCommand
             $this->error('管理员添加失败');
             return false;
         }
-        $user = $service->getInfo(['user_id' => $info['user_id']], $this->headers);
+        $user = $service->getInfo(['user_id' => $info['user_id']]);
         if (empty($user)) {
             $this->error('管理员添加失败');
             return false;
         }
-        $this->table($this->headers, [$user]);
+        $this->table($this->headers, [[
+            $user['user_id'],
+            $user['account'],
+            $user['user_name'],
+            $user['mobile'],
+            $user['user_status'],
+        ]]);
         return true;
     }
 
