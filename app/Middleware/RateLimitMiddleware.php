@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use Hyperf\Context\ApplicationContext;
-use Nasustop\HapiRateLimit\RedisTokenBucket;
+use Nasustop\HapiRateLimit\Rate\RedisTokenBucket;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

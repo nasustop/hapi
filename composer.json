@@ -38,7 +38,7 @@
         "nasustop/hapi-memcached": "~3.0.0",
         "nasustop/hapi-queue": "~3.0.0",
         "nasustop/hapi-rate-limit": "~3.0.0",
-        "nasustop/hapi-sidecar": "~1.0.0",
+        "nasustop/hapi-sidecar": "~3.0.0",
         "nasustop/hapi-sentry": "~3.0.0",
         "overtrue/flysystem-cos": "^5.0",
         "overtrue/flysystem-qiniu": "^3.0"
