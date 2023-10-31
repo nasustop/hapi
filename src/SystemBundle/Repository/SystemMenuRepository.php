@@ -18,9 +18,15 @@ class SystemMenuRepository extends Repository
 {
     public const ENUM_MENU_TYPE_MENU = 'menu';
 
+    public const ENUM_MENU_TYPE_PAGE = 'page';
+
     public const ENUM_MENU_TYPE_APIS = 'apis';
 
-    public const ENUM_MENU_TYPE = [self::ENUM_MENU_TYPE_MENU => 'menu', self::ENUM_MENU_TYPE_APIS => 'apis'];
+    public const ENUM_MENU_TYPE = [
+        self::ENUM_MENU_TYPE_MENU => '菜单',
+        self::ENUM_MENU_TYPE_PAGE => '页面',
+        self::ENUM_MENU_TYPE_APIS => '接口',
+    ];
 
     public const ENUM_MENU_TYPE_DEFAULT = self::ENUM_MENU_TYPE_MENU;
 
