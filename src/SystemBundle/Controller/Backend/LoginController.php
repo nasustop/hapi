@@ -50,6 +50,7 @@ class LoginController extends AbstractController
             throw new UnauthorizedHttpException(message: '当前账号没有配置后台管理权限,请联系管理员');
         }
         $menuData = $this->getMenuService()->getRepository()->findTreeByMenuIds(menu_ids: $menu_ids);
+        $result['is_support_user'] = $authInfo['is_support_user'];
         $result['menu_alias'] = array_values(array_filter(array_unique(array_column($menuData['list'] ?? [], 'menu_alias'))));
         return $this->getResponse()->success(data: $result);
     }
