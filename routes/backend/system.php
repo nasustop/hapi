@@ -76,18 +76,18 @@ Router::addGroup('/system', function () {
         'name' => '删除角色',
     ]);
 
-    Router::get('/auth/user/schema/list', 'SystemBundle\Controller\Backend\SystemUserController@actionSchemaList', [
-        'alias' => 'app.system.user.schema',
+    Router::get('/auth/user/template/list', 'SystemBundle\Controller\Backend\SystemUserController@actionTemplateList', [
+        'alias' => 'app.system.user.template.list',
         'name' => '用户列表模板',
     ]);
 
-    Router::get('/auth/user/schema/create', 'SystemBundle\Controller\Backend\SystemUserController@actionSchemaCreate', [
-        'alias' => 'app.system.user.schema.create',
+    Router::get('/auth/user/template/create', 'SystemBundle\Controller\Backend\SystemUserController@actionTemplateCreate', [
+        'alias' => 'app.system.user.template.create',
         'name' => '添加用户模板',
     ]);
 
-    Router::get('/auth/user/schema/update', 'SystemBundle\Controller\Backend\SystemUserController@actionSchemaUpdate', [
-        'alias' => 'app.system.user.schema.update',
+    Router::get('/auth/user/template/update', 'SystemBundle\Controller\Backend\SystemUserController@actionTemplateUpdate', [
+        'alias' => 'app.system.user.template.update',
         'name' => '修改用户模板',
     ]);
     Router::get('/auth/user/list', 'SystemBundle\Controller\Backend\SystemUserController@actionList', [
@@ -181,6 +181,6 @@ Router::addGroup('/system', function () {
     ]);
 }, [
     'middleware' => [
-//        \SystemBundle\Middleware\BackendTokenMiddleware::class,
+        \SystemBundle\Middleware\BackendTokenMiddleware::class,
     ],
 ]);
