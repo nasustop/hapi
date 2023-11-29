@@ -75,15 +75,18 @@ class SystemUserService
         return $this->powerRepository;
     }
 
-    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
+    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = []): array
     {
         $info = $this->getRepository()->getInfo($filter, $columns, $orderBy);
         if (! empty($info)) {
+            unset($info['password'], $info['password_hash']);
             $relAccount = $this->getSystemUserRelAccountRepository()
                 ->getLists(['user_id' => $info['user_id']]);
             foreach ($relAccount as $value) {
                 $info[$value['rel_type']] = $value['rel_value'];
             }
+            $data = $this->_addPowerToUserList([$info['user_id'] => $info]);
+            $info = $data[$info['user_id']] ?? [];
         }
         return $info;
     }
@@ -98,26 +101,14 @@ class SystemUserService
             $user_id = $this->getRepository()->insertGetId(data: $data);
 
             $batchInertRelAccount = [];
-            if (! empty($data['account'])) {
-                $batchInertRelAccount[] = [
-                    'user_id' => $user_id,
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
-                    'rel_value' => $data['account'],
-                ];
-            }
-            if (! empty($data['mobile'])) {
-                $batchInertRelAccount[] = [
-                    'user_id' => $user_id,
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE,
-                    'rel_value' => $data['mobile'],
-                ];
-            }
-            if (! empty($data['email'])) {
-                $batchInertRelAccount[] = [
-                    'user_id' => $user_id,
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL,
-                    'rel_value' => $data['email'],
-                ];
+            foreach (SystemUserRelAccountRepository::ENUM_REL_TYPE as $type => $value) {
+                if (! empty($data[$type])) {
+                    $batchInertRelAccount[] = [
+                        'user_id' => $user_id,
+                        'rel_type' => $type,
+                        'rel_value' => $data[$type],
+                    ];
+                }
             }
             if (! empty($batchInertRelAccount)) {
                 $this->getSystemUserRelAccountRepository()->batchInsert($batchInertRelAccount);
@@ -142,66 +133,37 @@ class SystemUserService
     public function updateUser(array $filter, array $data): array
     {
         unset($data['password'], $data['password_hash']);
-        $info = $this->getInfo(filter: $filter);
+        $info = $this->getRepository()->getInfo(filter: $filter);
         if (empty($info)) {
             throw new BadRequestHttpException(message: '修改的数据不存在');
         }
+        $relData = $this->getSystemUserRelAccountRepository()
+            ->getLists(['user_id' => $info['user_id']]);
+        $relData = array_column($relData, null, 'rel_type');
         Db::beginTransaction();
         try {
             $this->getRepository()->updateBy(filter: ['user_id' => $info['user_id']], data: $data);
 
             $relDeleteIds = [];
             $relInsertData = [];
-            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT])) {
-                if (empty($data['account'])) {
-                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]['id'];
-                } elseif ($data['account'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]) {
-                    $this->systemUserRelAccountRepository->updateOneBy([
-                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT]['id'],
-                    ], [
-                        'rel_value' => $data['account'],
-                    ]);
+            foreach (SystemUserRelAccountRepository::ENUM_REL_TYPE as $type => $value) {
+                if (! empty($relData[$type])) {
+                    if (empty($data[$type])) {
+                        $relDeleteIds[] = $relData[$type]['id'];
+                    } elseif ($data[$type] !== $relData[$type]) {
+                        $this->systemUserRelAccountRepository->updateOneBy([
+                            'id' => $relData[$type]['id'],
+                        ], [
+                            'rel_value' => $data[$type],
+                        ]);
+                    }
+                } elseif (! empty($data[$type])) {
+                    $relInsertData[] = [
+                        'user_id' => $info['user_id'],
+                        'rel_type' => $type,
+                        'rel_value' => $data[$type],
+                    ];
                 }
-            } elseif (! empty($data['account'])) {
-                $relInsertData[] = [
-                    'user_id' => $info['user_id'],
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
-                    'rel_value' => $data['account'],
-                ];
-            }
-            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL])) {
-                if (empty($data['email'])) {
-                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]['id'];
-                } elseif ($data['email'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]) {
-                    $this->systemUserRelAccountRepository->updateOneBy([
-                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL]['id'],
-                    ], [
-                        'rel_value' => $data['email'],
-                    ]);
-                }
-            } elseif (! empty($data['email'])) {
-                $relInsertData[] = [
-                    'user_id' => $info['user_id'],
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_EMAIL,
-                    'rel_value' => $data['email'],
-                ];
-            }
-            if (! empty($info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE])) {
-                if (empty($data['mobile'])) {
-                    $relDeleteIds[] = $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]['id'];
-                } elseif ($data['mobile'] !== $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]) {
-                    $this->systemUserRelAccountRepository->updateOneBy([
-                        'id' => $info['rel'][SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE]['id'],
-                    ], [
-                        'rel_value' => $data['mobile'],
-                    ]);
-                }
-            } elseif (! empty($data['mobile'])) {
-                $relInsertData[] = [
-                    'user_id' => $info['user_id'],
-                    'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_MOBILE,
-                    'rel_value' => $data['mobile'],
-                ];
             }
 
             if (! empty($relDeleteIds)) {
@@ -317,7 +279,7 @@ class SystemUserService
         return array_values(array_filter(array_unique($menu_ids)));
     }
 
-    protected function _addPowerToUserList(array $userList)
+    protected function _addPowerToUserList(array $userList): array
     {
         $user_ids = array_values(array_filter(array_unique(array_column($userList, 'user_id'))));
         $relAccountList = [];
@@ -332,12 +294,11 @@ class SystemUserService
             ]);
         }
         foreach ($userList as &$value) {
-            $value['rel'] = [];
             foreach ($relAccountList as $relAccount) {
                 if ($relAccount['user_id'] != $value['user_id']) {
                     continue;
                 }
-                $value['rel'][$relAccount['rel_type']] = $relAccount;
+                $value[$relAccount['rel_type']] = $relAccount['rel_value'];
             }
             $role_ids = [];
             $menu_ids = [];
