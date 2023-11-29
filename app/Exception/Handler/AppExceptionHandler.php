@@ -54,7 +54,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->logger->error($throwable->getTraceAsString());
 
-        return $response->withStatus(ErrorCode::SERVER_ERROR)->withBody($responseBody);
+        return $response->withBody($responseBody);
     }
 
     public function isValid(\Throwable $throwable): bool
