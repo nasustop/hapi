@@ -229,6 +229,21 @@ class SystemUserService
 
     public function pageUserLists(array $filter, array|string $columns = '*', int $page = 1, int $pageSize = 20): array
     {
+        $relFilter = [];
+        foreach (SystemUserRelAccountRepository::ENUM_REL_TYPE as $type => $value) {
+            if (! empty($filter[$type])) {
+                $relFilter[] = [
+                    'rel_type' => $type,
+                    'rel_value|contains' => $filter[$type],
+                ];
+                unset($filter[$type]);
+            }
+        }
+        if (! empty($relFilter)) {
+            $relData = $this->getSystemUserRelAccountRepository()->getLists($relFilter, 'user_id');
+            $relUserIds = array_values(array_unique(array_column($relData, 'user_id')));
+            $filter['user_id'] = empty($filter['user_id']) ? $relUserIds : array_merge($filter['user_id'], $relUserIds);
+        }
         $result = $this->getRepository()->pageLists(filter: $filter, columns: $columns, page: $page, pageSize: $pageSize);
         $result['list'] = $this->_addPowerToUserList(userList: $result['list']);
         return $result;

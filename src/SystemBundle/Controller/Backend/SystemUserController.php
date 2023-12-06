@@ -27,19 +27,19 @@ class SystemUserController extends AbstractController
 
     public function actionTemplateList(): ResponseInterface
     {
-        $schema = $this->getTemplate()->templateList();
+        $schema = $this->getTemplate()->getTableTemplate();
         return $this->getResponse()->success($schema);
     }
 
     public function actionTemplateCreate(): ResponseInterface
     {
-        $schema = $this->getTemplate()->templateCreate();
+        $schema = $this->getTemplate()->getCreateFormTemplate();
         return $this->getResponse()->success($schema);
     }
 
     public function actionTemplateUpdate(): ResponseInterface
     {
-        $schema = $this->getTemplate()->templateUpdate();
+        $schema = $this->getTemplate()->getUpdateFormTemplate();
         return $this->getResponse()->success($schema);
     }
 
