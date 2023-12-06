@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace App\Listener;
 
 use Hyperf\Database\Events\QueryExecuted;
@@ -29,7 +30,7 @@ class DbQueryExecutedListener implements ListenerInterface
 
     public function __construct(ContainerInterface $container)
     {
-        $this->logger = $container->get(LoggerFactory::class)->get('sql');
+        $this->logger = $container->get(LoggerFactory::class)->get('listen', 'sql');
     }
 
     public function listen(): array
