@@ -50,10 +50,24 @@ class SystemUserController extends AbstractController
         $rules = [
             'user_name' => 'required',
             'avatar_url' => 'url',
-            'password' => 'required',
-            'account' => 'required|unique:system_user_rel_account,rel_type',
-            'email' => 'email|unique:system_user_rel_account,rel_type',
-            'mobile' => 'unique:system_user_rel_account,rel_type',
+            'password' => 'checkPassword',
+            'account' => [
+                'checkAccount',
+                Rule::unique('system_user_rel_account', 'rel_value')->where(function ($query) {
+                    $query->where('rel_type', 'account');
+                }),
+            ],
+            'email' => [
+                'email',
+                Rule::unique('system_user_rel_account', 'rel_value')->where(function ($query) {
+                    $query->where('rel_type', 'email');
+                }),
+            ],
+            'mobile' => [
+                Rule::unique('system_user_rel_account', 'rel_value')->where(function ($query) {
+                    $query->where('rel_type', 'mobile');
+                }),
+            ],
         ];
         $messages = [
             'user_name.required' => '用户名称必填',
@@ -85,9 +99,29 @@ class SystemUserController extends AbstractController
             'filter.user_id' => 'required',
             'params' => 'required|array',
             'params.avatar_url' => 'url',
-            'params.account' => ['required', Rule::unique('system_user_rel_account', 'rel_type')->ignore($params['filter']['user_id'], 'user_id')],
-            'params.email' => ['email', Rule::unique('system_user_rel_account', 'rel_type')->ignore($params['filter']['user_id'], 'user_id')],
-            'params.mobile' => Rule::unique('system_user_rel_account', 'rel_type')->ignore($params['filter']['user_id'], 'user_id'),
+            'params.account' => [
+                'checkAccount',
+                Rule::unique('system_user_rel_account', 'rel_value')
+                    ->ignore($params['filter']['user_id'], 'user_id')
+                    ->where(function ($query) {
+                        $query->where('rel_type', 'account');
+                    }),
+            ],
+            'params.email' => [
+                'email',
+                Rule::unique('system_user_rel_account', 'rel_value')
+                    ->ignore($params['filter']['user_id'], 'user_id')
+                    ->where(function ($query) {
+                        $query->where('rel_type', 'email');
+                    }),
+            ],
+            'params.mobile' => [
+                Rule::unique('system_user_rel_account', 'rel_value')
+                    ->ignore($params['filter']['user_id'], 'user_id')
+                    ->where(function ($query) {
+                        $query->where('rel_type', 'mobile');
+                    }),
+            ],
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
