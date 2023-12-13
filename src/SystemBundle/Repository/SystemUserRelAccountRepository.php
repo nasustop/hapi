@@ -58,15 +58,6 @@ class SystemUserRelAccountRepository extends Repository
         return $this->model;
     }
 
-    public function checkAccount(string $account): bool
-    {
-        $info = $this->getInfo(['rel_value' => $account]);
-        if (! empty($info)) {
-            return false;
-        }
-        return true;
-    }
-
     public function setColumnData(array $data): array
     {
         if (! empty($data['rel_data'])) {

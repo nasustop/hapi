@@ -62,7 +62,7 @@ class SystemUserTemplate extends Template
     {
         return [
             'account' => [
-                'placeholder' => '请输入账号1',
+                'placeholder' => '请输入账号',
                 'clearable' => true,
             ],
             'mobile' => [
@@ -165,6 +165,7 @@ class SystemUserTemplate extends Template
             'user_name' => '',
             'mobile' => '',
             'email' => '',
+            'role_ids' => [],
             'menu_ids' => [],
         ];
     }
