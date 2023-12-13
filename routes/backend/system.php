@@ -59,6 +59,23 @@ Router::addGroup('/system', function () {
         'name' => '删除菜单',
     ]);
 
+
+    Router::get('/auth/role/template/list', 'SystemBundle\Controller\Backend\SystemRoleController@actionTableTemplate', [
+        'alias' => 'app.system.role.template.list',
+        'name' => '角色列表模板',
+    ]);
+    Router::get('/auth/role/template/create', 'SystemBundle\Controller\Backend\SystemRoleController@actionCreateFormTemplate', [
+        'alias' => 'app.system.role.template.create',
+        'name' => '添加角色模板',
+    ]);
+    Router::get('/auth/role/template/update', 'SystemBundle\Controller\Backend\SystemRoleController@actionUpdateFormTemplate', [
+        'alias' => 'app.system.role.template.update',
+        'name' => '修改角色模板',
+    ]);
+    Router::get('/auth/role/info', 'SystemBundle\Controller\Backend\SystemRoleController@actionInfo', [
+        'alias' => 'app.system.role.info',
+        'name' => '角色详情',
+    ]);
     Router::get('/auth/role/list', 'SystemBundle\Controller\Backend\SystemRoleController@actionList', [
         'alias' => 'app.system.role.list',
         'name' => '角色列表',

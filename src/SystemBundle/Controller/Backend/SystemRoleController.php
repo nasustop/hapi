@@ -15,10 +15,31 @@ use App\Controller\AbstractController;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemRoleService;
+use SystemBundle\Template\SystemRoleTemplate;
 
 class SystemRoleController extends AbstractController
 {
     protected SystemRoleService $service;
+
+    protected SystemRoleTemplate $template;
+
+    public function actionTableTemplate(): ResponseInterface
+    {
+        $result = $this->getTemplate()->getTableTemplate();
+        return $this->getResponse()->success($result);
+    }
+
+    public function actionCreateFormTemplate(): ResponseInterface
+    {
+        $result = $this->getTemplate()->getCreateFormTemplate();
+        return $this->getResponse()->success($result);
+    }
+
+    public function actionUpdateFormTemplate(): ResponseInterface
+    {
+        $result = $this->getTemplate()->getUpdateFormTemplate();
+        return $this->getResponse()->success($result);
+    }
 
     /**
      * @throws \Exception
@@ -42,6 +63,14 @@ class SystemRoleController extends AbstractController
         }
 
         $result = $this->getService()->createRole(data: $params);
+
+        return $this->getResponse()->success(data: $result);
+    }
+
+    public function actionInfo(): ResponseInterface
+    {
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->getInfo(filter: $filter);
 
         return $this->getResponse()->success(data: $result);
     }
@@ -110,5 +139,13 @@ class SystemRoleController extends AbstractController
             $this->service = make(SystemRoleService::class);
         }
         return $this->service;
+    }
+
+    protected function getTemplate(): SystemRoleTemplate
+    {
+        if (empty($this->template)) {
+            $this->template = make(SystemRoleTemplate::class);
+        }
+        return $this->template;
     }
 }

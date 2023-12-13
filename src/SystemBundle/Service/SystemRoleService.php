@@ -17,7 +17,6 @@ use SystemBundle\Repository\SystemPowerRepository;
 use SystemBundle\Repository\SystemRoleRepository;
 
 /**
- * @method getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
  * @method getLists(array $filter = [], array|string $columns = '*', int $page = 0, int $pageSize = 0, array $orderBy = [])
  * @method count(array $filter)
  * @method pageLists(array $filter = [], array|string $columns = '*', int $page = 1, int $pageSize = 100, array $orderBy = [])
@@ -142,6 +141,16 @@ class SystemRoleService
             throw $exception;
         }
         return true;
+    }
+
+    public function getInfo(array $filter): array
+    {
+        $result = $this->getRepository()->getInfo($filter);
+        if (! empty($result)) {
+            $data = $this->_addMenuIdsToRoleList([$result['role_id'] => $result]);
+            $result = $data[$result['role_id']] ?? [];
+        }
+        return $result;
     }
 
     /**
