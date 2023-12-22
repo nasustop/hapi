@@ -129,7 +129,7 @@ class SystemMenuTemplate extends Template
                 'type' => 'tag',
                 'tag' => [
                     '0' => [
-                        'type' => 'error',
+                        'type' => 'danger',
                         'message' => '否',
                     ],
                     '1' => [

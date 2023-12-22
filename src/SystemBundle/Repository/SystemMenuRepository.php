@@ -34,9 +34,9 @@ class SystemMenuRepository extends Repository
         return $this->model;
     }
 
-    public function formatColumnData(array $data): array
+    public function getInfo(array $filter, array|string $columns = '*', array $orderBy = []): array
     {
-        $result = parent::formatColumnData($data);
+        $result = parent::getInfo($filter, $columns, $orderBy);
         if (! empty($result)) {
             $result['is_show'] = $result['is_show'] === 1;
         }
