@@ -85,8 +85,10 @@ class SystemUserService
             foreach ($relAccount as $value) {
                 $info[$value['rel_type']] = $value['rel_value'];
             }
-            $data = $this->_addPowerToUserList([$info['user_id'] => $info]);
-            $info = $data[$info['user_id']] ?? [];
+            $powerData = $this->getPowerRepository()->addPowerListByParentIds([$info['user_id']], SystemPowerRepository::ENUM_PARENT_TYPE_USER);
+            $info['role_ids'] = $powerData[$info['user_id']]['role_ids'] ?? [];
+            $info['menu_ids'] = $powerData[$info['user_id']]['menu_ids'] ?? [];
+            $info['api_ids'] = $powerData[$info['user_id']]['api_ids'] ?? [];
         }
         return $info;
     }
@@ -114,10 +116,24 @@ class SystemUserService
                 $this->getSystemUserRelAccountRepository()->batchInsert($batchInertRelAccount);
             }
 
-            $insertData = $this->_filterInsertList(id: $user_id, menu_ids: $data['menu_ids'] ?? [], role_ids: $data['role_ids'] ?? []);
-            if (! empty($insertData)) {
-                $this->getPowerRepository()->batchInsert(data: $insertData);
-            }
+            $this->getPowerRepository()->batchInsertByAuth(
+                $user_id,
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['role_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_ROLE,
+            );
+            $this->getPowerRepository()->batchInsertByAuth(
+                $user_id,
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['menu_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
+            );
+            $this->getPowerRepository()->batchInsertByAuth(
+                $user_id,
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['api_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_API,
+            );
 
             Db::commit();
         } catch (\Exception $exception) {
@@ -174,15 +190,24 @@ class SystemUserService
                 $this->getSystemUserRelAccountRepository()->batchInsert($relInsertData);
             }
 
-            $this->getPowerRepository()->deleteBy(filter: [
-                'parent_id' => $info['user_id'],
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
-            ]);
-
-            $insertData = $this->_filterInsertList(id: $info['user_id'], menu_ids: $data['menu_ids'] ?? [], role_ids: $data['role_ids'] ?? []);
-            if (! empty($insertData)) {
-                $this->getPowerRepository()->batchInsert(data: $insertData);
-            }
+            $this->getPowerRepository()->batchInsertByAuth(
+                $info['user_id'],
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['role_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_ROLE,
+            );
+            $this->getPowerRepository()->batchInsertByAuth(
+                $info['user_id'],
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['menu_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
+            );
+            $this->getPowerRepository()->batchInsertByAuth(
+                $info['user_id'],
+                SystemPowerRepository::ENUM_PARENT_TYPE_USER,
+                $data['api_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_API,
+            );
 
             Db::commit();
         } catch (\Exception $exception) {
@@ -224,7 +249,14 @@ class SystemUserService
     public function getUserLists(array $filter): array
     {
         $result = $this->getRepository()->getLists(filter: $filter);
-        return $this->_addPowerToUserList(userList: $result);
+        $parentIds = array_column($result, 'user_id');
+        $powerData = $this->getPowerRepository()->addPowerListByParentIds($parentIds, SystemPowerRepository::ENUM_PARENT_TYPE_USER);
+        foreach ($result as $k => $v) {
+            $result[$k]['role_ids'] = $powerData[$v['user_id']]['role_ids'] ?? [];
+            $result[$k]['menu_ids'] = $powerData[$v['user_id']]['menu_ids'] ?? [];
+            $result[$k]['api_ids'] = $powerData[$v['user_id']]['api_ids'] ?? [];
+        }
+        return $result;
     }
 
     public function pageUserLists(array $filter, array|string $columns = '*', int $page = 1, int $pageSize = 20): array
@@ -245,7 +277,14 @@ class SystemUserService
             $filter['user_id'] = empty($filter['user_id']) ? $relUserIds : array_merge($filter['user_id'], $relUserIds);
         }
         $result = $this->getRepository()->pageLists(filter: $filter, columns: $columns, page: $page, pageSize: $pageSize);
-        $result['list'] = $this->_addPowerToUserList(userList: $result['list']);
+
+        $parentIds = array_column($result['list'], 'user_id');
+        $powerData = $this->getPowerRepository()->addPowerListByParentIds($parentIds, SystemPowerRepository::ENUM_PARENT_TYPE_USER);
+        foreach ($result['list'] as $k => $v) {
+            $result['list'][$k]['role_ids'] = $powerData[$v['user_id']]['role_ids'] ?? [];
+            $result['list'][$k]['menu_ids'] = $powerData[$v['user_id']]['menu_ids'] ?? [];
+            $result['list'][$k]['api_ids'] = $powerData[$v['user_id']]['api_ids'] ?? [];
+        }
         return $result;
     }
 
@@ -292,76 +331,5 @@ class SystemUserService
         }
 
         return array_values(array_filter(array_unique($menu_ids)));
-    }
-
-    protected function _addPowerToUserList(array $userList): array
-    {
-        $user_ids = array_values(array_filter(array_unique(array_column($userList, 'user_id'))));
-        $relAccountList = [];
-        $powerList = [];
-        if (! empty($user_ids)) {
-            $relAccountList = $this->getSystemUserRelAccountRepository()->getLists(filter: [
-                'user_id' => $user_ids,
-            ]);
-            $powerList = $this->getPowerRepository()->getLists(filter: [
-                'parent_id' => $user_ids,
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
-            ]);
-        }
-        foreach ($userList as &$value) {
-            foreach ($relAccountList as $relAccount) {
-                if ($relAccount['user_id'] != $value['user_id']) {
-                    continue;
-                }
-                $value[$relAccount['rel_type']] = $relAccount['rel_value'];
-            }
-            $role_ids = [];
-            $menu_ids = [];
-            foreach ($powerList as $power) {
-                if ($power['parent_id'] != $value['user_id']) {
-                    continue;
-                }
-                if ($power['children_type'] == SystemPowerRepository::ENUM_CHILDREN_TYPE_ROLE) {
-                    $role_ids[] = $power['children_id'];
-                    continue;
-                }
-                if ($power['children_type'] == SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU) {
-                    $menu_ids[] = $power['children_id'];
-                }
-            }
-            $value['role_ids'] = array_values(array_filter(array_unique($role_ids)));
-            $value['menu_ids'] = array_values(array_filter(array_unique($menu_ids)));
-        }
-
-        return $userList;
-    }
-
-    protected function _filterInsertList(int $id, array $menu_ids, array $role_ids): array
-    {
-        $insert_list = [];
-        foreach ($menu_ids as $menu_id) {
-            if (empty($menu_id)) {
-                continue;
-            }
-            $insert_list[] = [
-                'parent_id' => $id,
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
-                'children_id' => $menu_id,
-                'children_type' => SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
-            ];
-        }
-        foreach ($role_ids as $role_id) {
-            if (empty($role_id)) {
-                continue;
-            }
-            $insert_list[] = [
-                'parent_id' => $id,
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_USER,
-                'children_id' => $role_id,
-                'children_type' => SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
-            ];
-        }
-
-        return $insert_list;
     }
 }

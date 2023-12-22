@@ -15,18 +15,34 @@ use App\Controller\AbstractController;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
 use SystemBundle\Service\SystemMenuService;
+use SystemBundle\Template\SystemMenuTemplate;
 
 class SystemMenuController extends AbstractController
 {
     protected SystemMenuService $service;
 
-    public function actionEnumMenuType(): ResponseInterface
+    protected SystemMenuTemplate $template;
+
+    public function actionTemplateList(): ResponseInterface
     {
-        $data = $this->getService()->getRepository()->enumMenuType();
-        return $this->getResponse()->success(data: [
-            'default' => $this->getService()->getRepository()->enumMenuTypeDefault(),
-            'list' => $data,
-        ]);
+        $template = $this->getTemplate()->getTableTemplate();
+        return $this->getResponse()->success($template);
+    }
+
+    public function actionTemplateCreate(): ResponseInterface
+    {
+        $template = $this->getTemplate()
+            ->setParentId($this->getRequest()->input('parent_id', 0))
+            ->getCreateFormTemplate();
+        return $this->getResponse()->success($template);
+    }
+
+    public function actionTemplateUpdate(): ResponseInterface
+    {
+        $template = $this->getTemplate()
+            ->setParentId($this->getRequest()->input('parent_id', 0))
+            ->getUpdateFormTemplate();
+        return $this->getResponse()->success($template);
     }
 
     public function actionCreate(): ResponseInterface
@@ -39,7 +55,6 @@ class SystemMenuController extends AbstractController
             'menu_alias' => 'required',
             'sort' => 'required',
             'is_show' => 'required',
-            'menu_type' => 'required',
         ];
         $messages = [
             'parent_id.required' => 'parent_id 参数必填',
@@ -47,7 +62,6 @@ class SystemMenuController extends AbstractController
             'menu_alias.required' => 'menu_alias 参数必填',
             'sort.required' => 'sort 参数必填',
             'is_show.required' => 'is_show 参数必填',
-            'menu_type.required' => 'menu_type 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -55,7 +69,7 @@ class SystemMenuController extends AbstractController
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->getService()->saveData(data: $params);
+        $result = $this->getService()->createMenu(data: $params);
 
         return $this->getResponse()->success(data: $result);
     }
@@ -82,7 +96,7 @@ class SystemMenuController extends AbstractController
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateMenu(filter: $params['filter'], data: $params['params']);
 
         return $this->getResponse()->success(data: $result);
     }
@@ -90,16 +104,26 @@ class SystemMenuController extends AbstractController
     public function actionDelete(): ResponseInterface
     {
         $filter = $this->getRequest()->all();
-        $result = $this->getService()->deleteOneBy(filter: $filter);
+        $result = $this->getService()->deleteMenu(filter: $filter);
 
         return $this->getResponse()->success(data: $result);
+    }
+
+    public function actionInfo(): ResponseInterface
+    {
+        $filter = $this->getRequest()->all();
+        $result = $this->getService()->getInfo($filter);
+        return $this->getResponse()->success($result);
     }
 
     public function actionList(): ResponseInterface
     {
         $result = $this->getService()->getRepository()->findTreeByMenuIds();
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success(data: [
+            'list' => $result['tree'],
+            'total' => 0,
+        ]);
     }
 
     /**
@@ -111,5 +135,16 @@ class SystemMenuController extends AbstractController
             $this->service = make(SystemMenuService::class);
         }
         return $this->service;
+    }
+
+    /**
+     * get Template.
+     */
+    protected function getTemplate(): SystemMenuTemplate
+    {
+        if (empty($this->template)) {
+            $this->template = make(SystemMenuTemplate::class);
+        }
+        return $this->template;
     }
 }

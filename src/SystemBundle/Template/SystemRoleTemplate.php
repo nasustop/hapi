@@ -141,6 +141,71 @@ class SystemRoleTemplate extends Template
                     'label' => 'menu_name',
                 ],
             ],
+            'api_ids' => [
+                'type' => 'dialog',
+                'title' => 'API权限',
+                'btn' => [
+                    'title' => '选择',
+                    'type' => 'primary',
+                    'size' => 'mini',
+                ],
+                'dialog' => [
+                    'title' => '选择API权限',
+                    'type' => 'table',
+                    'header' => [
+                        'filter' => [
+                            'api_name' => [
+                                'placeholder' => '请输入API名称',
+                                'clearable' => true,
+                            ],
+                            'api_alias' => [
+                                'placeholder' => '请输入API别名',
+                                'clearable' => true,
+                            ],
+                        ],
+                        'actions' => [
+                            'search' => [
+                                'title' => '搜索',
+                                'type' => 'primary',
+                                'icon' => 'el-icon-search',
+                                'is_search' => true,
+                                'url' => [
+                                    'const' => '/system/auth/api/list',
+                                    'query' => [
+                                        'page' => 'page',
+                                        'page_size' => 'page_size',
+                                        'api_name' => 'api_name',
+                                        'api_alias' => 'api_alias',
+                                    ],
+                                    'refresh' => false,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'table' => [
+                        'url' => [
+                            'const' => '/system/auth/api/list',
+                        ],
+                        'page' => 1,
+                        'page_size' => 10,
+                        'key' => 'api_id',
+                        'columns' => [
+                            'api_name' => [
+                                'title' => 'API名称',
+                            ],
+                            'api_alias' => [
+                                'title' => 'API别名',
+                            ],
+                            'api_uri' => [
+                                'title' => 'API路径',
+                            ],
+                            'api_action' => [
+                                'title' => 'API方法',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -153,6 +218,7 @@ class SystemRoleTemplate extends Template
             'role_name' => '',
             'role_alias' => '',
             'menu_ids' => [],
+            'api_ids' => [],
         ];
     }
 
@@ -205,6 +271,71 @@ class SystemRoleTemplate extends Template
                     'label' => 'menu_name',
                 ],
             ],
+            'api_ids' => [
+                'type' => 'dialog',
+                'title' => 'API权限',
+                'btn' => [
+                    'title' => '选择',
+                    'type' => 'primary',
+                    'size' => 'mini',
+                ],
+                'dialog' => [
+                    'title' => '选择API权限',
+                    'type' => 'table',
+                    'header' => [
+                        'filter' => [
+                            'api_name' => [
+                                'placeholder' => '请输入API名称',
+                                'clearable' => true,
+                            ],
+                            'api_alias' => [
+                                'placeholder' => '请输入API别名',
+                                'clearable' => true,
+                            ],
+                        ],
+                        'actions' => [
+                            'search' => [
+                                'title' => '搜索',
+                                'type' => 'primary',
+                                'icon' => 'el-icon-search',
+                                'is_search' => true,
+                                'url' => [
+                                    'const' => '/system/auth/api/list',
+                                    'query' => [
+                                        'page' => 'page',
+                                        'page_size' => 'page_size',
+                                        'api_name' => 'api_name',
+                                        'api_alias' => 'api_alias',
+                                    ],
+                                    'refresh' => false,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'table' => [
+                        'url' => [
+                            'const' => '/system/auth/api/list',
+                        ],
+                        'page' => 1,
+                        'page_size' => 10,
+                        'key' => 'api_id',
+                        'columns' => [
+                            'api_name' => [
+                                'title' => 'API名称',
+                            ],
+                            'api_alias' => [
+                                'title' => 'API别名',
+                            ],
+                            'api_uri' => [
+                                'title' => 'API路径',
+                            ],
+                            'api_action' => [
+                                'title' => 'API方法',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -217,6 +348,7 @@ class SystemRoleTemplate extends Template
             'role_name' => '',
             'role_alias' => '',
             'menu_ids' => [],
+            'api_ids' => [],
         ];
     }
 

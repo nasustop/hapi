@@ -14,144 +14,189 @@ namespace SystemBundle\Template;
 
 use Nasustop\HapiBase\Template\Template;
 use SystemBundle\Repository\SystemMenuRepository;
-use SystemBundle\Repository\SystemRoleRepository;
 
-class SystemUserTemplate extends Template
+class SystemMenuTemplate extends Template
 {
+    protected int $parent_id = 0;
+
+    public function setParentId($parent_id): static
+    {
+        $this->parent_id = intval($parent_id);
+        return $this;
+    }
+
+    public function getParentInfo(): array
+    {
+        if (empty($this->parent_id)) {
+            return [];
+        }
+        $repository = make(SystemMenuRepository::class);
+        return $repository->getInfo(['menu_id' => $this->parent_id]);
+    }
+
+    /**
+     * 表格数据的来源URL.
+     */
     public function getTableApiUri(): string
     {
-        return '/system/auth/user/list';
+        return '/system/auth/menu/list';
     }
 
+    /**
+     * 添加按钮的URL，一般为vue页面的path.
+     */
     public function getTableHeaderCreateActionUri(): string
     {
-        return '/system/user/edit';
+        return '/system/menu/create';
     }
 
+    /**
+     * 修改按钮的URL，一般为vue页面的path.
+     */
     public function getTableColumnUpdateActionUri(): string
     {
-        return '/system/user/edit';
+        return '/system/menu/update';
     }
 
+    /**
+     * 表格操作按钮中的删除按钮的URL.
+     */
     public function getTableColumnDeleteActionUri(): string
     {
-        return '/system/auth/user/delete';
+        return '/system/auth/menu/delete';
     }
 
+    /**
+     * 创建表单的保存按钮URL.
+     */
     public function getCreateFormSaveApiUri(): string
     {
-        return '/system/auth/user/create';
+        return '/system/auth/menu/create';
     }
 
+    /**
+     * 修改表单初始化获取数据的URL.
+     */
     public function getUpdateFormInfoApiUri(): string
     {
-        return '/system/auth/user/info';
+        return '/system/auth/menu/info';
     }
 
+    /**
+     * 修改表单保存按钮的URL.
+     */
     public function getUpdateFormSaveApiUri(): string
     {
-        return '/system/auth/user/update';
+        return '/system/auth/menu/update';
     }
 
+    /**
+     * 表格的key.
+     */
     public function getTableKey(): string
     {
-        return 'user_id';
+        return 'menu_id';
     }
 
+    /**
+     * 表格的顶部搜索项.
+     */
     public function getTableHeaderFilter(): array
     {
-        return [
-            'account' => [
-                'placeholder' => '请输入账号',
-                'clearable' => true,
-            ],
-            'mobile' => [
-                'placeholder' => '请输入手机号1',
-                'clearable' => true,
-            ],
-        ];
+        return [];
     }
 
+    /**
+     * 表格字段集合.
+     */
     public function getTableColumns(): array
     {
         return [
-            'user_id' => [
-                'title' => '用户ID',
+            'menu_name' => [
+                'title' => '菜单名称',
             ],
-            'user_name' => [
-                'title' => '用户昵称',
+            'menu_alias' => [
+                'title' => '菜单别名',
+                'align' => 'center',
             ],
-            'avatar_url' => [
-                'title' => '用户头像',
-                'type' => 'avatar',
+            'sort' => [
+                'title' => '排序',
+                'align' => 'center',
             ],
-            'account' => [
-                'title' => '用户账号',
-            ],
-            'mobile' => [
-                'title' => '用户手机号',
-            ],
-            'email' => [
-                'title' => '用户邮箱',
+            'is_show' => [
+                'title' => '是否显示',
+                'align' => 'center',
+                'type' => 'tag',
+                'tag' => [
+                    '0' => [
+                        'type' => 'error',
+                        'message' => '否',
+                    ],
+                    '1' => [
+                        'type' => 'success',
+                        'message' => '是',
+                    ],
+                ],
             ],
         ];
     }
 
+    /**
+     * 修改表格某一行的跳转地址的参数.
+     */
+    public function getTableColumnUpdateActionQuery(): array
+    {
+        return [
+            $this->getTableKey() => $this->getTableKey(),
+        ];
+    }
+
+    public function getTableColumnActions(): array
+    {
+        $result = parent::getTableColumnActions();
+        $data = [
+            'createChildren' => [
+                'title' => '添加子菜单',
+                'type' => 'success',
+                'jump' => true,
+                'url' => [
+                    'const' => $this->getTableHeaderCreateActionUri(),
+                    'query' => [
+                        'menu_id' => 'parent_id',
+                    ],
+                ],
+            ],
+        ];
+        return array_merge($data, $result);
+    }
+
+    /**
+     * 创建表单字段集合.
+     */
     public function getCreateFormColumns(): array
     {
-        $menuData = $this->getSystemMenuRepository()->findTreeByMenuIds();
-        $menuTree = $menuData['tree'] ?? [];
-        $roleData = $this->getSystemRoleRepository()->getLists();
+        $parentInfo = $this->getParentInfo();
         return [
-            'user_name' => [
+            'parent_id' => [
+                'title' => '父节点',
+                'type' => 'span',
+                'value' => $parentInfo['menu_name'] ?? '顶级菜单',
+            ],
+            'menu_name' => [
+                'title' => '菜单名称',
                 'type' => 'text',
-                'title' => '用户昵称',
             ],
-            'avatar_url' => [
-                'type' => 'avatar',
-                'title' => '用户头像',
-            ],
-            'account' => [
+            'menu_alias' => [
+                'title' => '菜单别名',
                 'type' => 'text',
-                'title' => '用户账号',
             ],
-            'password' => [
-                'type' => 'password',
-                'title' => '密码',
-                'showPassword' => true,
+            'sort' => [
+                'title' => '排序',
+                'type' => 'number',
             ],
-            'repeat_pwd' => [
-                'type' => 'password',
-                'title' => '确认密码',
-                'showPassword' => true,
-            ],
-            'mobile' => [
-                'type' => 'text',
-                'title' => '用户手机号',
-            ],
-            'email' => [
-                'type' => 'email',
-                'title' => '用户邮箱',
-            ],
-            'role_ids' => [
-                'type' => 'tree',
-                'title' => '角色权限',
-                'data' => $roleData,
-                'dataKey' => 'role_id',
-                'props' => [
-                    'children' => 'children',
-                    'label' => 'role_name',
-                ],
-            ],
-            'menu_ids' => [
-                'type' => 'tree',
-                'title' => '菜单权限',
-                'data' => $menuTree,
-                'dataKey' => 'menu_id',
-                'props' => [
-                    'children' => 'children',
-                    'label' => 'menu_name',
-                ],
+            'is_show' => [
+                'title' => '是否显示',
+                'type' => 'switch',
             ],
             'api_ids' => [
                 'type' => 'dialog',
@@ -221,111 +266,85 @@ class SystemUserTemplate extends Template
         ];
     }
 
+    /**
+     * 创建表单提交字段默认值集合.
+     */
     public function getCreateFormRuleForm(): array
     {
         return [
-            'account' => '',
-            'password' => '',
-            'avatar_url' => '',
-            'user_name' => '',
-            'mobile' => '',
-            'email' => '',
-            'role_ids' => [],
-            'menu_ids' => [],
+            'parent_id' => $this->parent_id,
+            'menu_name' => '',
+            'menu_alias' => '',
+            'sort' => '',
+            'is_show' => true,
             'api_ids' => [],
         ];
     }
 
+    /**
+     * 创建表单字段验证规则结合.
+     */
     public function getCreateFormRules(): array
     {
         return [
-            'account' => [
+            'menu_name' => [
                 [
                     'required' => true,
-                    'message' => '账号必填',
+                    'message' => '菜单名称必填',
                     'trigger' => 'change',
                 ],
             ],
-            'password' => [
+            'menu_alias' => [
                 [
                     'required' => true,
-                    'message' => '密码必填',
+                    'message' => '菜单别名必填',
                     'trigger' => 'change',
                 ],
             ],
-            'email' => [
+            'sort' => [
                 [
                     'required' => true,
-                    'message' => '邮箱必填',
+                    'message' => '排序必填',
+                    'trigger' => 'change',
                 ],
             ],
-            'repeat_pwd' => [
+            'is_show' => [
                 [
                     'required' => true,
-                    'message' => '确认密码必填',
-                ],
-                [
-                    'validator' => "(rule, value, callback) => {
-                                if (value === '') {
-                                  callback(new Error('请再次输入密码'));
-                                } else if (value !== this.ruleForm.password) {
-                                  callback(new Error('两次输入密码不一致!'));
-                                } else {
-                                  callback();
-                                }
-                            }",
+                    'message' => '是否显示必填',
                     'trigger' => 'change',
                 ],
             ],
         ];
     }
 
+    /**
+     * 修改表单字段集合.
+     */
     public function getUpdateFormColumns(): array
     {
-        $menuData = $this->getSystemMenuRepository()->findTreeByMenuIds();
-        $menuTree = $menuData['tree'] ?? [];
-        $roleData = $this->getSystemRoleRepository()->getLists();
+        $parentInfo = $this->getParentInfo();
         return [
-            'account' => [
+            'parent_id' => [
+                'title' => '父节点ID',
+                'type' => 'span',
+                'value' => $parentInfo['menu_name'] ?? '顶级菜单',
+            ],
+            'menu_name' => [
+                'title' => '菜单名称',
                 'type' => 'text',
-                'title' => '用户账号',
-                'disabled' => true,
             ],
-            'mobile' => [
+            'menu_alias' => [
+                'title' => '菜单别名',
                 'type' => 'text',
-                'title' => '用户手机号',
             ],
-            'email' => [
-                'type' => 'email',
-                'title' => '用户邮箱',
-            ],
-            'user_name' => [
+            'sort' => [
+                'title' => '排序',
                 'type' => 'text',
-                'title' => '用户昵称',
             ],
-            'avatar_url' => [
-                'type' => 'avatar',
-                'title' => '用户头像',
-            ],
-            'role_ids' => [
-                'type' => 'tree',
-                'title' => '角色权限',
-                'data' => $roleData,
-                'dataKey' => 'role_id',
-                'props' => [
-                    'children' => 'children',
-                    'label' => 'role_name',
-                ],
-            ],
-            'menu_ids' => [
-                'type' => 'tree',
-                'title' => '菜单权限',
-                'data' => $menuTree,
-                'dataKey' => 'menu_id',
-                'props' => [
-                    'children' => 'children',
-                    'label' => 'menu_name',
-                ],
+            'is_show' => [
+                'title' => '是否显示',
+                'type' => 'switch',
             ],
             'api_ids' => [
                 'type' => 'dialog',
@@ -395,64 +414,55 @@ class SystemUserTemplate extends Template
         ];
     }
 
+    /**
+     * 修改表单提交字段默认值集合.
+     */
     public function getUpdateFormRuleForm(): array
     {
         return [
-            'account' => '',
-            'avatar_url' => '',
-            'user_name' => '',
-            'mobile' => '',
-            'email' => '',
-            'role_ids' => [],
-            'menu_ids' => [],
+            'parent_id' => $this->parent_id,
+            'menu_name' => '',
+            'menu_alias' => '',
+            'sort' => '',
+            'is_show' => true,
             'api_ids' => [],
         ];
     }
 
+    /**
+     * 修改表单字段验证规则结合.
+     */
     public function getUpdateFormRules(): array
     {
         return [
-            'account' => [
+            'menu_name' => [
                 [
                     'required' => true,
-                    'message' => '账号必填',
+                    'message' => '菜单名称必填',
                     'trigger' => 'change',
                 ],
             ],
-            'email' => [
+            'menu_alias' => [
                 [
                     'required' => true,
-                    'message' => '邮箱必填',
+                    'message' => '菜单别名必填',
+                    'trigger' => 'change',
                 ],
             ],
-            'mobile' => [
+            'sort' => [
                 [
                     'required' => true,
-                    'message' => '手机号必填',
+                    'message' => '排序必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'is_show' => [
+                [
+                    'required' => true,
+                    'message' => '是否显示必填',
+                    'trigger' => 'change',
                 ],
             ],
         ];
-    }
-
-    /**
-     * get SystemMenuRepository.
-     */
-    public function getSystemMenuRepository(): SystemMenuRepository
-    {
-        if (empty($this->systemMenuRepository)) {
-            $this->systemMenuRepository = make(SystemMenuRepository::class);
-        }
-        return $this->systemMenuRepository;
-    }
-
-    /**
-     * get SystemRoleRepository.
-     */
-    public function getSystemRoleRepository(): SystemRoleRepository
-    {
-        if (empty($this->systemRoleRepository)) {
-            $this->systemRoleRepository = make(SystemRoleRepository::class);
-        }
-        return $this->systemRoleRepository;
     }
 }

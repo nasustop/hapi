@@ -71,10 +71,19 @@ class SystemRoleService
         try {
             $role_id = $this->getRepository()->insertGetId(data: $data);
 
-            $insertData = $this->_filterInsertList(id: $role_id, menu_ids: $data['menu_ids'] ?? []);
-            if (! empty($insertData)) {
-                $this->getPowerRepository()->batchInsert(data: $insertData);
-            }
+            $this->getPowerRepository()->batchInsertByAuth(
+                $role_id,
+                SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
+                $data['menu_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
+            );
+
+            $this->getPowerRepository()->batchInsertByAuth(
+                $role_id,
+                SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
+                $data['api_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_API,
+            );
 
             Db::commit();
         } catch (\Exception $exception) {
@@ -98,15 +107,18 @@ class SystemRoleService
         try {
             $this->getRepository()->updateBy(filter: ['role_id' => $roleInfo['role_id']], data: $data);
 
-            $this->getPowerRepository()->deleteBy(filter: [
-                'parent_id' => $roleInfo['role_id'],
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
-            ]);
-
-            $insertData = $this->_filterInsertList(id: $roleInfo['role_id'], menu_ids: $data['menu_ids'] ?? []);
-            if (! empty($insertData)) {
-                $this->getPowerRepository()->batchInsert(data: $insertData);
-            }
+            $this->getPowerRepository()->batchInsertByAuth(
+                $roleInfo['role_id'],
+                SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
+                $data['menu_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
+            );
+            $this->getPowerRepository()->batchInsertByAuth(
+                $roleInfo['role_id'],
+                SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
+                $data['api_ids'] ?? [],
+                SystemPowerRepository::ENUM_CHILDREN_TYPE_API,
+            );
 
             Db::commit();
         } catch (\Exception $exception) {
@@ -147,8 +159,9 @@ class SystemRoleService
     {
         $result = $this->getRepository()->getInfo($filter);
         if (! empty($result)) {
-            $data = $this->_addMenuIdsToRoleList([$result['role_id'] => $result]);
-            $result = $data[$result['role_id']] ?? [];
+            $powerData = $this->getPowerRepository()->addPowerListByParentIds([$result['role_id']], SystemPowerRepository::ENUM_PARENT_TYPE_ROLE);
+            $result['menu_ids'] = $powerData[$result['role_id']]['menu_ids'] ?? [];
+            $result['api_ids'] = $powerData[$result['role_id']]['api_ids'] ?? [];
         }
         return $result;
     }
@@ -159,7 +172,13 @@ class SystemRoleService
     public function getRoleLists(array $filter): array
     {
         $result = $this->getRepository()->getLists(filter: $filter);
-        return $this->_addMenuIdsToRoleList(roleList: $result);
+        $parentIds = array_column($result, 'role_id');
+        $powerData = $this->getPowerRepository()->addPowerListByParentIds($parentIds, SystemPowerRepository::ENUM_PARENT_TYPE_ROLE);
+        foreach ($result as $k => $v) {
+            $result[$k]['menu_ids'] = $powerData[$v['role_id']]['menu_ids'] ?? [];
+            $result[$k]['api_ids'] = $powerData[$v['role_id']]['api_ids'] ?? [];
+        }
+        return $result;
     }
 
     /**
@@ -168,56 +187,13 @@ class SystemRoleService
     public function pageRoleLists(array $filter, array|string $columns = '*', int $page = 1, int $pageSize = 20): array
     {
         $result = $this->getRepository()->pageLists(filter: $filter, columns: $columns, page: $page, pageSize: $pageSize);
-        $result['list'] = $this->_addMenuIdsToRoleList(roleList: $result['list']);
+
+        $parentIds = array_column($result['list'], 'role_id');
+        $powerData = $this->getPowerRepository()->addPowerListByParentIds($parentIds, SystemPowerRepository::ENUM_PARENT_TYPE_ROLE);
+        foreach ($result['list'] as $k => $v) {
+            $result['list'][$k]['menu_ids'] = $powerData[$v['role_id']]['menu_ids'] ?? [];
+            $result['list'][$k]['api_ids'] = $powerData[$v['role_id']]['api_ids'] ?? [];
+        }
         return $result;
-    }
-
-    /**
-     * 给角色列表添加menu_ids.
-     */
-    protected function _addMenuIdsToRoleList(array $roleList): array
-    {
-        $role_ids = array_values(array_filter(array_unique(array_column($roleList, 'role_id'))));
-        $powerList = [];
-        if (! empty($role_ids)) {
-            $powerList = $this->getPowerRepository()->getLists(filter: [
-                'parent_id' => $role_ids,
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
-                'children_type' => SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
-            ]);
-        }
-        foreach ($roleList as &$value) {
-            $menu_ids = [];
-            foreach ($powerList as $power) {
-                if ($power['parent_id'] != $value['role_id']) {
-                    continue;
-                }
-                $menu_ids[] = $power['children_id'];
-            }
-            $value['menu_ids'] = array_values(array_filter(array_unique($menu_ids)));
-        }
-
-        return $roleList;
-    }
-
-    /**
-     * 添加角色时格式化要填充的power数据.
-     */
-    protected function _filterInsertList(int $id, array $menu_ids): array
-    {
-        $insert_list = [];
-        foreach ($menu_ids as $menu_id) {
-            if (empty($menu_id)) {
-                continue;
-            }
-            $insert_list[] = [
-                'parent_id' => $id,
-                'parent_type' => SystemPowerRepository::ENUM_PARENT_TYPE_ROLE,
-                'children_id' => $menu_id,
-                'children_type' => SystemPowerRepository::ENUM_CHILDREN_TYPE_MENU,
-            ];
-        }
-
-        return $insert_list;
     }
 }

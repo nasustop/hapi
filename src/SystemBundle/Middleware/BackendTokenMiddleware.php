@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Middleware;
 
 use App\Exception\TokenErrorException;
@@ -23,9 +24,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class BackendTokenMiddleware implements MiddlewareInterface
 {
-    public function __construct(protected ContainerInterface $container)
-    {
-    }
+    public function __construct(protected ContainerInterface $container) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -38,7 +37,7 @@ class BackendTokenMiddleware implements MiddlewareInterface
             }
             throw new TokenErrorException(message: $exception->getMessage(), previous: $exception);
         }
-        $request = $request->withAttribute(name: 'auth', value: $user);
+        $request = $request->withAttribute('auth', $user);
 
         return $handler->handle(request: $request);
     }

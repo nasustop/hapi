@@ -16,35 +16,11 @@ use SystemBundle\Model\SystemMenuModel;
 
 class SystemMenuRepository extends Repository
 {
-    public const ENUM_MENU_TYPE_MENU = 'menu';
-
-    public const ENUM_MENU_TYPE_PAGE = 'page';
-
-    public const ENUM_MENU_TYPE_APIS = 'apis';
-
-    public const ENUM_MENU_TYPE = [
-        self::ENUM_MENU_TYPE_MENU => '菜单',
-        self::ENUM_MENU_TYPE_PAGE => '页面',
-        self::ENUM_MENU_TYPE_APIS => '接口',
-    ];
-
-    public const ENUM_MENU_TYPE_DEFAULT = self::ENUM_MENU_TYPE_MENU;
-
     protected SystemMenuModel $model;
 
     public function __call($method, $parameters)
     {
         return $this->getModel()->{$method}(...$parameters);
-    }
-
-    public function enumMenuType(): array
-    {
-        return self::ENUM_MENU_TYPE;
-    }
-
-    public function enumMenuTypeDefault(): string
-    {
-        return self::ENUM_MENU_TYPE_DEFAULT;
     }
 
     /**
@@ -56,6 +32,15 @@ class SystemMenuRepository extends Repository
             $this->model = make(SystemMenuModel::class);
         }
         return $this->model;
+    }
+
+    public function formatColumnData(array $data): array
+    {
+        $result = parent::formatColumnData($data);
+        if (! empty($result)) {
+            $result['is_show'] = $result['is_show'] === 1;
+        }
+        return $result;
     }
 
     /**
@@ -129,22 +114,5 @@ class SystemMenuRepository extends Repository
         }
         $list[] = $listItem;
         return $parent;
-    }
-
-    public function formatColumnData(array $data): array
-    {
-        $result = parent::formatColumnData($data);
-        if (! empty($result['apis'])) {
-            $result['apis'] = implode("\n", json_decode($result['apis'], true));
-        }
-        return $result;
-    }
-
-    public function setColumnData(array $data): array
-    {
-        if (! empty($data['apis'])) {
-            $data['apis'] = json_encode(explode("\n",  $data['apis']));
-        }
-        return parent::setColumnData($data);
     }
 }

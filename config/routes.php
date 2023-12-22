@@ -15,7 +15,7 @@ Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@i
 
 Router::get('/favicon.ico', function () {
     return '';
-});
+}, ['alias' => 'favicon']);
 
 Router::addGroup('/api/backend', function () {
     loadDirFiles(BASE_PATH . '/routes/backend');

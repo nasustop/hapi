@@ -38,9 +38,42 @@ Router::post('/logout', 'SystemBundle\Controller\Backend\LoginController@actionL
 ]);
 
 Router::addGroup('/system', function () {
-    Router::get('/auth/menu/enum/menu_type', 'SystemBundle\Controller\Backend\SystemMenuController@actionEnumMenuType', [
-        'alias' => 'app.system.menu.enum.menu_type',
-        'name' => '菜单类型列表',
+    Router::get('/auth/api/info', 'SystemBundle\Controller\Backend\SystemApiController@actionInfo', [
+        'alias' => 'app.system.api.info',
+        'name' => 'API详情',
+    ]);
+    Router::get('/auth/api/list', 'SystemBundle\Controller\Backend\SystemApiController@actionList', [
+        'alias' => 'app.system.api.list',
+        'name' => 'API列表',
+    ]);
+    Router::post('/auth/api/create', 'SystemBundle\Controller\Backend\SystemApiController@actionCreate', [
+        'alias' => 'app.system.api.create',
+        'name' => '添加API',
+    ]);
+    Router::post('/auth/api/update', 'SystemBundle\Controller\Backend\SystemApiController@actionUpdate', [
+        'alias' => 'app.system.api.update',
+        'name' => '修改API',
+    ]);
+    Router::post('/auth/api/delete', 'SystemBundle\Controller\Backend\SystemApiController@actionDelete', [
+        'alias' => 'app.system.api.delete',
+        'name' => '删除API',
+    ]);
+    Router::get('/auth/api/template/list', 'SystemBundle\Controller\Backend\SystemApiController@actionTemplateList', [
+        'alias' => 'app.system.api.template.list',
+        'name' => '菜单API模板',
+    ]);
+    Router::get('/auth/api/template/create', 'SystemBundle\Controller\Backend\SystemApiController@actionTemplateCreate', [
+        'alias' => 'app.system.api.template.create',
+        'name' => '添加API模板',
+    ]);
+    Router::get('/auth/api/template/update', 'SystemBundle\Controller\Backend\SystemApiController@actionTemplateUpdate', [
+        'alias' => 'app.system.api.template.update',
+        'name' => '修改API模板',
+    ]);
+
+    Router::get('/auth/menu/info', 'SystemBundle\Controller\Backend\SystemMenuController@actionInfo', [
+        'alias' => 'app.system.menu.info',
+        'name' => '菜单详情',
     ]);
     Router::get('/auth/menu/list', 'SystemBundle\Controller\Backend\SystemMenuController@actionList', [
         'alias' => 'app.system.menu.list',
@@ -58,7 +91,18 @@ Router::addGroup('/system', function () {
         'alias' => 'app.system.menu.delete',
         'name' => '删除菜单',
     ]);
-
+    Router::get('/auth/menu/template/list', 'SystemBundle\Controller\Backend\SystemMenuController@actionTemplateList', [
+        'alias' => 'app.system.menu.template.list',
+        'name' => '菜单列表模板',
+    ]);
+    Router::get('/auth/menu/template/create', 'SystemBundle\Controller\Backend\SystemMenuController@actionTemplateCreate', [
+        'alias' => 'app.system.menu.template.create',
+        'name' => '添加菜单模板',
+    ]);
+    Router::get('/auth/menu/template/update', 'SystemBundle\Controller\Backend\SystemMenuController@actionTemplateUpdate', [
+        'alias' => 'app.system.menu.template.update',
+        'name' => '修改菜单模板',
+    ]);
 
     Router::get('/auth/role/template/list', 'SystemBundle\Controller\Backend\SystemRoleController@actionTableTemplate', [
         'alias' => 'app.system.role.template.list',

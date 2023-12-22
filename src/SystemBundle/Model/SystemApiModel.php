@@ -9,36 +9,37 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Model;
 
 use App\Model\Model as BaseModel;
 
 /**
- * @property int $menu_id
- * @property int $parent_id
- * @property string $menu_name
- * @property string $menu_alias
- * @property int $sort
- * @property int $is_show
+ * @property int $api_id
+ * @property string $api_name
+ * @property string $api_alias
+ * @property string $api_method
+ * @property string $api_uri
+ * @property string $api_action
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class SystemMenuModel extends BaseModel
+class SystemApiModel extends BaseModel
 {
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'system_menu';
+    protected ?string $table = 'system_api';
 
     /**
      * The primary key for the model.
      */
-    protected string $primaryKey = 'menu_id';
+    protected string $primaryKey = 'api_id';
 
     /**
      * The table all columns.
      */
-    protected array $cols = ['menu_id', 'parent_id', 'menu_name', 'menu_alias', 'sort', 'is_show', 'created_at', 'updated_at'];
+    protected array $cols = ['api_id', 'api_name', 'api_alias', 'api_method', 'api_uri', 'api_action', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -48,5 +49,5 @@ class SystemMenuModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['menu_id' => 'integer', 'parent_id' => 'integer', 'sort' => 'integer', 'is_show' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['api_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

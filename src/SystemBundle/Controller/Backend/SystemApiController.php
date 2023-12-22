@@ -9,24 +9,35 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
-namespace SystemBundle\Controller\Frontend;
+
+namespace SystemBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
-use SystemBundle\Service\SystemExportFileService;
+use SystemBundle\Service\SystemApiService;
+use SystemBundle\Template\SystemApiTemplate;
 
-class SystemExportFileController extends AbstractController
+class SystemApiController extends AbstractController
 {
-    protected SystemExportFileService $service;
+    protected SystemApiService $service;
 
-    public function actionEnumHandleStatus(): ResponseInterface
+    public function actionTemplateList(): ResponseInterface
     {
-        $data = $this->getService()->getRepository()->enumHandleStatus();
-        return $this->getResponse()->success(data: [
-            'default' => $this->getService()->getRepository()->enumHandleStatusDefault(),
-            'list' => $data,
-        ]);
+        $template = $this->getTemplate()->getTableTemplate();
+        return $this->getResponse()->success($template);
+    }
+
+    public function actionTemplateCreate(): ResponseInterface
+    {
+        $template = $this->getTemplate()->getCreateFormTemplate();
+        return $this->getResponse()->success($template);
+    }
+
+    public function actionTemplateUpdate(): ResponseInterface
+    {
+        $template = $this->getTemplate()->getUpdateFormTemplate();
+        return $this->getResponse()->success($template);
     }
 
     public function actionCreate(): ResponseInterface
@@ -34,22 +45,18 @@ class SystemExportFileController extends AbstractController
         $params = $this->getRequest()->all();
 
         $rules = [
-            'user_id' => 'required',
-            'export_type' => 'required',
-            'request_data' => 'required',
-            'handle_status' => 'required',
-            'file_name' => 'required',
-            'file_url' => 'required',
-            'error_message' => 'required',
+            'api_name' => 'required',
+            'api_alias' => 'required',
+            'api_method' => 'required',
+            'api_uri' => 'required',
+            'api_action' => 'required',
         ];
         $messages = [
-            'user_id.required' => 'user_id 参数必填',
-            'export_type.required' => 'export_type 参数必填',
-            'request_data.required' => 'request_data 参数必填',
-            'handle_status.required' => 'handle_status 参数必填',
-            'file_name.required' => 'file_name 参数必填',
-            'file_url.required' => 'file_url 参数必填',
-            'error_message.required' => 'error_message 参数必填',
+            'api_name.required' => 'api_name 参数必填',
+            'api_alias.required' => 'api_alias 参数必填',
+            'api_method.required' => 'api_method 参数必填',
+            'api_uri.required' => 'api_uri 参数必填',
+            'api_action.required' => 'api_action 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -76,29 +83,25 @@ class SystemExportFileController extends AbstractController
 
         $rules = [
             'filter' => 'required|array',
-            'filter.id' => 'required',
+            'filter.api_id' => 'required',
             'params' => 'required|array',
-            'params.user_id' => 'required',
-            'params.export_type' => 'required',
-            'params.request_data' => 'required',
-            'params.handle_status' => 'required',
-            'params.file_name' => 'required',
-            'params.file_url' => 'required',
-            'params.error_message' => 'required',
+            'params.api_name' => 'required',
+            'params.api_alias' => 'required',
+            'params.api_method' => 'required',
+            'params.api_uri' => 'required',
+            'params.api_action' => 'required',
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
             'filter.array' => 'filter 参数错误，必须是数组格式',
-            'filter.id.required' => 'filter.id 参数必填',
+            'filter.api_id.required' => 'filter.api_id 参数必填',
             'params.required' => 'params 参数必填',
             'params.array' => 'params 参数错误，必须是数组格式',
-            'params.user_id.required' => 'params.user_id 参数必填',
-            'params.export_type.required' => 'params.export_type 参数必填',
-            'params.request_data.required' => 'params.request_data 参数必填',
-            'params.handle_status.required' => 'params.handle_status 参数必填',
-            'params.file_name.required' => 'params.file_name 参数必填',
-            'params.file_url.required' => 'params.file_url 参数必填',
-            'params.error_message.required' => 'params.error_message 参数必填',
+            'params.api_name.required' => 'params.api_name 参数必填',
+            'params.api_alias.required' => 'params.api_alias 参数必填',
+            'params.api_method.required' => 'params.api_method 参数必填',
+            'params.api_uri.required' => 'params.api_uri 参数必填',
+            'params.api_action.required' => 'params.api_action 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -132,11 +135,22 @@ class SystemExportFileController extends AbstractController
     /**
      * get Service.
      */
-    protected function getService(): SystemExportFileService
+    protected function getService(): SystemApiService
     {
         if (empty($this->service)) {
-            $this->service = make(SystemExportFileService::class);
+            $this->service = make(SystemApiService::class);
         }
         return $this->service;
+    }
+
+    /**
+     * get Template.
+     */
+    protected function getTemplate(): SystemApiTemplate
+    {
+        if (empty($this->template)) {
+            $this->template = make(SystemApiTemplate::class);
+        }
+        return $this->template;
     }
 }
