@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hapi.
+ *
+ * @link     https://www.nasus.top
+ * @document https://wiki.nasus.top
+ * @contact  xupengfei@xupengfei.net
+ * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ */
 
 namespace SystemBundle\Template;
 
@@ -78,27 +86,27 @@ class SystemApiTemplate extends Template
     public function getTableHeaderFilter(): array
     {
         return [
-			'api_name' => [
-				'placeholder' => '请输入接口名称',
-				'clearable' => true,
-			],
-			'api_alias' => [
-				'placeholder' => '请输入接口别名，全局唯一',
-				'clearable' => true,
-			],
-			'api_method' => [
-				'placeholder' => '请输入请求方式',
-				'clearable' => true,
-			],
-			'api_uri' => [
-				'placeholder' => '请输入接口地址',
-				'clearable' => true,
-			],
-			'api_action' => [
-				'placeholder' => '请输入接口方法',
-				'clearable' => true,
-			],
-		];
+            'api_name' => [
+                'placeholder' => '请输入接口名称',
+                'clearable' => true,
+            ],
+            'api_alias' => [
+                'placeholder' => '请输入接口别名，全局唯一',
+                'clearable' => true,
+            ],
+            'api_method' => [
+                'placeholder' => '请输入请求方式',
+                'clearable' => true,
+            ],
+            'api_uri' => [
+                'placeholder' => '请输入接口地址',
+                'clearable' => true,
+            ],
+            'api_action' => [
+                'placeholder' => '请输入接口方法',
+                'clearable' => true,
+            ],
+        ];
     }
 
     /**
@@ -107,22 +115,22 @@ class SystemApiTemplate extends Template
     public function getTableColumns(): array
     {
         return [
-			'api_name' => [
-				'title' => '接口名称',
-			],
-			'api_alias' => [
-				'title' => '接口别名，全局唯一',
-			],
-			'api_method' => [
-				'title' => '请求方式',
-			],
-			'api_uri' => [
-				'title' => '接口地址',
-			],
-			'api_action' => [
-				'title' => '接口方法',
-			],
-		];
+            'api_name' => [
+                'title' => '接口名称',
+            ],
+            'api_alias' => [
+                'title' => '接口别名，全局唯一',
+            ],
+            'api_method' => [
+                'title' => '请求方式',
+            ],
+            'api_uri' => [
+                'title' => '接口地址',
+            ],
+            'api_action' => [
+                'title' => '接口方法',
+            ],
+        ];
     }
 
     /**
@@ -131,27 +139,27 @@ class SystemApiTemplate extends Template
     public function getCreateFormColumns(): array
     {
         return [
-			'api_name' => [
-				'title' => '接口名称',
-				'type' => 'text',
-			],
-			'api_alias' => [
-				'title' => '接口别名，全局唯一',
-				'type' => 'text',
-			],
-			'api_method' => [
-				'title' => '请求方式',
-				'type' => 'text',
-			],
-			'api_uri' => [
-				'title' => '接口地址',
-				'type' => 'text',
-			],
-			'api_action' => [
-				'title' => '接口方法',
-				'type' => 'text',
-			],
-		];
+            'api_name' => [
+                'title' => '接口名称',
+                'type' => 'text',
+            ],
+            'api_alias' => [
+                'title' => '接口别名，全局唯一',
+                'type' => 'text',
+            ],
+            'api_method' => [
+                'title' => '请求方式',
+                'type' => 'text',
+            ],
+            'api_uri' => [
+                'title' => '接口地址',
+                'type' => 'text',
+            ],
+            'api_action' => [
+                'title' => '接口方法',
+                'type' => 'text',
+            ],
+        ];
     }
 
     /**
@@ -160,12 +168,12 @@ class SystemApiTemplate extends Template
     public function getCreateFormRuleForm(): array
     {
         return [
-			'api_name' => '',
-			'api_alias' => '',
-			'api_method' => '',
-			'api_uri' => '',
-			'api_action' => '',
-		];
+            'api_name' => '',
+            'api_alias' => '',
+            'api_method' => '',
+            'api_uri' => '',
+            'api_action' => '',
+        ];
     }
 
     /**
@@ -174,42 +182,42 @@ class SystemApiTemplate extends Template
     public function getCreateFormRules(): array
     {
         return [
-			'api_name' => [
-				[
-					'required' => true,
-					'message' => '接口名称必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_alias' => [
-				[
-					'required' => true,
-					'message' => '接口别名，全局唯一必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_method' => [
-				[
-					'required' => true,
-					'message' => '请求方式必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_uri' => [
-				[
-					'required' => true,
-					'message' => '接口地址必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_action' => [
-				[
-					'required' => true,
-					'message' => '接口方法必填',
-					'trigger' => 'change',
-				],
-			],
-		];
+            'api_name' => [
+                [
+                    'required' => true,
+                    'message' => '接口名称必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_alias' => [
+                [
+                    'required' => true,
+                    'message' => '接口别名，全局唯一必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_method' => [
+                [
+                    'required' => true,
+                    'message' => '请求方式必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_uri' => [
+                [
+                    'required' => true,
+                    'message' => '接口地址必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_action' => [
+                [
+                    'required' => true,
+                    'message' => '接口方法必填',
+                    'trigger' => 'change',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -218,27 +226,27 @@ class SystemApiTemplate extends Template
     public function getUpdateFormColumns(): array
     {
         return [
-			'api_name' => [
-				'title' => '接口名称',
-				'type' => 'text',
-			],
-			'api_alias' => [
-				'title' => '接口别名，全局唯一',
-				'type' => 'text',
-			],
-			'api_method' => [
-				'title' => '请求方式',
-				'type' => 'text',
-			],
-			'api_uri' => [
-				'title' => '接口地址',
-				'type' => 'text',
-			],
-			'api_action' => [
-				'title' => '接口方法',
-				'type' => 'text',
-			],
-		];
+            'api_name' => [
+                'title' => '接口名称',
+                'type' => 'text',
+            ],
+            'api_alias' => [
+                'title' => '接口别名，全局唯一',
+                'type' => 'text',
+            ],
+            'api_method' => [
+                'title' => '请求方式',
+                'type' => 'text',
+            ],
+            'api_uri' => [
+                'title' => '接口地址',
+                'type' => 'text',
+            ],
+            'api_action' => [
+                'title' => '接口方法',
+                'type' => 'text',
+            ],
+        ];
     }
 
     /**
@@ -247,12 +255,12 @@ class SystemApiTemplate extends Template
     public function getUpdateFormRuleForm(): array
     {
         return [
-			'api_name' => '',
-			'api_alias' => '',
-			'api_method' => '',
-			'api_uri' => '',
-			'api_action' => '',
-		];
+            'api_name' => '',
+            'api_alias' => '',
+            'api_method' => '',
+            'api_uri' => '',
+            'api_action' => '',
+        ];
     }
 
     /**
@@ -261,41 +269,41 @@ class SystemApiTemplate extends Template
     public function getUpdateFormRules(): array
     {
         return [
-			'api_name' => [
-				[
-					'required' => true,
-					'message' => '接口名称必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_alias' => [
-				[
-					'required' => true,
-					'message' => '接口别名，全局唯一必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_method' => [
-				[
-					'required' => true,
-					'message' => '请求方式必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_uri' => [
-				[
-					'required' => true,
-					'message' => '接口地址必填',
-					'trigger' => 'change',
-				],
-			],
-			'api_action' => [
-				[
-					'required' => true,
-					'message' => '接口方法必填',
-					'trigger' => 'change',
-				],
-			],
-		];
+            'api_name' => [
+                [
+                    'required' => true,
+                    'message' => '接口名称必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_alias' => [
+                [
+                    'required' => true,
+                    'message' => '接口别名，全局唯一必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_method' => [
+                [
+                    'required' => true,
+                    'message' => '请求方式必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_uri' => [
+                [
+                    'required' => true,
+                    'message' => '接口地址必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'api_action' => [
+                [
+                    'required' => true,
+                    'message' => '接口方法必填',
+                    'trigger' => 'change',
+                ],
+            ],
+        ];
     }
 }

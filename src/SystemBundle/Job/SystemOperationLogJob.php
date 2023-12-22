@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Job;
 
 use Nasustop\HapiQueue\Job\Job;
@@ -20,9 +21,7 @@ class SystemOperationLogJob extends Job
 
     protected string $queue = 'default';
 
-    public function __construct(protected array $logger)
-    {
-    }
+    public function __construct(protected array $logger) {}
 
     public function handle(): string
     {

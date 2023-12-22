@@ -25,9 +25,17 @@ php bin/hyperf.php migrate --seed
 ```
 
 # 代码生成
+### 加载API路由
+```shell
+php bin/hyperf.php hapi:system:api
+```
 ### 生成代码文件
 ```shell
 php bin/hyperf.php hapi:gen:code system_user
+```
+### 生成模板文件
+```shell
+php bin/hyperf.php hapi:gen:template system_user -b SystemBundle
 ```
 ### 原生生成model文件
 ```shell

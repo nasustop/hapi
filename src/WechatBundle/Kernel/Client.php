@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace WechatBundle\Kernel;
 
 use GuzzleHttp\TransferStats;
@@ -19,9 +20,7 @@ use ThirdPartyBundle\Kernel\Response;
 
 class Client
 {
-    public function __construct(protected HttpClient $httpClient, protected AccessToken $accessToken)
-    {
-    }
+    public function __construct(protected HttpClient $httpClient, protected AccessToken $accessToken) {}
 
     public function request(string $method, string $uri = '', array $options = []): Response
     {

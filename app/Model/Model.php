@@ -9,10 +9,9 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace App\Model;
 
 use Nasustop\HapiBase\Model\Model as BaseModel;
 
-abstract class Model extends BaseModel
-{
-}
+abstract class Model extends BaseModel {}

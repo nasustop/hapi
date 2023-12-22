@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace ThirdPartyBundle\Kernel;
 
 use App\Exception\HttpClientBadRequestException;
@@ -25,9 +26,7 @@ class HttpClient
 
     protected Response $response;
 
-    public function __construct(protected array $options = [])
-    {
-    }
+    public function __construct(protected array $options = []) {}
 
     public function __call($method, $parameters)
     {

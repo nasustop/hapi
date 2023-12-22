@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Job;
 
 use Nasustop\HapiQueue\Job\Job;
@@ -18,9 +19,7 @@ class SystemUploadCsvReadJob extends Job
 {
     protected string $queue = 'default';
 
-    public function __construct(protected int $upload_file_id, protected int $chunk_num, protected bool $useQueue)
-    {
-    }
+    public function __construct(protected int $upload_file_id, protected int $chunk_num, protected bool $useQueue) {}
 
     public function handle(): string
     {

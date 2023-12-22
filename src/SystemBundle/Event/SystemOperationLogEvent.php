@@ -9,13 +9,12 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Event;
 
 class SystemOperationLogEvent
 {
-    public function __construct(protected array $log)
-    {
-    }
+    public function __construct(protected array $log) {}
 
     /**
      * get Log.

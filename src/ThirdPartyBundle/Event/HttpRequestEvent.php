@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace ThirdPartyBundle\Event;
 
 use Nasustop\HapiQueue\Job\Job;
@@ -31,8 +32,7 @@ class HttpRequestEvent extends Job
         protected int $status_code,
         protected array $response,
         protected string $status = '',
-    ) {
-    }
+    ) {}
 
     public function handle(): string
     {

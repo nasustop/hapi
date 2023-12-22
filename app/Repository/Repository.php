@@ -9,8 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace App\Repository;
 
-class Repository extends \Nasustop\HapiBase\Repository\Repository
-{
-}
+class Repository extends \Nasustop\HapiBase\Repository\Repository {}

@@ -101,6 +101,6 @@ class SystemAuth extends Migration
         Schema::dropIfExists('system_role');
         Schema::dropIfExists('system_power');
         Schema::dropIfExists('system_user');
-        Schema::dropIfExists('system_user');
+        Schema::dropIfExists('system_user_rel_account');
     }
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace ThirdPartyBundle\Kernel;
 
 use App\Exception\HttpClientBadRequestException;
@@ -104,7 +105,7 @@ class Response
         return $content;
     }
 
-    public function toJson(): string|false
+    public function toJson(): false|string
     {
         return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE);
     }

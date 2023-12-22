@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+
 namespace SystemBundle\Job;
 
 use App\Exception\RuntimeErrorException;
@@ -24,9 +25,7 @@ class SystemExportFileJob extends Job
 
     protected string $queue = 'default';
 
-    public function __construct(protected int $export_id)
-    {
-    }
+    public function __construct(protected int $export_id) {}
 
     public function handle(): string
     {
