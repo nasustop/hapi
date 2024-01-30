@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace GoodsBundle\Service;
 
 use GoodsBundle\Repository\GoodsSpecRepository;
+use GoodsBundle\Repository\GoodsSpecValueRepository;
+use Hyperf\DbConnection\Db;
 
 /**
  * @method getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
@@ -31,6 +33,8 @@ class GoodsSpecService
 {
     protected GoodsSpecRepository $repository;
 
+    protected GoodsSpecValueRepository $specValueRepository;
+
     public function __call($method, $parameters)
     {
         return $this->getRepository()->{$method}(...$parameters);
@@ -45,5 +49,51 @@ class GoodsSpecService
             $this->repository = make(GoodsSpecRepository::class);
         }
         return $this->repository;
+    }
+
+    /**
+     * get GoodsSpecValueRepository.
+     */
+    public function getSpecValueRepository(): GoodsSpecValueRepository
+    {
+        if (empty($this->specValueRepository)) {
+            $this->specValueRepository = \Hyperf\Support\make(GoodsSpecValueRepository::class);
+        }
+        return $this->specValueRepository;
+    }
+
+    public function getGoodsSpecInfo($filter): array
+    {
+        $result = $this->getRepository()->getInfo($filter);
+        if (! empty($result)) {
+            $result['spec_value'] = $this->getSpecValueRepository()
+                ->getLists(['spec_id' => $result['spec_id']]);
+        }
+        return $result;
+    }
+
+    /**
+     * create GoodsSpec.
+     * @param mixed $data
+     */
+    public function createGoodsSpec($data): array
+    {
+        Db::beginTransaction();
+        try {
+            $spec_id = $this->getRepository()->insertGetId($data);
+            $batchInsertData = [];
+            foreach ($data['spec_value'] ?? [] as $value) {
+                $value['spec_id'] = $spec_id;
+                $batchInsertData[] = $value;
+            }
+            if (! empty($batchInsertData)) {
+                $this->getSpecValueRepository()->batchInsert($batchInsertData);
+            }
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollBack();
+            throw $e;
+        }
+        return $this->getGoodsSpecInfo(['spec_id' => $spec_id]);
     }
 }

@@ -100,7 +100,7 @@ class GoodsSpecTemplate extends Template
                         'label' => '文本',
                     ],
                     [
-                        'value' => 'image',
+                        'value' => 'img',
                         'label' => '图片',
                     ],
                     [
@@ -120,12 +120,30 @@ class GoodsSpecTemplate extends Template
         return [
             'spec_name' => [
                 'title' => '规格名称',
+                'align' => 'center',
             ],
             'sort' => [
                 'title' => '排序',
+                'align' => 'center',
             ],
             'show_type' => [
                 'title' => '展示类型',
+                'align' => 'center',
+                'type' => 'tag',
+                'tag' => [
+                    'text' => [
+                        'type' => 'success',
+                        'message' => '文本',
+                    ],
+                    'img' => [
+                        'type' => 'success',
+                        'message' => '图片',
+                    ],
+                    'all' => [
+                        'type' => 'success',
+                        'message' => '全部',
+                    ],
+                ],
             ],
         ];
     }
@@ -142,11 +160,52 @@ class GoodsSpecTemplate extends Template
             ],
             'sort' => [
                 'title' => '排序',
-                'type' => 'text',
+                'type' => 'number',
             ],
             'show_type' => [
                 'title' => '展示类型',
-                'type' => 'text',
+                'type' => 'radio',
+                'radio' => [
+                    [
+                        'value' => 'text',
+                        'label' => '文本',
+                    ],
+                    [
+                        'value' => 'img',
+                        'label' => '图片',
+                    ],
+                    [
+                        'value' => 'all',
+                        'label' => '全部',
+                    ],
+                ],
+            ],
+            'spec_value' => [
+                'title' => '规格属性',
+                'type' => 'dynamic-form-array',
+                'dynamic-form-array' => [
+                    'form' => [
+                        'spec_value_img' => [
+                            'title' => '属性图片',
+                            'type' => 'image',
+                            'placeholder' => '请输入属性图片',
+                        ],
+                        'spec_value_name' => [
+                            'title' => '属性名称',
+                            'placeholder' => '请输入属性名称',
+                        ],
+                        'sort' => [
+                            'title' => '排序',
+                            'type' => 'number',
+                            'placeholder' => '请输入属性排序',
+                        ],
+                    ],
+                    'ruleForm' => [
+                        'spec_value_img' => '',
+                        'spec_value_name' => '',
+                        'sort' => 0,
+                    ],
+                ],
             ],
         ];
     }
@@ -160,6 +219,7 @@ class GoodsSpecTemplate extends Template
             'spec_name' => '',
             'sort' => '',
             'show_type' => '',
+            'spec_value' => [],
         ];
     }
 
@@ -190,6 +250,40 @@ class GoodsSpecTemplate extends Template
                     'trigger' => 'change',
                 ],
             ],
+            'spec_value' => [
+                [
+                    'required' => true,
+                    'message' => '商品属性必填',
+                    'trigger' => 'change',
+                ],
+                [
+                    'validator' => '(rule, value, callback) => {
+                                value.forEach(item => {
+                                  switch (this.ruleForm["show_type"]) {
+                                    case "text":
+                                      if (item["spec_value_name"] === "") {
+                                        callback(new Error("请输入所有属性的名称"))
+                                      }
+                                      break
+                                    case "img":
+                                      if (item["spec_value_img"] === "") {
+                                        callback(new Error("请输入所有属性的图片"))
+                                      }
+                                      break
+                                    case "all":
+                                      if (item["spec_value_name"] === "" || item["spec_value_img"] === "") {
+                                        callback(new Error("请输入所有属性的图片和名称"))
+                                      }
+                                      break
+                                    default:
+                                      callback(new Error("错误的展示类型"))
+                                  }
+                                })
+                                callback()
+                            }',
+                    'trigger' => 'change',
+                ],
+            ],
         ];
     }
 
@@ -205,11 +299,52 @@ class GoodsSpecTemplate extends Template
             ],
             'sort' => [
                 'title' => '排序',
-                'type' => 'text',
+                'type' => 'number',
             ],
             'show_type' => [
                 'title' => '展示类型',
-                'type' => 'text',
+                'type' => 'radio',
+                'radio' => [
+                    [
+                        'value' => 'text',
+                        'label' => '文本',
+                    ],
+                    [
+                        'value' => 'img',
+                        'label' => '图片',
+                    ],
+                    [
+                        'value' => 'all',
+                        'label' => '全部',
+                    ],
+                ],
+            ],
+            'spec_value' => [
+                'title' => '规格属性',
+                'type' => 'dynamic-form-array',
+                'dynamic-form-array' => [
+                    'form' => [
+                        'spec_value_img' => [
+                            'title' => '属性图片',
+                            'type' => 'image',
+                            'placeholder' => '请输入属性图片',
+                        ],
+                        'spec_value_name' => [
+                            'title' => '属性名称',
+                            'placeholder' => '请输入属性名称',
+                        ],
+                        'sort' => [
+                            'title' => '排序',
+                            'type' => 'number',
+                            'placeholder' => '请输入属性排序',
+                        ],
+                    ],
+                    'ruleForm' => [
+                        'spec_value_img' => '',
+                        'spec_value_name' => '',
+                        'sort' => 0,
+                    ],
+                ],
             ],
         ];
     }
@@ -223,6 +358,7 @@ class GoodsSpecTemplate extends Template
             'spec_name' => '',
             'sort' => '',
             'show_type' => '',
+            'spec_value' => [],
         ];
     }
 
@@ -250,6 +386,40 @@ class GoodsSpecTemplate extends Template
                 [
                     'required' => true,
                     'message' => '展示类型必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'spec_value' => [
+                [
+                    'required' => true,
+                    'message' => '商品属性必填',
+                    'trigger' => 'change',
+                ],
+                [
+                    'validator' => '(rule, value, callback) => {
+                                value.forEach(item => {
+                                  switch (this.ruleForm["show_type"]) {
+                                    case "text":
+                                      if (item["spec_value_name"] === "") {
+                                        callback(new Error("请输入所有属性的名称"))
+                                      }
+                                      break
+                                    case "img":
+                                      if (item["spec_value_img"] === "") {
+                                        callback(new Error("请输入所有属性的图片"))
+                                      }
+                                      break
+                                    case "all":
+                                      if (item["spec_value_name"] === "" || item["spec_value_img"] === "") {
+                                        callback(new Error("请输入所有属性的图片和名称"))
+                                      }
+                                      break
+                                    default:
+                                      callback(new Error("错误的展示类型"))
+                                  }
+                                })
+                                callback()
+                            }',
                     'trigger' => 'change',
                 ],
             ],

@@ -204,7 +204,7 @@ class GoodsCategoryTemplate extends Template
             'parent_id' => $this->parent_id,
             'category_name' => '',
             'category_img' => '',
-            'sort' => '',
+            'sort' => 0,
             'is_show' => true,
         ];
     }
