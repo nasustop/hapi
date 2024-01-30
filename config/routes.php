@@ -10,6 +10,7 @@ declare(strict_types=1);
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
 use Hyperf\HttpServer\Router\Router;
+use SystemBundle\Middleware\SystemOperationLogMiddleware;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index', ['alias' => 'index']);
 
@@ -21,6 +22,6 @@ Router::addGroup('/api/backend', function () {
     loadDirFiles(BASE_PATH . '/routes/backend');
 }, [
     'middleware' => [
-        \SystemBundle\Middleware\SystemOperationLogMiddleware::class,
+        SystemOperationLogMiddleware::class,
     ],
 ]);

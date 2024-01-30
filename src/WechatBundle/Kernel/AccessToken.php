@@ -54,7 +54,7 @@ class AccessToken
     {
         $token = $this->cache->get(key: $this->getKey());
 
-        if ((bool) $token && is_string($token)) {
+        if (! empty($token) && is_string($token)) {
             return $token;
         }
 
@@ -79,8 +79,8 @@ class AccessToken
             throw new HttpClientBadRequestException('Failed to get access_token: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
-        $ttl = intval($response['expires_in']) > 5 ? intval($response['expires_in']) - 5 : 0;
-        if (! empty($ttl)) {
+        $ttl = intval($response['expires_in']);
+        if ($ttl > 0) {
             $this->cache->set(key: $this->getKey(), value: $response['access_token'], ttl: $ttl);
         }
 
