@@ -14,8 +14,9 @@ namespace WechatBundle\Kernel;
 
 use App\Exception\HttpClientBadRequestException;
 use App\Exception\HttpClientBadResponseException;
+use ThirdPartyBundle\Kernel\Response as BaseResponse;
 
-class Response extends \ThirdPartyBundle\Kernel\Response
+class Response extends BaseResponse
 {
     public function toArray()
     {

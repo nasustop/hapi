@@ -29,7 +29,7 @@ class SystemExportFileJob extends Job
 
     public function handle(): string
     {
-        $service = $this->getContainer()->get(SystemExportFileService::class);
+        $service = make(SystemExportFileService::class);
         $info = $service->getRepository()->getInfoByID($this->export_id);
         if (empty($info)) {
             throw new RuntimeErrorException('导出记录不存在，无法执行导出任务');
