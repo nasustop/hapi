@@ -9,9 +9,14 @@ declare(strict_types=1);
  * @contact  xupengfei@xupengfei.net
  * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
  */
+use App\Constants\ErrorCode;
+use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 use Hyperf\Event\EventDispatcher;
+use Hyperf\Guzzle\PoolHandler;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Redis\RedisFactory;
+use Swoole\Coroutine;
 
 if (! function_exists('redis')) {
     /**
@@ -71,7 +76,7 @@ if (! function_exists('apiResponseHttpStatus')) {
     function apiResponseHttpStatus(Throwable $throwable): int
     {
         $code = $throwable->getCode();
-        return $code ?: \App\Constants\ErrorCode::SERVER_ERROR;
+        return $code ?: ErrorCode::SERVER_ERROR;
     }
 }
 
@@ -85,7 +90,7 @@ if (! function_exists('apiResponseMsgCode')) {
             }
         }
         if (empty($code) || ! is_int($code)) {
-            $code = \App\Constants\ErrorCode::SERVER_ERROR;
+            $code = ErrorCode::SERVER_ERROR;
         }
         return $code;
     }
@@ -112,5 +117,22 @@ if (! function_exists('get_rand_string')) {
             $randStr .= $str[$num];
         }
         return $randStr;
+    }
+}
+
+if (! function_exists('elasticsearch_client')) {
+    function elasticsearch_client(): Client
+    {
+        $builder = ClientBuilder::create();
+        if (Coroutine::getCid() > 0) {
+            $handler = make(PoolHandler::class, [
+                'option' => [
+                    'max_connections' => 50,
+                ],
+            ]);
+            $builder->setHandler($handler);
+        }
+
+        return $builder->setHosts(['http://' . env('ELASTICSEARCH_HOST', 'hapi-develop-elasticsearch') . ':9200'])->build();
     }
 }

@@ -29,7 +29,7 @@ class AppExceptionHandler extends ExceptionHandler
         protected LoggerFactory $loggerFactory,
         protected FormatterInterface $formatter
     ) {
-        $this->logger = $this->loggerFactory->get('default');
+        $this->logger = $this->loggerFactory->get('default', 'es');
     }
 
     public function handle(\Throwable $throwable, ResponseInterface $response)
@@ -42,17 +42,18 @@ class AppExceptionHandler extends ExceptionHandler
             'data' => [],
         ];
 
+        if (function_exists('sentryException')) {
+            sentryException($throwable);
+        }
         $responseBody = new SwooleStream(json_encode($responseData));
         if (in_array(config('app_env', 'dev'), ['dev', 'test'])) {
             $responseData['trace'] = explode("\n", $this->formatter->format($throwable));
             $responseBody = new SwooleStream(json_encode($responseData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
-            $this->stdoutLogger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
-            $this->stdoutLogger->error($throwable->getTraceAsString());
+            $this->stdoutLogger->error(sprintf("%s[%s] in %s\n%s", $throwable->getMessage(), $throwable->getLine(), $throwable->getFile(), $throwable->getTraceAsString()));
         }
 
-        $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
-        $this->logger->error($throwable->getTraceAsString());
+        $this->logger->error(sprintf("%s[%s] in %s\n%s", $throwable->getMessage(), $throwable->getLine(), $throwable->getFile(), $throwable->getTraceAsString()));
 
         return $response->withBody($responseBody);
     }
