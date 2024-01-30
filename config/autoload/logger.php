@@ -44,4 +44,25 @@ return [
             ],
         ],
     ],
+    'es' => [
+        'handler' => [
+            'class' => Monolog\Handler\ElasticsearchHandler::class,
+            'constructor' => [
+                'client' => elasticsearch_client(),
+                'options' => [
+                    'index' => 'hapi_log', // Elastic index name
+                    'type' => '_doc',    // Elastic document type
+                    'ignore_error' => false,     // Suppress Elasticsearch exceptions
+                ],
+                'level' => Monolog\Logger::DEBUG,
+            ],
+        ],
+        'formatter' => [
+            'class' => Monolog\Formatter\ElasticsearchFormatter::class,
+            'constructor' => [
+                'index' => 'hapi_log',
+                'type' => '_doc',
+            ],
+        ],
+    ],
 ];
