@@ -141,7 +141,7 @@ class GoodsSpecController extends AbstractController
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateGoodsSpec(filter: $params['filter'], data: $params['params']);
 
         return $this->getResponse()->success(data: $result);
     }

@@ -87,6 +87,7 @@ class GoodsBrandTemplate extends Template
     {
         return [
             'brand_name' => [
+                'title' => '品牌名称',
                 'placeholder' => '请输入品牌名称',
                 'clearable' => true,
             ],

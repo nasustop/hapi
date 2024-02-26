@@ -1,26 +1,18 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hapi.
- *
- * @link     https://www.nasus.top
- * @document https://wiki.nasus.top
- * @contact  xupengfei@xupengfei.net
- * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
- */
 
-namespace GoodsBundle\Controller\Backend;
+namespace GoodsBundle\Controller\Frontend;
 
 use App\Controller\AbstractController;
-use GoodsBundle\Service\GoodsSpecValueService;
-use GoodsBundle\Template\GoodsSpecValueTemplate;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
+use GoodsBundle\Service\GoodsParamsValueService;
+use GoodsBundle\Template\GoodsParamsValueTemplate;
 
-class GoodsSpecValueController extends AbstractController
+class GoodsParamsValueController extends AbstractController
 {
-    protected GoodsSpecValueService $service;
+    protected GoodsParamsValueService $service;
 
     public function actionTemplateList(): ResponseInterface
     {
@@ -40,25 +32,28 @@ class GoodsSpecValueController extends AbstractController
         return $this->getResponse()->success($template);
     }
 
+    
+
+
     public function actionCreate(): ResponseInterface
     {
         $params = $this->getRequest()->all();
 
         $rules = [
-            'spec_id' => 'required',
-            'spec_value_name' => 'required',
-            'sort' => 'required',
-        ];
-        $messages = [
-            'spec_id.required' => 'spec_id 参数必填',
-            'spec_value_name.required' => 'spec_value_name 参数必填',
-            'sort.required' => 'sort 参数必填',
-        ];
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
+			'params_id' => 'required',
+			'params_value_name' => 'required',
+			'sort' => 'required',
+		];
+		$messages = [
+			'params_id.required' => 'params_id 参数必填',
+			'params_value_name.required' => 'params_value_name 参数必填',
+			'sort.required' => 'sort 参数必填',
+		];
+		$validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
-        if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
-        }
+		if ($validator->fails()) {
+			throw new BadRequestHttpException(message: $validator->errors()->first());
+		}
 
         $result = $this->getService()->saveData(data: $params);
 
@@ -78,28 +73,28 @@ class GoodsSpecValueController extends AbstractController
         $params = $this->getRequest()->all();
 
         $rules = [
-            'filter' => 'required|array',
-            'filter.spec_value_id' => 'required',
-            'params' => 'required|array',
-            'params.spec_id' => 'required',
-            'params.spec_value_name' => 'required',
-            'params.sort' => 'required',
-        ];
-        $messages = [
-            'filter.required' => 'filter 参数必填',
-            'filter.array' => 'filter 参数错误，必须是数组格式',
-            'filter.spec_value_id.required' => 'filter.spec_value_id 参数必填',
-            'params.required' => 'params 参数必填',
-            'params.array' => 'params 参数错误，必须是数组格式',
-            'params.spec_id.required' => 'params.spec_id 参数必填',
-            'params.spec_value_name.required' => 'params.spec_value_name 参数必填',
-            'params.sort.required' => 'params.sort 参数必填',
-        ];
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
+			'filter' => 'required|array',
+			'filter.params_value_id' => 'required',
+			'params' => 'required|array',
+			'params.params_id' => 'required',
+			'params.params_value_name' => 'required',
+			'params.sort' => 'required',
+		];
+		$messages = [
+			'filter.required' => 'filter 参数必填',
+			'filter.array' => 'filter 参数错误，必须是数组格式',
+			'filter.params_value_id.required' => 'filter.params_value_id 参数必填',
+			'params.required' => 'params 参数必填',
+			'params.array' => 'params 参数错误，必须是数组格式',
+			'params.params_id.required' => 'params.params_id 参数必填',
+			'params.params_value_name.required' => 'params.params_value_name 参数必填',
+			'params.sort.required' => 'params.sort 参数必填',
+		];
+		$validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
-        if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
-        }
+		if ($validator->fails()) {
+			throw new BadRequestHttpException(message: $validator->errors()->first());
+		}
 
         $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
 
@@ -127,10 +122,10 @@ class GoodsSpecValueController extends AbstractController
     /**
      * get Service.
      */
-    protected function getService(): GoodsSpecValueService
+    protected function getService(): GoodsParamsValueService
     {
         if (empty($this->service)) {
-            $this->service = make(GoodsSpecValueService::class);
+            $this->service = make(GoodsParamsValueService::class);
         }
         return $this->service;
     }
@@ -138,10 +133,10 @@ class GoodsSpecValueController extends AbstractController
     /**
      * get Template.
      */
-    protected function getTemplate(): GoodsSpecValueTemplate
+    protected function getTemplate(): GoodsParamsValueTemplate
     {
         if (empty($this->template)) {
-            $this->template = make(GoodsSpecValueTemplate::class);
+            $this->template = make(GoodsParamsValueTemplate::class);
         }
         return $this->template;
     }

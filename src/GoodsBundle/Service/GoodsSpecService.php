@@ -15,6 +15,7 @@ namespace GoodsBundle\Service;
 use GoodsBundle\Repository\GoodsSpecRepository;
 use GoodsBundle\Repository\GoodsSpecValueRepository;
 use Hyperf\DbConnection\Db;
+use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 
 /**
  * @method getInfo(array $filter, array|string $columns = '*', array $orderBy = [])
@@ -95,5 +96,48 @@ class GoodsSpecService
             throw $e;
         }
         return $this->getGoodsSpecInfo(['spec_id' => $spec_id]);
+    }
+
+    public function updateGoodsSpec($filter, $data): array
+    {
+        $specInfo = $this->getRepository()->getInfo($filter);
+        if (empty($specInfo)) {
+            throw new BadRequestHttpException('无效的规格');
+        }
+        Db::beginTransaction();
+        try {
+            $this->getRepository()->updateOneBy(['spec_id' => $specInfo['spec_id']], $data);
+            $oldSpecValueData = $this->getSpecValueRepository()->getLists(['spec_id' => $specInfo['spec_id']]);
+            $oldSpecValueIds = array_column($oldSpecValueData, 'spec_value_id');
+            $batchInsertData = [];
+            $updateSpecValueIds = [];
+            foreach ($data['spec_value'] ?? [] as $value) {
+                if (empty($value['spec_value_id'])) {
+                    $value['spec_id'] = $specInfo['spec_id'];
+                    $batchInsertData[] = $value;
+                } else {
+                    $updateSpecValueIds[] = $value['spec_value_id'];
+                    $this->getSpecValueRepository()->updateOneBy([
+                        'spec_value_id' => $value['spec_value_id'],
+                    ], [
+                        'spec_value_img' => $value['spec_value_img'],
+                        'spec_value_name' => $value['spec_value_name'],
+                        'sort' => $value['sort'],
+                    ]);
+                }
+            }
+            if (! empty($batchInsertData)) {
+                $this->getSpecValueRepository()->batchInsert($batchInsertData);
+            }
+            $deleteSpecValueIds = array_diff($oldSpecValueIds, $updateSpecValueIds);
+            if (! empty($deleteSpecValueIds)) {
+                $this->getSpecValueRepository()->deleteBy(['spec_value_id' => $deleteSpecValueIds]);
+            }
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollBack();
+            throw $e;
+        }
+        return $this->getGoodsSpecInfo(['spec_id' => $specInfo['spec_id']]);
     }
 }

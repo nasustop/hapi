@@ -110,6 +110,39 @@ Router::addGroup('/goods', function () {
         'alias' => 'app.goods.spec.template.update',
         'name' => '修改商品品牌模板',
     ]);
+
+    Router::get('/params/info', 'GoodsBundle\Controller\Backend\GoodsParamController@actionInfo', [
+        'alias' => 'app.goods.params.info',
+        'name' => '商品参数详情',
+    ]);
+    Router::get('/params/list', 'GoodsBundle\Controller\Backend\GoodsParamController@actionList', [
+        'alias' => 'app.goods.params.list',
+        'name' => '商品参数列表',
+    ]);
+    Router::post('/params/create', 'GoodsBundle\Controller\Backend\GoodsParamController@actionCreate', [
+        'alias' => 'app.goods.params.create',
+        'name' => '添加商品参数',
+    ]);
+    Router::post('/params/update', 'GoodsBundle\Controller\Backend\GoodsParamController@actionUpdate', [
+        'alias' => 'app.goods.params.update',
+        'name' => '修改商品参数',
+    ]);
+    Router::post('/params/delete', 'GoodsBundle\Controller\Backend\GoodsParamController@actionDelete', [
+        'alias' => 'app.goods.params.delete',
+        'name' => '删除商品参数',
+    ]);
+    Router::get('/params/template/list', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateList', [
+        'alias' => 'app.goods.params.template.list',
+        'name' => '商品参数模板',
+    ]);
+    Router::get('/params/template/create', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateCreate', [
+        'alias' => 'app.goods.params.template.create',
+        'name' => '添加商品参数模板',
+    ]);
+    Router::get('/params/template/update', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateUpdate', [
+        'alias' => 'app.goods.params.template.update',
+        'name' => '修改商品参数模板',
+    ]);
 }, [
     'middleware' => [
         \SystemBundle\Middleware\BackendTokenMiddleware::class,

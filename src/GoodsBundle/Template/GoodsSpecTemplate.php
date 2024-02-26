@@ -181,7 +181,7 @@ class GoodsSpecTemplate extends Template
                 ],
             ],
             'spec_value' => [
-                'title' => '规格属性',
+                'title' => '添加属性',
                 'type' => 'dynamic-form-array',
                 'dynamic-form-array' => [
                     'form' => [
@@ -320,7 +320,7 @@ class GoodsSpecTemplate extends Template
                 ],
             ],
             'spec_value' => [
-                'title' => '规格属性',
+                'title' => '添加属性',
                 'type' => 'dynamic-form-array',
                 'dynamic-form-array' => [
                     'form' => [

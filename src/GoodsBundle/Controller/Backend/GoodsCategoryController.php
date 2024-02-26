@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace GoodsBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
+use GoodsBundle\Repository\GoodsCategoryRepository;
 use GoodsBundle\Service\GoodsCategoryService;
 use GoodsBundle\Template\GoodsCategoryTemplate;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
@@ -38,8 +39,14 @@ class GoodsCategoryController extends AbstractController
 
     public function actionTemplateUpdate(): ResponseInterface
     {
+        $id = $this->getRequest()->input('category_id', 0);
+        $info = [];
+        if (! empty($id)) {
+            $repository = make(GoodsCategoryRepository::class);
+            $info = $repository->getInfo(['category_id' => $id]);
+        }
         $template = $this->getTemplate()
-            ->setParentId($this->getRequest()->input('parent_id', 0))
+            ->setParentId($info['parent_id'] ?? 0)
             ->getUpdateFormTemplate();
         return $this->getResponse()->success($template);
     }
