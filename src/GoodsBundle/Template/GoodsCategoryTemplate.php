@@ -151,7 +151,7 @@ class GoodsCategoryTemplate extends Template
             'createChildren' => [
                 'title' => '添加子分类',
                 'type' => 'success',
-                'vShow' => '(row) => { return row["level"] === 0 }',
+                'vShow' => '(row) => { return row["level"] <= 1 }',
                 'jump' => true,
                 'url' => [
                     'const' => $this->getTableHeaderCreateActionUri(),

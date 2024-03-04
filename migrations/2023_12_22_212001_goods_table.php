@@ -33,13 +33,6 @@ class GoodsTable extends Migration
 
             $table->comment('商品分类表');
         });
-        Schema::create('goods_category_rel_value', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id')->primary();
-            $table->enum('rel_type_type', ['spec', 'params'])->comment('关联类型');
-            $table->unsignedBigInteger('rel_id')->comment('关联ID');
-
-            $table->comment('商品分类关联值表');
-        });
         Schema::create('goods_brand', function (Blueprint $table) {
             $table->bigIncrements('brand_id');
             $table->string('brand_name')->comment('品牌名称');
@@ -101,17 +94,25 @@ class GoodsTable extends Migration
             $table->string('spu_brief')->comment('商品描述');
             $table->string('spu_thumb')->comment('商品缩略图');
             $table->json('spu_images')->comment('商品轮播图');
-            $table->string('spu_video')->comment('商品视频');
-            $table->text('spu_intro')->comment('商品详情');
-            $table->enum('status', ['on_sale', 'off_sale'])->comment('商品状态');
+            $table->string('spu_video')->default('')->comment('商品视频');
+            $table->longText('spu_intro')->nullable()->comment('商品详情');
+            $table->enum('status', ['on_sale', 'off_sale'])->default('on_sale')->comment('商品状态');
             $table->enum('spu_type', ['normal', 'point', 'service'])->default('normal')->comment('商品类型');
             $table->unsignedBigInteger('price_min')->default(0)->comment('最低价');
             $table->unsignedBigInteger('price_max')->default(0)->comment('最高价');
+            $table->unsignedBigInteger('sort')->default(0)->comment('商品排序');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
 
             $table->comment('商品spu表');
+        });
+        Schema::create('goods_spu_rel_value', function (Blueprint $table) {
+            $table->unsignedBigInteger('spu_id')->comment('spu id');
+            $table->enum('rel_type', ['brand', 'category', 'params'])->comment('关联类型');
+            $table->unsignedBigInteger('rel_id')->comment('关联id');
+
+            $table->comment('商品参数值表');
         });
         Schema::create('goods_sku', function (Blueprint $table) {
             $table->bigIncrements('sku_id');
@@ -126,7 +127,7 @@ class GoodsTable extends Migration
             $table->unsignedBigInteger('sold_num')->default(0)->comment('已售数量');
             $table->float('sku_weight', 8, 3)->default(0)->comment('商品重量');
             $table->float('sku_volume', 8, 3)->default(0)->comment('商品体积');
-            $table->unsignedInteger('sort', false)->default(0)->comment('排序');
+            $table->unsignedBigInteger('sort', false)->default(0)->comment('排序');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
@@ -141,13 +142,13 @@ class GoodsTable extends Migration
     public function down(): void
     {
         Schema::dropIfExists('goods_category');
-        Schema::dropIfExists('goods_category_rel_value');
         Schema::dropIfExists('goods_brand');
         Schema::dropIfExists('goods_spec');
         Schema::dropIfExists('goods_spec_value');
         Schema::dropIfExists('goods_params');
         Schema::dropIfExists('goods_params_value');
         Schema::dropIfExists('goods_spu');
+        Schema::dropIfExists('goods_spu_rel_value');
         Schema::dropIfExists('goods_sku');
     }
 }

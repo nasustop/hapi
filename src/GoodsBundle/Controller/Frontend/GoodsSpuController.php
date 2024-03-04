@@ -67,22 +67,26 @@ class GoodsSpuController extends AbstractController
             'spu_brief' => 'required',
             'spu_thumb' => 'required',
             'spu_images' => 'required',
+            'spu_video' => 'required',
             'spu_intro' => 'required',
             'status' => 'required',
             'spu_type' => 'required',
             'price_min' => 'required',
             'price_max' => 'required',
+            'sort' => 'required',
         ];
         $messages = [
             'spu_name.required' => 'spu_name 参数必填',
             'spu_brief.required' => 'spu_brief 参数必填',
             'spu_thumb.required' => 'spu_thumb 参数必填',
             'spu_images.required' => 'spu_images 参数必填',
+            'spu_video.required' => 'spu_video 参数必填',
             'spu_intro.required' => 'spu_intro 参数必填',
             'status.required' => 'status 参数必填',
             'spu_type.required' => 'spu_type 参数必填',
             'price_min.required' => 'price_min 参数必填',
             'price_max.required' => 'price_max 参数必填',
+            'sort.required' => 'sort 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -115,11 +119,13 @@ class GoodsSpuController extends AbstractController
             'params.spu_brief' => 'required',
             'params.spu_thumb' => 'required',
             'params.spu_images' => 'required',
+            'params.spu_video' => 'required',
             'params.spu_intro' => 'required',
             'params.status' => 'required',
             'params.spu_type' => 'required',
             'params.price_min' => 'required',
             'params.price_max' => 'required',
+            'params.sort' => 'required',
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
@@ -131,11 +137,13 @@ class GoodsSpuController extends AbstractController
             'params.spu_brief.required' => 'params.spu_brief 参数必填',
             'params.spu_thumb.required' => 'params.spu_thumb 参数必填',
             'params.spu_images.required' => 'params.spu_images 参数必填',
+            'params.spu_video.required' => 'params.spu_video 参数必填',
             'params.spu_intro.required' => 'params.spu_intro 参数必填',
             'params.status.required' => 'params.status 参数必填',
             'params.spu_type.required' => 'params.spu_type 参数必填',
             'params.price_min.required' => 'params.price_min 参数必填',
             'params.price_max.required' => 'params.price_max 参数必填',
+            'params.sort.required' => 'params.sort 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 

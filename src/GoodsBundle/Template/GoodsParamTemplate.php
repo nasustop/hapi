@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hapi.
+ *
+ * @link     https://www.nasus.top
+ * @document https://wiki.nasus.top
+ * @contact  xupengfei@xupengfei.net
+ * @license  https://github.com/nasustop/hapi/blob/master/LICENSE
+ */
 
 namespace GoodsBundle\Template;
 
@@ -78,11 +86,11 @@ class GoodsParamTemplate extends Template
     public function getTableHeaderFilter(): array
     {
         return [
-			'params_name' => [
-				'placeholder' => '请输入参数名称',
-				'clearable' => true,
-			],
-		];
+            'params_name' => [
+                'placeholder' => '请输入参数名称',
+                'clearable' => true,
+            ],
+        ];
     }
 
     /**
@@ -91,13 +99,13 @@ class GoodsParamTemplate extends Template
     public function getTableColumns(): array
     {
         return [
-			'params_name' => [
-				'title' => '参数名称',
-			],
-			'sort' => [
-				'title' => '排序',
-			],
-		];
+            'params_name' => [
+                'title' => '参数名称',
+            ],
+            'sort' => [
+                'title' => '排序',
+            ],
+        ];
     }
 
     /**
@@ -106,14 +114,14 @@ class GoodsParamTemplate extends Template
     public function getCreateFormColumns(): array
     {
         return [
-			'params_name' => [
-				'title' => '参数名称',
-				'type' => 'text',
-			],
-			'sort' => [
-				'title' => '排序',
-				'type' => 'number',
-			],
+            'params_name' => [
+                'title' => '参数名称',
+                'type' => 'text',
+            ],
+            'sort' => [
+                'title' => '排序',
+                'type' => 'number',
+            ],
             'params_value' => [
                 'title' => '添加参数值',
                 'type' => 'dynamic-form-array',
@@ -129,7 +137,7 @@ class GoodsParamTemplate extends Template
                     ],
                 ],
             ],
-		];
+        ];
     }
 
     /**
@@ -138,10 +146,10 @@ class GoodsParamTemplate extends Template
     public function getCreateFormRuleForm(): array
     {
         return [
-			'params_name' => '',
-			'sort' => '',
+            'params_name' => '',
+            'sort' => '',
             'params_value' => [],
-		];
+        ];
     }
 
     /**
@@ -150,20 +158,20 @@ class GoodsParamTemplate extends Template
     public function getCreateFormRules(): array
     {
         return [
-			'params_name' => [
-				[
-					'required' => true,
-					'message' => '参数名称必填',
-					'trigger' => 'change',
-				],
-			],
-			'sort' => [
-				[
-					'required' => true,
-					'message' => '排序必填',
-					'trigger' => 'change',
-				],
-			],
+            'params_name' => [
+                [
+                    'required' => true,
+                    'message' => '参数名称必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'sort' => [
+                [
+                    'required' => true,
+                    'message' => '排序必填',
+                    'trigger' => 'change',
+                ],
+            ],
             'params_value' => [
                 [
                     'required' => true,
@@ -182,7 +190,7 @@ class GoodsParamTemplate extends Template
                     'trigger' => 'change',
                 ],
             ],
-		];
+        ];
     }
 
     /**
@@ -191,14 +199,14 @@ class GoodsParamTemplate extends Template
     public function getUpdateFormColumns(): array
     {
         return [
-			'params_name' => [
-				'title' => '参数名称',
-				'type' => 'text',
-			],
-			'sort' => [
-				'title' => '排序',
-				'type' => 'number',
-			],
+            'params_name' => [
+                'title' => '参数名称',
+                'type' => 'text',
+            ],
+            'sort' => [
+                'title' => '排序',
+                'type' => 'number',
+            ],
             'params_value' => [
                 'title' => '添加参数值',
                 'type' => 'dynamic-form-array',
@@ -214,7 +222,7 @@ class GoodsParamTemplate extends Template
                     ],
                 ],
             ],
-		];
+        ];
     }
 
     /**
@@ -223,10 +231,10 @@ class GoodsParamTemplate extends Template
     public function getUpdateFormRuleForm(): array
     {
         return [
-			'params_name' => '',
-			'sort' => '',
+            'params_name' => '',
+            'sort' => '',
             'params_value' => [],
-		];
+        ];
     }
 
     /**
@@ -235,20 +243,20 @@ class GoodsParamTemplate extends Template
     public function getUpdateFormRules(): array
     {
         return [
-			'params_name' => [
-				[
-					'required' => true,
-					'message' => '参数名称必填',
-					'trigger' => 'change',
-				],
-			],
-			'sort' => [
-				[
-					'required' => true,
-					'message' => '排序必填',
-					'trigger' => 'change',
-				],
-			],
+            'params_name' => [
+                [
+                    'required' => true,
+                    'message' => '参数名称必填',
+                    'trigger' => 'change',
+                ],
+            ],
+            'sort' => [
+                [
+                    'required' => true,
+                    'message' => '排序必填',
+                    'trigger' => 'change',
+                ],
+            ],
             'params_value' => [
                 [
                     'required' => true,
@@ -267,6 +275,6 @@ class GoodsParamTemplate extends Template
                     'trigger' => 'change',
                 ],
             ],
-		];
+        ];
     }
 }

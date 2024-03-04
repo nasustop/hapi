@@ -20,11 +20,13 @@ use App\Model\Model as BaseModel;
  * @property string $spu_brief
  * @property string $spu_thumb
  * @property string $spu_images
+ * @property string $spu_video
  * @property string $spu_intro
  * @property string $status
  * @property string $spu_type
  * @property int $price_min
  * @property int $price_max
+ * @property int $sort
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -44,7 +46,7 @@ class GoodsSpuModel extends BaseModel
     /**
      * The table all columns.
      */
-    protected array $cols = ['spu_id', 'spu_name', 'spu_brief', 'spu_thumb', 'spu_images', 'status', 'spu_type', 'price_min', 'price_max', 'created_at', 'updated_at', 'deleted_at'];
+    protected array $cols = ['spu_id', 'spu_name', 'spu_brief', 'spu_thumb', 'spu_images', 'spu_video', 'spu_intro', 'status', 'spu_type', 'price_min', 'price_max', 'sort', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -54,5 +56,5 @@ class GoodsSpuModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['spu_id' => 'integer', 'price_min' => 'integer', 'price_max' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['spu_id' => 'integer', 'price_min' => 'integer', 'price_max' => 'integer', 'sort' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

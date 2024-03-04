@@ -32,6 +32,8 @@
         "hyperf/redis": "~3.0.0",
         "hyperf/snowflake": "~3.0.0",
         "hyperf/validation": "~3.0.0",
+        "hyperf/view": "^3.0",
+        "hyperf/view-engine": "~3.0.0",
         "nasustop/hapi-auth": "~3.0.0",
         "nasustop/hapi-base": "~3.0.0",
         "nasustop/hapi-cache": "~3.0.0",

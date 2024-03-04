@@ -15,6 +15,7 @@ namespace SystemBundle\Controller\Backend;
 use App\Controller\AbstractController;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Psr\Http\Message\ResponseInterface;
+use SystemBundle\Repository\SystemMenuRepository;
 use SystemBundle\Service\SystemMenuService;
 use SystemBundle\Template\SystemMenuTemplate;
 
@@ -40,8 +41,14 @@ class SystemMenuController extends AbstractController
 
     public function actionTemplateUpdate(): ResponseInterface
     {
+        $menu_id = $this->getRequest()->input('menu_id', 0);
+        $info = [];
+        if (! empty($menu_id)) {
+            $repository = make(SystemMenuRepository::class);
+            $info = $repository->getInfo(['menu_id' => $menu_id]);
+        }
         $template = $this->getTemplate()
-            ->setParentId($this->getRequest()->input('parent_id', 0))
+            ->setParentId($info['parent_id'] ?? 0)
             ->getUpdateFormTemplate();
         return $this->getResponse()->success($template);
     }

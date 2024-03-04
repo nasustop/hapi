@@ -20,6 +20,10 @@ Router::addGroup('/goods', function () {
         'alias' => 'app.goods.category.list',
         'name' => '商品分类列表',
     ]);
+    Router::get('/category/cascade', 'GoodsBundle\Controller\Backend\GoodsCategoryController@actionCascadeList', [
+        'alias' => 'app.goods.category.cascade',
+        'name' => '商品分类级联选择器列表',
+    ]);
     Router::post('/category/create', 'GoodsBundle\Controller\Backend\GoodsCategoryController@actionCreate', [
         'alias' => 'app.goods.category.create',
         'name' => '添加商品分类',
@@ -111,37 +115,62 @@ Router::addGroup('/goods', function () {
         'name' => '修改商品品牌模板',
     ]);
 
-    Router::get('/params/info', 'GoodsBundle\Controller\Backend\GoodsParamController@actionInfo', [
+    Router::get('/params/info', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionInfo', [
         'alias' => 'app.goods.params.info',
         'name' => '商品参数详情',
     ]);
-    Router::get('/params/list', 'GoodsBundle\Controller\Backend\GoodsParamController@actionList', [
+    Router::get('/params/list', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionList', [
         'alias' => 'app.goods.params.list',
         'name' => '商品参数列表',
     ]);
-    Router::post('/params/create', 'GoodsBundle\Controller\Backend\GoodsParamController@actionCreate', [
+    Router::post('/params/create', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionCreate', [
         'alias' => 'app.goods.params.create',
         'name' => '添加商品参数',
     ]);
-    Router::post('/params/update', 'GoodsBundle\Controller\Backend\GoodsParamController@actionUpdate', [
+    Router::post('/params/update', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionUpdate', [
         'alias' => 'app.goods.params.update',
         'name' => '修改商品参数',
     ]);
-    Router::post('/params/delete', 'GoodsBundle\Controller\Backend\GoodsParamController@actionDelete', [
+    Router::post('/params/delete', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionDelete', [
         'alias' => 'app.goods.params.delete',
         'name' => '删除商品参数',
     ]);
-    Router::get('/params/template/list', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateList', [
+    Router::get('/params/template/list', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionTemplateList', [
         'alias' => 'app.goods.params.template.list',
         'name' => '商品参数模板',
     ]);
-    Router::get('/params/template/create', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateCreate', [
+    Router::get('/params/template/create', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionTemplateCreate', [
         'alias' => 'app.goods.params.template.create',
         'name' => '添加商品参数模板',
     ]);
-    Router::get('/params/template/update', 'GoodsBundle\Controller\Backend\GoodsParamController@actionTemplateUpdate', [
+    Router::get('/params/template/update', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionTemplateUpdate', [
         'alias' => 'app.goods.params.template.update',
         'name' => '修改商品参数模板',
+    ]);
+
+    Router::get('/spu/info', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionInfo', [
+        'alias' => 'app.goods.spu.info',
+        'name' => '商品spu详情',
+    ]);
+    Router::get('/spu/list', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionList', [
+        'alias' => 'app.goods.spu.list',
+        'name' => '商品spu列表',
+    ]);
+    Router::post('/spu/create', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionCreate', [
+        'alias' => 'app.goods.spu.create',
+        'name' => '添加商品spu',
+    ]);
+    Router::post('/spu/update', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionUpdate', [
+        'alias' => 'app.goods.spu.update',
+        'name' => '修改商品spu',
+    ]);
+    Router::post('/spu/update_some', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionUpdateSome', [
+        'alias' => 'app.goods.spu.update_some',
+        'name' => '修改商品spu状态',
+    ]);
+    Router::post('/spu/delete', 'GoodsBundle\Controller\Backend\GoodsSpuController@actionDelete', [
+        'alias' => 'app.goods.spu.delete',
+        'name' => '删除商品spu',
     ]);
 }, [
     'middleware' => [

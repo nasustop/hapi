@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 return [
     'demo' => [
-        'enable' => true,
+        'enable' => false,
         'build' => true,
         'build_work_dir' => BASE_PATH . '/vendor/nasustop/hapi-sidecar/example/demo',
         'build_command' => 'cmd/server.go',
@@ -27,7 +27,7 @@ return [
         ],
     ],
     'mongo' => [
-        'enable' => true,
+        'enable' => false,
         'build' => true,
         'build_work_dir' => BASE_PATH . '/vendor/nasustop/hapi-sidecar/example/mongo',
         'build_command' => 'cmd/server.go',

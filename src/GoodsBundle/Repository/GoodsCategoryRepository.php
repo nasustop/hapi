@@ -14,6 +14,7 @@ namespace GoodsBundle\Repository;
 
 use App\Repository\Repository;
 use GoodsBundle\Model\GoodsCategoryModel;
+use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 
 class GoodsCategoryRepository extends Repository
 {
@@ -77,6 +78,34 @@ class GoodsCategoryRepository extends Repository
         ];
     }
 
+    public function getCategoryCascadeData(): array
+    {
+        $data = $this->findTreeByCategoryIds();
+        return $this->recursionCascadeData($data['tree']);
+    }
+
+    public function getCategoryCascadeParentIds($categoryIds, $num = 1): array
+    {
+        if ($num > 10) {
+            throw new BadRequestHttpException('getCategoryParentData方法陷入死循环');
+        }
+        $data = $this->getLists(['category_id' => $categoryIds]);
+        $data = array_column($data, null, 'category_id');
+        $parentIds = array_values(array_unique(array_filter(array_column($data, 'parent_id'))));
+        $parentData = [];
+        if (! empty($parentIds)) {
+            $parentData = $this->getCategoryCascadeParentIds($parentIds, $num + 1);
+        }
+        foreach ($data as $id => $value) {
+            if (empty($value['parent_id'])) {
+                $data[$id]['parent_data'] = [$id];
+                continue;
+            }
+            $data[$id]['parent_data'] = array_merge($parentData[$value['parent_id']]['parent_data'] ?? [$value['parent_id']], [$value['category_id']]);
+        }
+        return $data;
+    }
+
     /**
      * 根据某个父节点获取它的所有子节点集合.
      */
@@ -116,5 +145,21 @@ class GoodsCategoryRepository extends Repository
         }
         $list[] = $listItem;
         return $parent;
+    }
+
+    protected function recursionCascadeData($data): array
+    {
+        $result = [];
+        foreach ($data as $value) {
+            $item = [
+                'value' => $value['category_id'],
+                'label' => $value['category_name'],
+            ];
+            if ($value['has_children']) {
+                $item['children'] = $this->recursionCascadeData($value['children']);
+            }
+            $result[] = $item;
+        }
+        return $result;
     }
 }

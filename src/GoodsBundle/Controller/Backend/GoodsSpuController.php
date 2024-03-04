@@ -13,50 +13,15 @@ declare(strict_types=1);
 namespace GoodsBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
+use GoodsBundle\Repository\GoodsSpuRepository;
 use GoodsBundle\Service\GoodsSpuService;
-use GoodsBundle\Template\GoodsSpuTemplate;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
+use Hyperf\Validation\Rule;
 use Psr\Http\Message\ResponseInterface;
 
 class GoodsSpuController extends AbstractController
 {
     protected GoodsSpuService $service;
-
-    public function actionTemplateList(): ResponseInterface
-    {
-        $template = $this->getTemplate()->getTableTemplate();
-        return $this->getResponse()->success($template);
-    }
-
-    public function actionTemplateCreate(): ResponseInterface
-    {
-        $template = $this->getTemplate()->getCreateFormTemplate();
-        return $this->getResponse()->success($template);
-    }
-
-    public function actionTemplateUpdate(): ResponseInterface
-    {
-        $template = $this->getTemplate()->getUpdateFormTemplate();
-        return $this->getResponse()->success($template);
-    }
-
-    public function actionEnumStatus(): ResponseInterface
-    {
-        $data = $this->getService()->getRepository()->enumStatus();
-        return $this->getResponse()->success(data: [
-            'default' => $this->getService()->getRepository()->enumStatusDefault(),
-            'list' => $data,
-        ]);
-    }
-
-    public function actionEnumSpuType(): ResponseInterface
-    {
-        $data = $this->getService()->getRepository()->enumSpuType();
-        return $this->getResponse()->success(data: [
-            'default' => $this->getService()->getRepository()->enumSpuTypeDefault(),
-            'list' => $data,
-        ]);
-    }
 
     public function actionCreate(): ResponseInterface
     {
@@ -64,25 +29,17 @@ class GoodsSpuController extends AbstractController
 
         $rules = [
             'spu_name' => 'required',
-            'spu_brief' => 'required',
+            'category_ids' => 'required',
             'spu_thumb' => 'required',
             'spu_images' => 'required',
-            'spu_intro' => 'required',
-            'status' => 'required',
-            'spu_type' => 'required',
             'price_min' => 'required',
-            'price_max' => 'required',
         ];
         $messages = [
             'spu_name.required' => 'spu_name 参数必填',
-            'spu_brief.required' => 'spu_brief 参数必填',
+            'category_ids.required' => 'category_ids 参数必填',
             'spu_thumb.required' => 'spu_thumb 参数必填',
             'spu_images.required' => 'spu_images 参数必填',
-            'spu_intro.required' => 'spu_intro 参数必填',
-            'status.required' => 'status 参数必填',
-            'spu_type.required' => 'spu_type 参数必填',
             'price_min.required' => 'price_min 参数必填',
-            'price_max.required' => 'price_max 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -90,15 +47,15 @@ class GoodsSpuController extends AbstractController
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->getService()->saveData(data: $params);
+        $result = $this->getService()->createGoodsSpu($params);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionInfo(): ResponseInterface
     {
         $filter = $this->getRequest()->all();
-        $result = $this->getService()->getInfo(filter: $filter);
+        $result = $this->getService()->getGoodsSpuInfo(filter: $filter);
 
         return $this->getResponse()->success(data: $result);
     }
@@ -112,14 +69,10 @@ class GoodsSpuController extends AbstractController
             'filter.spu_id' => 'required',
             'params' => 'required|array',
             'params.spu_name' => 'required',
-            'params.spu_brief' => 'required',
             'params.spu_thumb' => 'required',
             'params.spu_images' => 'required',
             'params.spu_intro' => 'required',
-            'params.status' => 'required',
-            'params.spu_type' => 'required',
             'params.price_min' => 'required',
-            'params.price_max' => 'required',
         ];
         $messages = [
             'filter.required' => 'filter 参数必填',
@@ -128,14 +81,10 @@ class GoodsSpuController extends AbstractController
             'params.required' => 'params 参数必填',
             'params.array' => 'params 参数错误，必须是数组格式',
             'params.spu_name.required' => 'params.spu_name 参数必填',
-            'params.spu_brief.required' => 'params.spu_brief 参数必填',
             'params.spu_thumb.required' => 'params.spu_thumb 参数必填',
             'params.spu_images.required' => 'params.spu_images 参数必填',
             'params.spu_intro.required' => 'params.spu_intro 参数必填',
-            'params.status.required' => 'params.status 参数必填',
-            'params.spu_type.required' => 'params.spu_type 参数必填',
             'params.price_min.required' => 'params.price_min 参数必填',
-            'params.price_max.required' => 'params.price_max 参数必填',
         ];
         $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
 
@@ -143,9 +92,36 @@ class GoodsSpuController extends AbstractController
             throw new BadRequestHttpException(message: $validator->errors()->first());
         }
 
-        $result = $this->getService()->updateOneBy(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateGoodsSpu($params['filter'], $params['params']);
 
         return $this->getResponse()->success(data: $result);
+    }
+
+    public function actionUpdateSome(): ResponseInterface
+    {
+        $params = $this->getRequest()->all();
+
+        $rules = [
+            'filter' => 'required|array',
+            'params' => 'required|array',
+            'params.status' => Rule::in(GoodsSpuRepository::ENUM_STATUS),
+        ];
+        $messages = [
+            'filter.required' => 'filter 参数必填',
+            'filter.array' => 'filter 参数错误，必须是数组格式',
+            'params.required' => 'params 参数必填',
+            'params.array' => 'params 参数错误，必须是数组格式',
+            'params.status.in' => 'params.status 参数错误',
+        ];
+        $validator = $this->getValidatorFactory()->make($params, $rules, $messages);
+
+        if ($validator->fails()) {
+            throw new BadRequestHttpException($validator->errors()->first());
+        }
+
+        $result = $this->getService()->updateOneBy($params['filter'], $params['params']);
+
+        return $this->getResponse()->success($result);
     }
 
     public function actionDelete(): ResponseInterface
@@ -175,16 +151,5 @@ class GoodsSpuController extends AbstractController
             $this->service = make(GoodsSpuService::class);
         }
         return $this->service;
-    }
-
-    /**
-     * get Template.
-     */
-    protected function getTemplate(): GoodsSpuTemplate
-    {
-        if (empty($this->template)) {
-            $this->template = make(GoodsSpuTemplate::class);
-        }
-        return $this->template;
     }
 }

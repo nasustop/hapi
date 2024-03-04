@@ -135,6 +135,13 @@ class GoodsCategoryController extends AbstractController
         ]);
     }
 
+    public function actionCascadeList(): ResponseInterface
+    {
+        $result = $this->getService()->getRepository()->getCategoryCascadeData();
+
+        return $this->getResponse()->success($result);
+    }
+
     /**
      * get Service.
      */
