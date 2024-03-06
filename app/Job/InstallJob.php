@@ -17,6 +17,7 @@ use Nasustop\HapiQueue\Job\Job;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use SystemBundle\Service\SystemUserService;
 
 class InstallJob extends Job
 {
@@ -41,6 +42,17 @@ class InstallJob extends Job
         $params = ['command' => 'hapi:system:menu', '--action' => 'upload'];
         $input = new ArrayInput($params);
         $exitCode = $application->run($input, $output);
+
+        // 生成后台账号
+        $service = make(SystemUserService::class);
+        $info = $service->getInfo(['user_id' => 1]);
+        if (empty($info)) {
+            $service->createUser([
+                'user_name' => 'admin',
+                'account' => 'admin',
+                'password' => 'abc@123.',
+            ]);
+        }
 
         $key = 'SYSTEM_INSTALL_STATUS';
         redis()->set($key, 'success');

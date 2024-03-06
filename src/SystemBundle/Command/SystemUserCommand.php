@@ -93,11 +93,6 @@ class SystemUserCommand extends HyperfCommand
             $this->error('account 不能为空');
             return false;
         }
-        $mobile = $this->ask('请输入 mobile ');
-        if (empty($mobile)) {
-            $this->error('mobile 不能为空');
-            return false;
-        }
         $password = $this->ask('请输入 passwd ');
         if (empty($password)) {
             $this->error('password 不能为空');
@@ -107,7 +102,6 @@ class SystemUserCommand extends HyperfCommand
         $info = $service->createUser([
             'account' => $account,
             'user_name' => $account,
-            'mobile' => $mobile,
             'password' => $password,
         ]);
         if (empty($info['user_id'])) {
