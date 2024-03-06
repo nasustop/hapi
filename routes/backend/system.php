@@ -91,6 +91,10 @@ Router::addGroup('/system', function () {
         'alias' => 'app.system.menu.delete',
         'name' => '删除菜单',
     ]);
+    Router::post('/auth/menu/init', 'SystemBundle\Controller\Backend\SystemMenuController@actionInit', [
+        'alias' => 'app.system.menu.init',
+        'name' => '初始化菜单',
+    ]);
     Router::get('/auth/menu/template/list', 'SystemBundle\Controller\Backend\SystemMenuController@actionTemplateList', [
         'alias' => 'app.system.menu.template.list',
         'name' => '菜单列表模板',

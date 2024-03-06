@@ -134,6 +134,13 @@ class SystemMenuController extends AbstractController
         ]);
     }
 
+    public function actionInit(): ResponseInterface
+    {
+        $this->getService()->uploadMenu();
+
+        return $this->getResponse()->success(true);
+    }
+
     /**
      * get Service.
      */

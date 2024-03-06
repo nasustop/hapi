@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace GoodsBundle\Controller\Web;
 
 use App\Controller\AbstractController;
+use GoodsBundle\Repository\GoodsSpuRepository;
 use GoodsBundle\Service\GoodsCategoryService;
 use GoodsBundle\Service\GoodsSpuService;
 
@@ -46,7 +47,9 @@ class IndexController extends AbstractController
 
     public function actionIndex(): \Psr\Http\Message\ResponseInterface
     {
-        $spuFilter = [];
+        $spuFilter = [
+            'status' => GoodsSpuRepository::ENUM_STATUS_ON_SALE,
+        ];
         $spuName = $this->getRequest()->input('name');
         if (! empty($spuName)) {
             $spuFilter['spu_name|contains'] = $spuName;

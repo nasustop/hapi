@@ -106,6 +106,27 @@ class SystemMenuTemplate extends Template
         return [];
     }
 
+    public function getTableHeaderActions(): array
+    {
+        $result = parent::getTableHeaderActions();
+        $result['init'] = [
+            'title' => '初始化菜单',
+            'type' => 'primary',
+            'icon' => 'el-icon-edit',
+            'jump' => false,
+            'confirm' => [
+                'title' => '警告',
+                'message' => '初始化菜单后会使用原始菜单替换当前所有菜单，是否继续？',
+            ],
+            'url' => [
+                'method' => 'post',
+                'const' => '/system/auth/menu/init',
+                'refresh' => true,
+            ],
+        ];
+        return $result;
+    }
+
     /**
      * 表格字段集合.
      */

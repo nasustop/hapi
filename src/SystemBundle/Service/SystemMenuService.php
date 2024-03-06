@@ -137,4 +137,25 @@ class SystemMenuService
         }
         return true;
     }
+
+    public function uploadMenu($menuVersion = 'all')
+    {
+        $file = storage_path('statics') . '/menu_' . $menuVersion . '.json';
+        $data = file_get_contents($file);
+        $data = @json_decode($data, true);
+        if ($data == false) {
+            throw new BadRequestHttpException($file . ' 解析失败');
+        }
+        Db::beginTransaction();
+        try {
+            $this->getRepository()->deleteBy(['']);
+            $this->getRepository()->batchInsert($data);
+
+            Db::commit();
+        } catch (\Exception $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+        return true;
+    }
 }
