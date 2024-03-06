@@ -29,7 +29,7 @@ class AppExceptionHandler extends ExceptionHandler
         protected LoggerFactory $loggerFactory,
         protected FormatterInterface $formatter
     ) {
-        $this->logger = $this->loggerFactory->get('default', 'es');
+        $this->logger = $this->loggerFactory->get('default');
     }
 
     public function handle(\Throwable $throwable, ResponseInterface $response)
