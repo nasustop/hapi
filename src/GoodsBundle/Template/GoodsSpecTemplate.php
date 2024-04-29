@@ -259,24 +259,14 @@ class GoodsSpecTemplate extends Template
                 [
                     'validator' => '(rule, value, callback) => {
                                 value.forEach(item => {
-                                  switch (this.ruleForm["show_type"]) {
-                                    case "text":
-                                      if (item["spec_value_name"] === "") {
-                                        callback(new Error("请输入所有属性的名称"))
-                                      }
-                                      break
-                                    case "img":
-                                      if (item["spec_value_img"] === "") {
-                                        callback(new Error("请输入所有属性的图片"))
-                                      }
-                                      break
-                                    case "all":
-                                      if (item["spec_value_name"] === "" || item["spec_value_img"] === "") {
-                                        callback(new Error("请输入所有属性的图片和名称"))
-                                      }
-                                      break
-                                    default:
-                                      callback(new Error("错误的展示类型"))
+                                  if ((this.ruleForm["show_type"] === "all" || this.ruleForm["show_type"] === "img") && item["spec_value_img"] === "") {
+                                    callback(new Error("请输入所有属性的图片"))
+                                  }
+                                  if (item["spec_value_name"] === "") {
+                                    callback(new Error("请输入所有属性的名称"))
+                                  }
+                                  if (item["sort"] === "") {
+                                    callback(new Error("请输入所有属性的排序"))
                                   }
                                 })
                                 callback()
@@ -398,24 +388,14 @@ class GoodsSpecTemplate extends Template
                 [
                     'validator' => '(rule, value, callback) => {
                                 value.forEach(item => {
-                                  switch (this.ruleForm["show_type"]) {
-                                    case "text":
-                                      if (item["spec_value_name"] === "") {
-                                        callback(new Error("请输入所有属性的名称"))
-                                      }
-                                      break
-                                    case "img":
-                                      if (item["spec_value_img"] === "") {
-                                        callback(new Error("请输入所有属性的图片"))
-                                      }
-                                      break
-                                    case "all":
-                                      if (item["spec_value_name"] === "" || item["spec_value_img"] === "") {
-                                        callback(new Error("请输入所有属性的图片和名称"))
-                                      }
-                                      break
-                                    default:
-                                      callback(new Error("错误的展示类型"))
+                                  if ((this.ruleForm["show_type"] === "all" || this.ruleForm["show_type"] === "img") && item["spec_value_img"] === "") {
+                                    callback(new Error("请输入所有属性的图片"))
+                                  }
+                                  if (item["spec_value_name"] === "") {
+                                    callback(new Error("请输入所有属性的名称"))
+                                  }
+                                  if (item["sort"] === "") {
+                                    callback(new Error("请输入所有属性的排序"))
                                   }
                                 })
                                 callback()

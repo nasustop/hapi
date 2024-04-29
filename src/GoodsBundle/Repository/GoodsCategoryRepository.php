@@ -53,7 +53,7 @@ class GoodsCategoryRepository extends Repository
     public function findTreeByCategoryIds(array $category_ids = []): array
     {
         $filter = [];
-        $all_data = $this->getLists(filter: $filter, orderBy: ['parent_id' => 'asc', 'sort' => 'asc']);
+        $all_data = $this->getLists($filter, '*', 1, -1, ['parent_id' => 'asc', 'sort' => 'asc']);
         $tree = []; // 顶级分类
         $list = []; // 所有分类列表
         foreach ($all_data as $key => $value) {
@@ -107,10 +107,47 @@ class GoodsCategoryRepository extends Repository
     }
 
     /**
+     * 获取分类的上级ID数组，请求数据为[[3],[9]]，返回数据为[[1,2,3],[8,9]].
+     */
+    public function getParentIdsByCategoryIds(array $categoryIdData, int $num = 1): array
+    {
+        if ($num > 10) {
+            throw new BadRequestHttpException('getParentIdsByCategoryIds 方法陷入死循环');
+        }
+        $category_ids = [];
+        foreach ($categoryIdData as $key => $value) {
+            if (empty($value[0])) {
+                $categoryIdData[$key] = null;
+            }
+            $category_ids[] = $value[0];
+        }
+        $categoryIdData = array_values(array_filter($categoryIdData));
+
+        $categoryData = $this->getLists(['category_id' => $category_ids]);
+        $categoryData = array_column($categoryData, null, 'category_id');
+        $parentIds = [];
+        foreach ($categoryIdData as $key => $value) {
+            if (empty($categoryData[$value[0]]['parent_id'])) {
+                continue;
+            }
+            $parentIds[] = $categoryData[$value[0]]['parent_id'];
+            $categoryIdData[$key] = array_merge([$categoryData[$value[0]]['parent_id']], $value);
+        }
+
+        if (! empty($parentIds)) {
+            $categoryIdData = $this->getParentIdsByCategoryIds($categoryIdData, $num + 1);
+        }
+        return $categoryIdData;
+    }
+
+    /**
      * 根据某个父节点获取它的所有子节点集合.
      */
-    protected function findTreeByParent(array $parent, array $all_data = [], array $category_ids = [], array &$list = []): array
+    protected function findTreeByParent(array $parent, array $all_data = [], array $category_ids = [], array &$list = [], int $num = 1): array
     {
+        if ($num > 10) {
+            throw new BadRequestHttpException('findTreeByParent 方法陷入死循环');
+        }
         if (empty($parent)) {
             return [];
         }
@@ -119,7 +156,7 @@ class GoodsCategoryRepository extends Repository
         }
         if (empty($all_data)) {
             $filter = [];
-            $all_data = $this->getLists(filter: $filter, orderBy: ['parent_id' => 'asc', 'sort' => 'asc']);
+            $all_data = $this->getLists($filter, ['parent_id' => 'asc', 'sort' => 'asc']);
         }
         foreach ($all_data as $value) {
             if ($value['parent_id'] !== $parent['category_id']) {
@@ -127,7 +164,7 @@ class GoodsCategoryRepository extends Repository
             }
             $value['level'] = $parent['level'] + 1;
             $value['parent_name'] = $parent['category_name'];
-            $children = $this->findTreeByParent($value, $all_data, $category_ids, $list);
+            $children = $this->findTreeByParent($value, $all_data, $category_ids, $list, $num + 1);
             if (empty($children)) {
                 continue;
             }
@@ -147,8 +184,11 @@ class GoodsCategoryRepository extends Repository
         return $parent;
     }
 
-    protected function recursionCascadeData($data): array
+    protected function recursionCascadeData(array $data, int $num = 1): array
     {
+        if ($num > 10) {
+            throw new BadRequestHttpException('recursionCascadeData 方法陷入死循环');
+        }
         $result = [];
         foreach ($data as $value) {
             $item = [
@@ -156,7 +196,7 @@ class GoodsCategoryRepository extends Repository
                 'label' => $value['category_name'],
             ];
             if ($value['has_children']) {
-                $item['children'] = $this->recursionCascadeData($value['children']);
+                $item['children'] = $this->recursionCascadeData($value['children'], $num + 1);
             }
             $result[] = $item;
         }

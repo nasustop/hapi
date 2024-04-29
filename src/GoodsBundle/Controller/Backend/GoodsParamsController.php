@@ -131,9 +131,9 @@ class GoodsParamsController extends AbstractController
         if (! empty($params_name)) {
             $filter['params_name|contains'] = $params_name;
         }
-        $hasValue = $this->getRequest()->input('hasValue');
-        if (! empty($hasValue)) {
-            $filter['hasValue'] = $hasValue;
+        $getValue = $this->getRequest()->input('getValue');
+        if (! empty($getValue)) {
+            $filter['getValue'] = $getValue;
         }
         $result = $this->getService()->getGoodsParamsList($filter, '*', $page, $page_size, ['created_at' => 'desc']);
 

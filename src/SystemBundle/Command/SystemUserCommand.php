@@ -18,6 +18,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Console\Input\InputOption;
+use SystemBundle\Repository\SystemUserRelAccountRepository;
 use SystemBundle\Service\SystemUserService;
 
 #[Command]
@@ -80,8 +81,16 @@ class SystemUserCommand extends HyperfCommand
             return false;
         }
         $service = $this->container->get(SystemUserService::class);
-        $info = $service->getInfo(['user_id' => $user_id], $this->headers);
-        $this->table($this->headers, [$info]);
+        $info = $service->getInfo(['user_id' => $user_id]);
+        $headers = [];
+        $tables = [];
+        foreach ($this->headers as $header) {
+            if (isset($info[$header])) {
+                $headers[] = $header;
+                $tables[$header] = $info[$header];
+            }
+        }
+        $this->table($headers, [$tables]);
 
         return true;
     }
@@ -113,13 +122,15 @@ class SystemUserCommand extends HyperfCommand
             $this->error('管理员添加失败');
             return false;
         }
-        $this->table($this->headers, [[
-            $user['user_id'],
-            $user['account'],
-            $user['user_name'],
-            $user['mobile'],
-            $user['user_status'],
-        ]]);
+        $headers = [];
+        $tables = [];
+        foreach ($this->headers as $header) {
+            if (isset($user[$header])) {
+                $headers[] = $header;
+                $tables[$header] = $user[$header];
+            }
+        }
+        $this->table($headers, [$tables]);
         return true;
     }
 
@@ -140,13 +151,24 @@ class SystemUserCommand extends HyperfCommand
             return false;
         }
         $service = $this->container->get(SystemUserService::class);
-        $service->updateOneBy(['user_id' => $user_id], ['password' => $password]);
-        $user = $service->getInfo(['user_id' => $user_id], $this->headers);
+        $service->getSystemUserRelAccountRepository()->updateOneBy([
+                'user_id' => $user_id,
+                'rel_type' => SystemUserRelAccountRepository::ENUM_REL_TYPE_ACCOUNT,
+            ], ['password' => $password]);
+        $user = $service->getInfo(['user_id' => $user_id]);
         if (empty($user)) {
             $this->error('管理员修改失败');
             return false;
         }
-        $this->table($this->headers, [$user]);
+        $headers = [];
+        $tables = [];
+        foreach ($this->headers as $header) {
+            if (isset($user[$header])) {
+                $headers[] = $header;
+                $tables[$header] = $user[$header];
+            }
+        }
+        $this->table($headers, [$tables]);
         return true;
     }
 }

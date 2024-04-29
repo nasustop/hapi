@@ -75,15 +75,15 @@ class GoodsSpecController extends AbstractController
                 $messages['spec_value.*.spec_value_name.required'] = '规格属性名称必填';
                 break;
         }
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make($params, $rules, $messages);
 
         if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
+            throw new BadRequestHttpException($validator->errors()->first());
         }
 
         $result = $this->getService()->createGoodsSpec($params);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionInfo(): ResponseInterface
@@ -91,7 +91,7 @@ class GoodsSpecController extends AbstractController
         $filter = $this->getRequest()->all();
         $result = $this->getService()->getGoodsSpecInfo($filter);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionUpdate(): ResponseInterface
@@ -135,33 +135,48 @@ class GoodsSpecController extends AbstractController
                 $messages['params.spec_value.*.spec_value_name.required'] = '规格属性名称必填';
                 break;
         }
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
+        $validator = $this->getValidatorFactory()->make($params, $rules, $messages);
 
         if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
+            throw new BadRequestHttpException($validator->errors()->first());
         }
 
-        $result = $this->getService()->updateGoodsSpec(filter: $params['filter'], data: $params['params']);
+        $result = $this->getService()->updateGoodsSpec($params['filter'], $params['params']);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionDelete(): ResponseInterface
     {
         $filter = $this->getRequest()->all();
-        $result = $this->getService()->deleteOneBy(filter: $filter);
+        $result = $this->getService()->deleteOneBy($filter);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionList(): ResponseInterface
     {
-        $filter = $this->getRequest()->all();
-        $page = (int) $this->getRequest()->input(key: 'page', default: 1);
-        $page_size = (int) $this->getRequest()->input(key: 'page_size', default: 20);
-        $result = $this->getService()->pageLists(filter: $filter, columns: '*', page: $page, pageSize: $page_size);
+        $page = (int) $this->getRequest()->input('page', 1);
+        $page_size = (int) $this->getRequest()->input('page_size', 20);
+        $filter = [];
+        $spec_name = $this->getRequest()->input('spec_name');
+        if (! empty($spec_name)) {
+            $filter['spec_name|contains'] = $spec_name;
+        }
+        $orderBy = [
+            'sort' => 'desc',
+        ];
+        $result = $this->getService()->getGoodsSpecList($filter, '*', $page, $page_size, $orderBy);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
+    }
+
+    public function actionValueList(): ResponseInterface
+    {
+        $spec_value_id = $this->getRequest()->input('spec_value_id');
+        $result = $this->getService()->getGoodsSpecValueList($spec_value_id);
+
+        return $this->getResponse()->success($result);
     }
 
     /**

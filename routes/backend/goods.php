@@ -84,35 +84,39 @@ Router::addGroup('/goods', function () {
 
     Router::get('/spec/info', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionInfo', [
         'alias' => 'app.goods.spec.info',
-        'name' => '商品品牌详情',
+        'name' => '商品规格详情',
     ]);
     Router::get('/spec/list', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionList', [
         'alias' => 'app.goods.spec.list',
-        'name' => '商品品牌列表',
+        'name' => '商品规格列表',
+    ]);
+    Router::get('/spec/value/list', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionValueList', [
+        'alias' => 'app.goods.spec.value.list',
+        'name' => '商品规格属性列表',
     ]);
     Router::post('/spec/create', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionCreate', [
         'alias' => 'app.goods.spec.create',
-        'name' => '添加商品品牌',
+        'name' => '添加商品规格',
     ]);
     Router::post('/spec/update', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionUpdate', [
         'alias' => 'app.goods.spec.update',
-        'name' => '修改商品品牌',
+        'name' => '修改商品规格',
     ]);
     Router::post('/spec/delete', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionDelete', [
         'alias' => 'app.goods.spec.delete',
-        'name' => '删除商品品牌',
+        'name' => '删除商品规格',
     ]);
     Router::get('/spec/template/list', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionTemplateList', [
         'alias' => 'app.goods.spec.template.list',
-        'name' => '商品品牌模板',
+        'name' => '商品规格模板',
     ]);
     Router::get('/spec/template/create', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionTemplateCreate', [
         'alias' => 'app.goods.spec.template.create',
-        'name' => '添加商品品牌模板',
+        'name' => '添加商品规格模板',
     ]);
     Router::get('/spec/template/update', 'GoodsBundle\Controller\Backend\GoodsSpecController@actionTemplateUpdate', [
         'alias' => 'app.goods.spec.template.update',
-        'name' => '修改商品品牌模板',
+        'name' => '修改商品规格模板',
     ]);
 
     Router::get('/params/info', 'GoodsBundle\Controller\Backend\GoodsParamsController@actionInfo', [

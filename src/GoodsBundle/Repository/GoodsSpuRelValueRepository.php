@@ -54,4 +54,52 @@ class GoodsSpuRelValueRepository extends Repository
         }
         return $this->model;
     }
+
+    public function createSpuRelValue($spu_id, $params)
+    {
+        $batchInsertData = [];
+        if (! empty($params['brand_id'])) {
+            // 添加商品品牌
+            $batchInsertData[] = [
+                'spu_id' => $spu_id,
+                'rel_type' => self::ENUM_REL_TYPE_BRAND,
+                'rel_id' => $params['brand_id'],
+            ];
+        }
+        // 添加商品分类
+        foreach ($params['category_ids'] ?? [] as $value) {
+            if (empty($value)) {
+                continue;
+            }
+            $batchInsertData[] = [
+                'spu_id' => $spu_id,
+                'rel_type' => self::ENUM_REL_TYPE_CATEGORY,
+                'rel_id' => array_pop($value),
+            ];
+        }
+        if ($params['open_params']) {
+            // 添加商品参数
+            foreach ($params['params_value'] ?? [] as $value) {
+                if (empty($value)) {
+                    continue;
+                }
+                $batchInsertData[] = [
+                    'spu_id' => $spu_id,
+                    'rel_type' => self::ENUM_REL_TYPE_PARAMS,
+                    'rel_id' => $value,
+                ];
+            }
+        }
+        if (! empty($batchInsertData)) {
+            $this->batchInsert($batchInsertData);
+        }
+    }
+
+    public function updateSpuRelValue($spu_id, $params)
+    {
+        $this->deleteBy([
+            'spu_id' => $spu_id,
+        ]);
+        $this->createSpuRelValue($spu_id, $params);
+    }
 }

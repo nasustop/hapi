@@ -23,17 +23,18 @@ class SystemTable extends Migration
         Schema::create('system_api', function (Blueprint $table) {
             $table->bigIncrements('api_id')->comment('接口ID');
             $table->string('api_name', 100)->comment('接口名称');
-            $table->string('api_alias', 100)->comment('接口别名，全局唯一')->unique();
+            $table->string('api_alias', 100)->comment('接口别名，全局唯一');
             $table->json('api_method')->comment('请求方式');
             $table->string('api_uri')->comment('接口地址');
             $table->string('api_action')->comment('接口方法');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->unique('api_alias', 'unique_api_alias');
+            $table->unique('api_alias');
+            $table->comment('系统接口API表');
         });
 
-        Schema::create('system_menu', function (Blueprint $table) {
+        Schema::create('system_menu1', function (Blueprint $table) {
             $table->bigIncrements('menu_id')->comment('菜单ID');
             $table->unsignedBigInteger('parent_id', false)->comment('父节点ID');
             $table->string('menu_name', 100)->comment('菜单名称');
@@ -43,10 +44,34 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->index('parent_id', 'index_parent_id');
-            $table->index('is_show', 'index_is_show');
-            $table->unique('menu_alias', 'unique_menu_alias');
+            $table->index('parent_id');
+            $table->index('is_show');
+            $table->unique('menu_alias');
+            $table->comment('系统菜单表');
         });
+
+//        Schema::create('system_menu', function (Blueprint $table) {
+//            $table->bigIncrements('menu_id')->comment('菜单ID');
+//            $table->unsignedBigInteger('parent_id', false)->comment('父节点ID');
+//            $table->enum('menu_type', ['menu', 'page'])->comment('菜单类型');
+//            $table->string('menu_name')->comment('菜单名称');
+//            $table->string('menu_alias', 100)->comment('菜单别名，全局唯一');
+//            $table->string('menu_icon')->comment('菜单icon');
+//            $table->boolean('open_component')->comment('是否开启自定义页面地址');
+//            $table->string('component_path')->nullable()->comment('自定义页面地址');
+//            $table->boolean('open_redirect')->comment('是否开启重定向');
+//            $table->string('redirect_path')->nullable()->comment('重定向地址');
+//            $table->boolean('menu_hidden')->default(false)->comment('是否隐藏');
+//            $table->string('activity_menu')->nullable()->comment('activityMenu');
+//            $table->unsignedInteger('sort', false)->default(0)->comment('排序');
+//            $table->timestamp('created_at')->nullable()->comment('添加时间');
+//            $table->timestamp('updated_at')->nullable()->comment('修改时间');
+//
+//            $table->index('parent_id');
+//            $table->index('menu_type');
+//            $table->unique('menu_alias');
+//            $table->comment('系统菜单表');
+//        });
 
         Schema::create('system_role', function (Blueprint $table) {
             $table->bigIncrements('role_id')->comment('角色ID');
@@ -55,7 +80,8 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->unique('role_alias', 'unique_role_alias');
+            $table->unique('role_alias');
+            $table->comment('系统角色表');
         });
         Schema::create('system_power', function (Blueprint $table) {
             $table->enum('parent_type', ['user', 'role', 'menu'])->comment('父节点类型');
@@ -64,6 +90,10 @@ class SystemTable extends Migration
             $table->unsignedBigInteger('children_id', false)->comment('父节点ID');
 
             $table->unique(['parent_type', 'parent_id', 'children_type', 'children_id'], 'unique_power');
+            $table->index('parent_type');
+            $table->index('parent_id');
+            $table->index('children_type');
+            $table->comment('系统权限表');
         });
         Schema::create('system_user', function (Blueprint $table) {
             $table->bigIncrements('user_id')->comment('用户ID');
@@ -71,23 +101,28 @@ class SystemTable extends Migration
             $table->string('password_hash')->comment('密码密钥');
             $table->string('user_name', 100)->comment('用户昵称');
             $table->string('avatar_url')->nullable()->comment('用户头像');
-            $table->enum('user_status', ['success', 'disabled'])->default('success')->index()->comment('用户状态 success:正常 disabled:禁用');
+            $table->enum('user_status', ['success', 'disabled'])->default('success')->comment('用户状态 success:正常 disabled:禁用');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
+
+            $table->index('user_status');
+            $table->comment('系统用户表');
         });
         Schema::create('system_user_rel_account', function (Blueprint $table) {
             $table->bigIncrements('id')->comment('ID');
             $table->unsignedBigInteger('user_id')->comment('用户ID');
-            $table->enum('rel_type', ['account', 'email', 'mobile', 'mini_app', 'official_account'])->index()->comment('关联类型');
+            $table->enum('rel_type', ['account', 'email', 'mobile', 'mini_app', 'official_account'])->comment('关联类型');
             $table->string('rel_value', 100)->comment('关联索引');
             $table->json('rel_data')->nullable()->comment('冗余数据');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
 
-            $table->index('user_id', 'index_user_id');
+            $table->index('user_id');
+            $table->index('rel_type');
             $table->unique(['rel_value', 'deleted_at'], 'unique_rel_value');
+            $table->comment('系统用户账号表');
         });
         Schema::create('system_operation_log', function (Blueprint $table) {
             $table->bigIncrements('log_id');
@@ -100,11 +135,12 @@ class SystemTable extends Migration
             $table->json('params');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
 
-            $table->index('user_id', 'idx_user_id');
-            $table->index('request_uri', 'idx_request_uri');
-            $table->index('request_method', 'idx_request_method');
-            $table->index('api_alias', 'idx_api_alias');
-            $table->index('api_name', 'idx_api_name');
+            $table->index('user_id');
+            $table->index('request_uri');
+            $table->index('request_method');
+            $table->index('api_alias');
+            $table->index('api_name');
+            $table->comment('系统操作记录表');
         });
         Schema::create('system_upload_file', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -123,10 +159,11 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->index('user_id', 'idx_user_id');
-            $table->index('file_type', 'idx_file_type');
-            $table->index('file_rel_id', 'idx_file_rel_id');
-            $table->index('handle_status', 'idx_handle_status');
+            $table->index('user_id');
+            $table->index('file_type');
+            $table->index('file_rel_id');
+            $table->index('handle_status');
+            $table->comment('系统文件上传记录表');
         });
         Schema::create('system_upload_file_message', function (Blueprint $table) {
             $table->unsignedBigInteger('upload_id')->comment('关联ID');
@@ -137,9 +174,11 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->index('upload_id', 'idx_upload_id');
-            $table->index('line_num', 'idx_line_num');
-            $table->index('handle_status', 'idx_handle_status');
+            $table->index('upload_id');
+            $table->index('line_num');
+            $table->index('handle_status');
+            $table->primary('upload_id');
+            $table->comment('系统文件上传错误信息记录表');
         });
         Schema::create('system_upload_images', function (Blueprint $table) {
             $table->bigIncrements('img_id')->comment('图片ID');
@@ -152,7 +191,8 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->index('img_storage', 'idx_img_storage');
+            $table->index('img_storage');
+            $table->comment('系统图片素材管理表');
         });
         Schema::create('system_export_file', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -167,9 +207,10 @@ class SystemTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
-            $table->index('user_id', 'idx_user_id');
-            $table->index('export_type', 'idx_export_type');
-            $table->index('handle_status', 'idx_handle_status');
+            $table->index('user_id');
+            $table->index('export_type');
+            $table->index('handle_status');
+            $table->comment('系统文件导出记录表');
         });
         Schema::create('third_party_request_log', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -183,13 +224,14 @@ class SystemTable extends Migration
             $table->string('result')->comment('返回结果');
             $table->timestamp('created_at')->nullable()->comment('日志记录时间');
 
-            $table->index('method', 'idx_method');
-            $table->index('host', 'idx_host');
-            $table->index('path', 'idx_path');
-            $table->index('status_code', 'idx_status_code');
-            $table->index('status', 'idx_status');
-            $table->index('transfer_time', 'idx_transfer_time');
-            $table->index('created_at', 'idx_created');
+            $table->index('method');
+            $table->index('host');
+            $table->index('path');
+            $table->index('status_code');
+            $table->index('status');
+            $table->index('transfer_time');
+            $table->index('created_at');
+            $table->comment('第三方接口日志表');
         });
         Schema::create('system_wechat', function (Blueprint $table) {
             $table->bigIncrements('id');

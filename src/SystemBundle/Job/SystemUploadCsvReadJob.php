@@ -23,7 +23,8 @@ class SystemUploadCsvReadJob extends Job
 
     public function handle(): string
     {
-        $service = $this->getContainer()->get(SystemUploadFileService::class);
+        /** @var SystemUploadFileService $service */
+        $service = \Hyperf\Support\make(SystemUploadFileService::class);
         $service->handleUploadFile($this->upload_file_id, $this->chunk_num, $this->useQueue);
         return self::ACK;
     }

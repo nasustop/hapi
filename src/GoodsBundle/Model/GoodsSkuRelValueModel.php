@@ -6,15 +6,16 @@ namespace GoodsBundle\Model;
 use App\Model\Model as BaseModel;
 /**
  * @property int $spu_id 
+ * @property int $sku_id 
  * @property string $rel_type 
  * @property int $rel_id 
  */
-class GoodsSpuRelValueModel extends BaseModel
+class GoodsSkuRelValueModel extends BaseModel
 {
     /**
      * The table associated with the model.
      */
-    protected ?string $table = 'goods_spu_rel_value';
+    protected ?string $table = 'goods_sku_rel_value';
     /**
      * The primary key for the model.
      */
@@ -22,7 +23,7 @@ class GoodsSpuRelValueModel extends BaseModel
     /**
      * The table all columns.
      */
-    protected array $cols = ['spu_id', 'rel_type', 'rel_id'];
+    protected array $cols = ['spu_id', 'sku_id', 'rel_type', 'rel_id'];
     /**
      * The attributes that are mass assignable.
      */
@@ -30,5 +31,5 @@ class GoodsSpuRelValueModel extends BaseModel
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['spu_id' => 'integer', 'rel_id' => 'integer'];
+    protected array $casts = ['spu_id' => 'integer', 'sku_id' => 'integer', 'rel_id' => 'integer'];
 }

@@ -14,6 +14,7 @@ namespace GoodsBundle\Controller\Backend;
 
 use App\Controller\AbstractController;
 use GoodsBundle\Repository\GoodsSpuRepository;
+use GoodsBundle\Request\GoodsSpuRequest;
 use GoodsBundle\Service\GoodsSpuService;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
 use Hyperf\Validation\Rule;
@@ -23,29 +24,13 @@ class GoodsSpuController extends AbstractController
 {
     protected GoodsSpuService $service;
 
+    protected GoodsSpuRequest $goodsSpuRequest;
+
     public function actionCreate(): ResponseInterface
     {
         $params = $this->getRequest()->all();
 
-        $rules = [
-            'spu_name' => 'required',
-            'category_ids' => 'required',
-            'spu_thumb' => 'required',
-            'spu_images' => 'required',
-            'price_min' => 'required',
-        ];
-        $messages = [
-            'spu_name.required' => 'spu_name 参数必填',
-            'category_ids.required' => 'category_ids 参数必填',
-            'spu_thumb.required' => 'spu_thumb 参数必填',
-            'spu_images.required' => 'spu_images 参数必填',
-            'price_min.required' => 'price_min 参数必填',
-        ];
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
-
-        if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
-        }
+        $this->getGoodsSpuRequest()->validGoodsSpuParams($this->getValidatorFactory(), $params);
 
         $result = $this->getService()->createGoodsSpu($params);
 
@@ -55,46 +40,19 @@ class GoodsSpuController extends AbstractController
     public function actionInfo(): ResponseInterface
     {
         $filter = $this->getRequest()->all();
-        $result = $this->getService()->getGoodsSpuInfo(filter: $filter);
+        $result = $this->getService()->getGoodsSpuInfo($filter);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionUpdate(): ResponseInterface
     {
         $params = $this->getRequest()->all();
-
-        $rules = [
-            'filter' => 'required|array',
-            'filter.spu_id' => 'required',
-            'params' => 'required|array',
-            'params.spu_name' => 'required',
-            'params.spu_thumb' => 'required',
-            'params.spu_images' => 'required',
-            'params.spu_intro' => 'required',
-            'params.price_min' => 'required',
-        ];
-        $messages = [
-            'filter.required' => 'filter 参数必填',
-            'filter.array' => 'filter 参数错误，必须是数组格式',
-            'filter.spu_id.required' => 'filter.spu_id 参数必填',
-            'params.required' => 'params 参数必填',
-            'params.array' => 'params 参数错误，必须是数组格式',
-            'params.spu_name.required' => 'params.spu_name 参数必填',
-            'params.spu_thumb.required' => 'params.spu_thumb 参数必填',
-            'params.spu_images.required' => 'params.spu_images 参数必填',
-            'params.spu_intro.required' => 'params.spu_intro 参数必填',
-            'params.price_min.required' => 'params.price_min 参数必填',
-        ];
-        $validator = $this->getValidatorFactory()->make(data: $params, rules: $rules, messages: $messages);
-
-        if ($validator->fails()) {
-            throw new BadRequestHttpException(message: $validator->errors()->first());
-        }
+        $this->getGoodsSpuRequest()->validGoodsSpuParams($this->getValidatorFactory(), $params['params']);
 
         $result = $this->getService()->updateGoodsSpu($params['filter'], $params['params']);
 
-        return $this->getResponse()->success(data: $result);
+        return $this->getResponse()->success($result);
     }
 
     public function actionUpdateSome(): ResponseInterface
@@ -152,4 +110,16 @@ class GoodsSpuController extends AbstractController
         }
         return $this->service;
     }
+
+    /**
+     * get GoodsSpuRequest.
+     */
+    protected function getGoodsSpuRequest(): GoodsSpuRequest
+    {
+        if (empty($this->goodsSpuRequest)) {
+            $this->goodsSpuRequest = make(GoodsSpuRequest::class);
+        }
+        return $this->goodsSpuRequest;
+    }
+
 }

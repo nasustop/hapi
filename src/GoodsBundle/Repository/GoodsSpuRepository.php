@@ -80,6 +80,15 @@ class GoodsSpuRepository extends Repository
             if ($key === 'spu_images') {
                 $data[$key] = json_decode($value, true);
             }
+            switch ($key) {
+                case 'spu_images':
+                    $data[$key] = json_decode($value, true);
+                    break;
+                case 'open_params':
+                case 'open_spec':
+                    $data[$key] = $value === 1;
+                    break;
+            }
         }
         return $data;
     }

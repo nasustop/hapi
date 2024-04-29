@@ -138,7 +138,7 @@ class GoodsParamsService
     public function getGoodsParamsList($filter, $cols = '*', $page = 1, $page_size = 20, $orderBy = [])
     {
         $result = $this->getRepository()->pageLists($filter, $cols, $page, $page_size, $orderBy);
-        if (! empty($filter['hasValue'])) {
+        if (! empty($filter['getValue'])) {
             $paramsIds = array_column($result['list'], 'params_id');
             $valueData = [];
             if (! empty($paramsIds)) {

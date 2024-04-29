@@ -140,4 +140,47 @@ class GoodsSpecService
         }
         return $this->getGoodsSpecInfo(['spec_id' => $specInfo['spec_id']]);
     }
+
+    public function getGoodsSpecList(array $filter = [], array|string $columns = '*', int $page = 1, int $pageSize = 100, array $orderBy = []): array
+    {
+        $result = $this->getRepository()->pageLists($filter, $columns, $page, $pageSize, $orderBy);
+        if (empty($result['list'])) {
+            return $result;
+        }
+        $specIds = array_values(array_column($result['list'], 'spec_id'));
+        if (empty($specIds)) {
+            return $result;
+        }
+        $specData = array_column($result['list'], null, 'spec_id');
+        $specValueData = $this->getSpecValueRepository()->getLists(['spec_id' => $specIds]);
+        foreach ($specValueData as $value) {
+            $specData[$value['spec_id']]['spec_value'][] = $value;
+        }
+        $result['list'] = array_values($specData);
+        return $result;
+    }
+
+    public function getGoodsSpecValueList($spec_value_id): array
+    {
+        $valueList = $this->getSpecValueRepository()->getLists(['spec_value_id' => $spec_value_id]);
+        if (empty($valueList)) {
+            return [];
+        }
+        $spec_ids = array_values(array_filter(array_unique(array_column($valueList, 'spec_id'))));
+        if (empty($spec_ids)) {
+            return [];
+        }
+//        return $this->getGoodsSpecList(['spec_id' => $spec_ids], '*', 1, 0);
+        $specList = $this->getRepository()->getLists(['spec_id' => $spec_ids]);
+        if (empty($specList)) {
+            return [];
+        }
+        $specList = array_column($specList, null, 'spec_id');
+        foreach ($valueList as $value) {
+            if (! empty($specList[$value['spec_id']])) {
+                $specList[$value['spec_id']]['spec_value'][] = $value;
+            }
+        }
+        return array_values($specList);
+    }
 }
