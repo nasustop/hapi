@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace App\Process\Queue;
 
+use Hyperf\Process\Annotation\Process;
 use Nasustop\HapiQueue\Consumer;
 
+#[Process]
 class QueueDefaultProcess extends Consumer
 {
     protected string $queue = 'default';

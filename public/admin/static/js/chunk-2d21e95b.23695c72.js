@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21e95b"],{d5d8:function(e,n,t){"use strict";t.r(n);var u=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("router-view")},c=[],o={name:"GoodsSpuIndex"},r=o,a=t("2877"),d=Object(a["a"])(r,u,c,!1,null,"ae0d7c9e",null);n["default"]=d.exports}}]);

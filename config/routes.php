@@ -12,7 +12,15 @@ declare(strict_types=1);
 use Hyperf\HttpServer\Router\Router;
 use SystemBundle\Middleware\SystemOperationLogMiddleware;
 
-Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index', ['alias' => 'index']);
+// Install
+Router::addRoute('GET', '/install', 'App\Controller\IndexController@actionInstall', ['alias' => 'install']);
+Router::addRoute('GET', '/uninstall', 'App\Controller\IndexController@actionUninstall', ['alias' => 'uninstall']);
+// Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index', ['alias' => 'index']);
+// Web
+Router::addRoute('GET', '/', 'GoodsBundle\Controller\Web\IndexController@actionIndex', ['alias' => 'web.index.default']);
+Router::addRoute('GET', '/index.html', 'GoodsBundle\Controller\Web\IndexController@actionIndex', ['alias' => 'web.index.html']);
+Router::addRoute('GET', '/category/{category_id}.html', 'GoodsBundle\Controller\Web\IndexController@actionIndex', ['alias' => 'web.index.category']);
+Router::addRoute('GET', '/detail/{spu_id}.html', 'GoodsBundle\Controller\Web\IndexController@actionDetail', ['alias' => 'web.detail']);
 
 Router::get('/favicon.ico', function () {
     return '';

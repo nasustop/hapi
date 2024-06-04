@@ -38,6 +38,9 @@ return [
         Constant::OPTION_SOCKET_BUFFER_SIZE => 2 * 1024 * 1024,
         Constant::OPTION_BUFFER_OUTPUT_SIZE => 2 * 1024 * 1024,
         Constant::OPTION_PACKAGE_MAX_LENGTH => env('UPLOAD_MAX_SIZE', 5) * 1024 * 1024,
+        // 静态资源
+        Constant::OPTION_DOCUMENT_ROOT => BASE_PATH . '/public',
+        Constant::OPTION_ENABLE_STATIC_HANDLER => true,
     ],
     'callbacks' => [
         Event::ON_WORKER_START => [Hyperf\Framework\Bootstrap\WorkerStartCallback::class, 'onWorkerStart'],
