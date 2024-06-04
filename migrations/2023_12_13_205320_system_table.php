@@ -34,44 +34,23 @@ class SystemTable extends Migration
             $table->comment('系统接口API表');
         });
 
-        Schema::create('system_menu1', function (Blueprint $table) {
+        Schema::create('system_menu', function (Blueprint $table) {
             $table->bigIncrements('menu_id')->comment('菜单ID');
             $table->unsignedBigInteger('parent_id', false)->comment('父节点ID');
-            $table->string('menu_name', 100)->comment('菜单名称');
-            $table->string('menu_alias', 50)->comment('菜单别名，全局唯一');
+            $table->enum('menu_type', ['menu', 'page'])->comment('菜单类型');
+            $table->string('menu_name')->comment('菜单名称');
+            $table->string('menu_alias', 100)->comment('菜单别名，全局唯一');
+            $table->string('menu_icon')->default('')->comment('菜单icon');
+            $table->json('menu_data')->nullable()->comment('菜单冗余数据，适用于vue');
             $table->unsignedInteger('sort', false)->default(0)->comment('排序');
-            $table->smallInteger('is_show')->default(1)->comment('是否显示');
             $table->timestamp('created_at')->nullable()->comment('添加时间');
             $table->timestamp('updated_at')->nullable()->comment('修改时间');
 
             $table->index('parent_id');
-            $table->index('is_show');
+            $table->index('menu_type');
             $table->unique('menu_alias');
             $table->comment('系统菜单表');
         });
-
-//        Schema::create('system_menu', function (Blueprint $table) {
-//            $table->bigIncrements('menu_id')->comment('菜单ID');
-//            $table->unsignedBigInteger('parent_id', false)->comment('父节点ID');
-//            $table->enum('menu_type', ['menu', 'page'])->comment('菜单类型');
-//            $table->string('menu_name')->comment('菜单名称');
-//            $table->string('menu_alias', 100)->comment('菜单别名，全局唯一');
-//            $table->string('menu_icon')->comment('菜单icon');
-//            $table->boolean('open_component')->comment('是否开启自定义页面地址');
-//            $table->string('component_path')->nullable()->comment('自定义页面地址');
-//            $table->boolean('open_redirect')->comment('是否开启重定向');
-//            $table->string('redirect_path')->nullable()->comment('重定向地址');
-//            $table->boolean('menu_hidden')->default(false)->comment('是否隐藏');
-//            $table->string('activity_menu')->nullable()->comment('activityMenu');
-//            $table->unsignedInteger('sort', false)->default(0)->comment('排序');
-//            $table->timestamp('created_at')->nullable()->comment('添加时间');
-//            $table->timestamp('updated_at')->nullable()->comment('修改时间');
-//
-//            $table->index('parent_id');
-//            $table->index('menu_type');
-//            $table->unique('menu_alias');
-//            $table->comment('系统菜单表');
-//        });
 
         Schema::create('system_role', function (Blueprint $table) {
             $table->bigIncrements('role_id')->comment('角色ID');
